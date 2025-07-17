@@ -1,0 +1,247 @@
+---
+layout: default
+title: 第1章：基礎編
+---
+
+# 第1章：基礎編
+
+## runnとは何か
+
+runn（「Run N」と読み、/rʌ́n én/と発音）は、k1LoW氏によって開発されたシナリオベースのテスト・自動化ツールです。単なるAPIテストツールではなく、以下の3つの側面を持っています：
+
+1. **シナリオベースのテストツール** - YAMLでシナリオを記述して実行
+2. **Go言語のテストヘルパーパッケージ** - `go test`に統合して利用
+3. **汎用的な自動化ツール** - CI/CDでの活用、定期実行タスクなど
+
+### runnの特徴
+
+- **マルチプロトコル対応**: HTTP、gRPC、DB、ブラウザ操作、SSHを統一的に扱える
+- **シングルバイナリ**: インストールが簡単で、CI環境でも扱いやすい
+- **強力な式評価**: 前のステップの結果を次のステップで利用可能
+- **Goテスト統合**: 既存のGoプロジェクトにシームレスに導入可能
+
+## インストール方法
+
+runnのインストールには複数の方法があります。環境に応じて選択してください。
+
+### 1. Homebrewを使用（macOS/Linux）
+
+```bash
+brew install k1LoW/tap/runn
+```
+
+### 2. Go installを使用
+
+Go 1.21以上がインストールされている場合：
+
+```bash
+go install github.com/k1LoW/runn/cmd/runn@latest
+```
+
+### 3. バイナリを直接ダウンロード
+
+[GitHub Releases](https://github.com/k1LoW/runn/releases)から、お使いのOS・アーキテクチャに対応したバイナリをダウンロードします。
+
+```bash
+# Linux (amd64)の例
+curl -L https://github.com/k1LoW/runn/releases/latest/download/runn_linux_amd64.tar.gz | tar xz
+sudo mv runn /usr/local/bin/
+```
+
+### 4. Dockerを使用
+
+```bash
+docker run --rm -v $PWD:/workspace ghcr.io/k1low/runn:latest run /workspace/scenario.yml
+```
+
+### インストールの確認
+
+```bash
+runn --version
+```
+
+## 基本的な使い方（CLIコマンド）
+
+### 主要なコマンド
+
+```bash
+# シナリオを実行
+runn run scenario.yml
+
+# 複数のシナリオを実行
+runn run scenarios/**/*.yml
+
+# シナリオ一覧を表示
+runn list scenarios/
+
+# curlコマンドからシナリオを生成
+runn new --and-run --out first.yml -- curl https://httpbin.org/get
+
+# アクセスログからシナリオを生成
+cat access.log | runn new --out generated.yml
+```
+
+### 便利なオプション
+
+```bash
+# 詳細なログを表示
+runn run scenario.yml --verbose
+
+# 特定のラベルのシナリオのみ実行
+runn run scenarios/**/*.yml --label api --label critical
+
+# 並列実行数を指定
+runn run scenarios/**/*.yml --concurrent 5
+
+# 失敗時に即座に停止
+runn run scenarios/**/*.yml --fail-fast
+```
+
+## はじめてのシナリオ作成
+
+### 1. 最もシンプルなHTTPリクエスト
+
+`first-scenario.yml`を作成：
+
+```yaml
+desc: HTTPBinにGETリクエストを送信
+runners:
+  req: https://httpbin.org
+steps:
+  - req:
+      /get:
+        get:
+          headers:
+            User-Agent: runn/1.0
+    test: |
+      current.res.status == 200
+```
+
+実行：
+
+```bash
+runn run first-scenario.yml
+```
+
+### 2. レスポンスの検証を追加
+
+```yaml
+desc: JSONレスポンスの内容を検証
+runners:
+  req: https://httpbin.org
+steps:
+  - req:
+      /json:
+        get:
+    test: |
+      current.res.status == 200 &&
+      current.res.body.slideshow.title == "Sample Slide Show"
+```
+
+### 3. 変数を使用したシナリオ
+
+```yaml
+desc: 変数を使用したPOSTリクエスト
+runners:
+  req: https://httpbin.org
+vars:
+  username: testuser
+  email: test@example.com
+steps:
+  - req:
+      /post:
+        post:
+          body:
+            application/json:
+              name: "{{ vars.username }}"
+              email: "{{ vars.email }}"
+    test: |
+      current.res.status == 200 &&
+      current.res.body.json.name == vars.username
+```
+
+### 4. 複数ステップのシナリオ
+
+```yaml
+desc: ログインしてからデータを取得
+runners:
+  req: https://httpbin.org
+steps:
+  # ステップ1: ログイン（シミュレーション）
+  login:
+    req:
+      /post:
+        post:
+          body:
+            application/json:
+              username: alice
+              password: secret123
+    test: current.res.status == 200
+
+  # ステップ2: 認証が必要なエンドポイントにアクセス
+  get_data:
+    req:
+      /bearer:
+        get:
+          headers:
+            # 前のステップの結果を使用（実際のAPIではトークンが返される想定）
+            Authorization: "Bearer dummy-token-{{ steps.login.res.body.json.username }}"
+    test: |
+      current.res.status == 200
+```
+
+## CLIとGoテストヘルパーの使い分け
+
+### CLIツールとして使うべき場面
+
+- 手動でのAPI動作確認
+- CI/CDパイプラインでの簡易的なE2Eテスト
+- 外部APIの監視・ヘルスチェック
+- 開発中の動作確認
+
+### Goテストヘルパーとして使うべき場面
+
+- **Goで書かれたアプリケーションのAPIテスト**（推奨）
+- テストDBの準備や初期化が必要な場合
+- モックサーバーとの連携が必要な場合
+- 複雑なテストデータの準備が必要な場合
+- 既存のGoテストフレームワークと統合したい場合
+
+実際のプロジェクトでは、**Goテストヘルパーとしての利用が圧倒的に強力**です。第7章で詳しく解説しますが、ここで簡単な例を示します：
+
+```go
+func TestUserAPI(t *testing.T) {
+    // テスト用サーバーを起動
+    db := setupTestDB(t)
+    srv := httptest.NewServer(NewApp(db))
+    defer srv.Close()
+    
+    // runnでテストを実行
+    opts := []runn.Option{
+        runn.T(t),
+        runn.Runner("api", srv.URL),
+    }
+    
+    o, err := runn.Load("testdata/user_scenarios.yml", opts...)
+    if err != nil {
+        t.Fatal(err)
+    }
+    
+    if err := o.RunN(context.Background()); err != nil {
+        t.Fatal(err)
+    }
+}
+```
+
+## まとめ
+
+この章では、runnの基本的な概念とインストール方法、簡単なシナリオの作成方法を学びました。重要なポイント：
+
+1. runnはCLIツールとGoテストヘルパーの2つの顔を持つ
+2. YAMLで宣言的にテストシナリオを記述できる
+3. 前のステップの結果を次のステップで利用できる
+4. Goテストヘルパーとして使用すると、より強力で柔軟なテストが可能
+
+次章では、より詳細なシナリオの記述方法について学んでいきます。
+
+[第2章：シナリオ記述編へ →](chapter02.md)

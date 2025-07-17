@@ -1,0 +1,25 @@
+desc: ログインしてからデータを取得
+runners:
+  req: https://httpbin.org
+steps:
+  # ステップ1: ログイン（シミュレーション）
+  login:
+    req:
+      /post:
+        post:
+          body:
+            application/json:
+              username: alice
+              password: secret123
+    test: current.res.status == 200
+
+  # ステップ2: 認証が必要なエンドポイントにアクセス
+  get_data:
+    req:
+      /bearer:
+        get:
+          headers:
+            # 前のステップの結果を使用（実際のAPIではトークンが返される想定）
+            Authorization: "Bearer dummy-token-{{ steps.login.res.body.json.username }}"
+    test: |
+      current.res.status == 200

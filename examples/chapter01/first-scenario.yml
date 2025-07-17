@@ -1,0 +1,11 @@
+desc: HTTPBinにGETリクエストを送信
+runners:
+  req: https://httpbin.org
+steps:
+  - req:
+      /get:
+        get:
+          headers:
+            User-Agent: runn/1.0
+    test: |
+      current.res.status == 200

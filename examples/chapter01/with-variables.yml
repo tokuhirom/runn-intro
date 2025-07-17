@@ -1,0 +1,17 @@
+desc: 変数を使用したPOSTリクエスト
+runners:
+  req: https://httpbin.org
+vars:
+  username: testuser
+  email: test@example.com
+steps:
+  - req:
+      /post:
+        post:
+          body:
+            application/json:
+              name: "{{ vars.username }}"
+              email: "{{ vars.email }}"
+    test: |
+      current.res.status == 200 &&
+      current.res.body.json.name == vars.username
