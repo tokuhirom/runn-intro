@@ -67,7 +67,6 @@ plugins:
   - search:
       lang: ja
   - macros:
-      include_dir: examples
       modules: ['includex']
 
 extra:

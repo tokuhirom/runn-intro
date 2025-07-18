@@ -1,6 +1,6 @@
 desc: ログインしてからデータを取得
 runners:
-  req: https://httpbin.org
+  req: http://localhost:8080
 steps:
   # ステップ1: ログイン（シミュレーション）
   login:

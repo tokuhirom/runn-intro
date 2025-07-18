@@ -97,95 +97,36 @@ docker run -p 8080:8080 mccutchen/go-httpbin
 
 ### 1. 最もシンプルなHTTPリクエスト
 
-以下では、
+`examples/chapter01/first-scenario.yml`を作成：
 
-`first-scenario.yml`を作成：
+この例では、`/get` にリクエストし、response code が 200 であることを確認しています。
 
 ```yaml
-desc: HTTPBinにGETリクエストを送信
-runners:
-  req: http://localhost:8080/
-steps:
-  - req:
-      /get:
-        get:
-          headers:
-            User-Agent: runn/1.0
-    test: |
-      current.res.status == 200
+{{ includex("examples/chapter01/first-scenario.yml") }}
 ```
 
 実行：
 
 ```bash
-runn run first-scenario.yml
+runn run examples/chapter01/first-scenario.yml
 ```
 
 ### 2. レスポンスの検証を追加
 
 ```yaml
-desc: JSONレスポンスの内容を検証
-runners:
-  req: https://httpbin.org
-steps:
-  - req:
-      /json:
-        get:
-    test: |
-      current.res.status == 200 &&
-      current.res.body.slideshow.title == "Sample Slide Show"
+{{ includex("examples/chapter01/json-validation.yml") }}
 ```
 
 ### 3. 変数を使用したシナリオ
 
 ```yaml
-desc: 変数を使用したPOSTリクエスト
-runners:
-  req: https://httpbin.org
-vars:
-  username: testuser
-  email: test@example.com
-steps:
-  - req:
-      /post:
-        post:
-          body:
-            application/json:
-              name: "{{ vars.username }}"
-              email: "{{ vars.email }}"
-    test: |
-      current.res.status == 200 &&
-      current.res.body.json.name == vars.username
+{{ includex("examples/chapter01/with-variables.yml") }}
 ```
 
 ### 4. 複数ステップのシナリオ
 
 ```yaml
-desc: ログインしてからデータを取得
-runners:
-  req: https://httpbin.org
-steps:
-  # ステップ1: ログイン（シミュレーション）
-  login:
-    req:
-      /post:
-        post:
-          body:
-            application/json:
-              username: alice
-              password: secret123
-    test: current.res.status == 200
-
-  # ステップ2: 認証が必要なエンドポイントにアクセス
-  get_data:
-    req:
-      /bearer:
-        get:
-          headers:
-            # 前のステップの結果を使用（実際のAPIではトークンが返される想定）
-            Authorization: "Bearer dummy-token-{{ steps.login.res.body.json.username }}"
-    test: |
-      current.res.status == 200
+{{ includex("examples/chapter01/multi-step.yml") }}
 ```
 
 ## CLIとGoテストヘルパーの使い分け
