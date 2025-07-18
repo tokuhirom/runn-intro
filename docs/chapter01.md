@@ -1,8 +1,3 @@
----
-layout: default
-title: 第1章：基礎編
----
-
 # 第1章：基礎編
 
 ## runnとは何か
@@ -32,26 +27,18 @@ brew install k1LoW/tap/runn
 
 ### 2. Go installを使用
 
-Go 1.21以上がインストールされている場合：
-
 ```bash
 go install github.com/k1LoW/runn/cmd/runn@latest
 ```
 
 ### 3. バイナリを直接ダウンロード
 
-[GitHub Releases](https://github.com/k1LoW/runn/releases)から、お使いのOS・アーキテクチャに対応したバイナリをダウンロードします。
-
-```bash
-# Linux (amd64)の例
-curl -L https://github.com/k1LoW/runn/releases/latest/download/runn_linux_amd64.tar.gz | tar xz
-sudo mv runn /usr/local/bin/
-```
+[GitHub Releases](https://github.com/k1LoW/runn/releases)から、お使いのOS・アーキテクチャに対応したバイナリをダウンロードすることもできます。
 
 ### 4. Dockerを使用
 
 ```bash
-docker run --rm -v $PWD:/workspace ghcr.io/k1low/runn:latest run /workspace/scenario.yml
+docker container run -it --rm --name runn -v $PWD:/books ghcr.io/k1low/runn:latest list /books/*.yml
 ```
 
 ### インストールの確認

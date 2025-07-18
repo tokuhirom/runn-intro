@@ -1,8 +1,3 @@
----
-layout: default
-title: 第3章：Expression文法編
----
-
 # 第3章：Expression文法編
 
 ## expr-lang/exprとは

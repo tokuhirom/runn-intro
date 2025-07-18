@@ -1,8 +1,3 @@
----
-layout: default
-title: runn入門 - トップページ
----
-
 # runn入門 - シナリオベースのE2Eテストツール
 
 ## runnの2つの顔：CLIツールとGoテストヘルパー
