@@ -1,0 +1,5 @@
+mkdocs>=1.5.0
+mkdocs-material>=9.0.0
+mkdocs-macros-plugin>=1.0.0
+mkdocs-macros-includex>=0.0.6
+pymdown-extensions>=10.0

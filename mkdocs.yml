@@ -1,0 +1,77 @@
+site_name: runn入門
+site_description: シナリオベースのE2Eテストツール「runn」の日本語入門書
+site_url: https://tokuhirom.github.io/runn-intro/
+repo_url: https://github.com/tokuhirom/runn-intro
+repo_name: tokuhirom/runn-intro
+
+theme:
+  name: readthedocs
+  language: ja
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: ダークモードに切り替え
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: ライトモードに切り替え
+  font:
+    text: Noto Sans JP
+    code: Roboto Mono
+
+nav:
+  - はじめに: index.md
+  - 第1章 基礎編: chapter01.md
+  - 第2章 シナリオ記述編: chapter02.md
+  - 第3章 Expression文法編: chapter03.md
+  - 第4章 ビルトイン関数編: chapter04.md
+  - 第5章 ランナー詳細編: chapter05.md
+  - 第6章 高度な機能編: chapter06.md
+  - 第7章 テストヘルパーとしての利用: chapter07.md
+  - 第8章 実践編: chapter08.md
+  - 第9章 リファレンス: chapter09.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      use_pygments: true
+      noclasses: true
+      pygments_style: monokai
+      linenums: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+plugins:
+  - search:
+      lang: ja
+  - macros:
+      include_dir: examples
+      modules: ['includex']
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/k1LoW/runn
+
