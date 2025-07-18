@@ -1,0 +1,36 @@
+desc: 変数参照の包括的な例
+vars:
+  baseURL: https://api.example.com
+  users:
+    - id: 1
+      name: Alice
+    - id: 2
+      name: Bob
+steps:
+  # varsへのアクセス
+  access_vars:
+    dump: |
+      {
+        "url": vars.baseURL,
+        "firstUser": vars.users[0].name,
+        "userCount": len(vars.users)
+      }
+  
+  # 環境変数へのアクセス
+  access_env:
+    test: |
+      env.HOME != "" &&
+      env.USER != ""
+  
+  # ステップ結果へのアクセス（マップ形式）
+  make_request:
+    req:
+      /users:
+        get:
+    test: current.res.status == 200
+  
+  # 前のステップの結果を参照
+  use_previous:
+    test: |
+      previous.res.status == 200 &&
+      len(steps.make_request.res.body) > 0

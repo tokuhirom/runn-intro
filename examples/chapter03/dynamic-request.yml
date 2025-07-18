@@ -1,0 +1,33 @@
+vars:
+  testUsers:
+    - username: "alice"
+      role: "admin"
+    - username: "bob"
+      role: "user"
+    - username: "charlie"
+      role: "user"
+steps:
+  # 管理者ユーザーのみを抽出してリクエスト
+  create_admin_session:
+    req:
+      /sessions:
+        post:
+          body:
+            application/json:
+              # 管理者ユーザーの最初の1人を取得
+              username: filter(vars.testUsers, {.role == "admin"})[0].username
+              password: "admin123"
+    test: current.res.status == 201
+  
+  # すべてのユーザーに対してループ処理
+  create_all_users:
+    loop:
+      count: len(vars.testUsers)
+    req:
+      /users:
+        post:
+          body:
+            application/json:
+              username: vars.testUsers[i].username
+              role: vars.testUsers[i].role
+    test: current.res.status == 201

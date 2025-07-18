@@ -1,0 +1,23 @@
+steps:
+  api_call_with_retry:
+    loop:
+      count: 3
+      until: current.res.status == 200
+    req:
+      /unstable-endpoint:
+        get:
+    test: |
+      # 最終的に成功したか、または特定のエラーコード
+      current.res.status == 200 ||
+      (current.res.status == 503 && i == 2)  # 3回目でも503なら許容
+  
+  check_error_response:
+    req:
+      /invalid-endpoint:
+        get:
+    test: |
+      # エラーレスポンスの構造を確認
+      current.res.status >= 400 &&
+      "error" in current.res.body &&
+      current.res.body.error.code != "" &&
+      current.res.body.error.message != ""

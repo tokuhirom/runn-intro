@@ -1,0 +1,29 @@
+vars:
+  products:
+    - name: "iPhone"
+      price: 999
+      category: "electronics"
+    - name: "Book"
+      price: 20
+      category: "books"
+    - name: "MacBook"
+      price: 1999
+      category: "electronics"
+steps:
+  filter_example:
+    dump: |
+      # 価格が100以上の商品をフィルタ
+      filter(vars.products, {.price >= 100})
+    
+    test: |
+      # カテゴリが"electronics"の商品数をカウント
+      len(filter(vars.products, {.category == "electronics"})) == 2
+  
+  map_example:
+    dump: |
+      # 商品名のリストを作成
+      map(vars.products, {.name})
+    
+    test: |
+      # すべての商品の価格が0より大きいことを確認
+      all(vars.products, {.price > 0})

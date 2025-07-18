@@ -1,0 +1,11 @@
+steps:
+  debug_step:
+    req:
+      /complex-endpoint:
+        get:
+    dump:
+      # 複雑な式の中間結果を出力
+      filtered_items: filter(current.res.body.items, {.active == true})
+      item_count: len(current.res.body.items)
+      first_item_name: current.res.body.items[0].name
+      status_check: current.res.status == 200
