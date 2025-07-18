@@ -108,7 +108,13 @@ docker run -p 8080:8080 mccutchen/go-httpbin
 実行：
 
 ```bash
-runn run examples/chapter01/first-scenario.yml
+runn run examples/chapter01/first-scenario.yml --verbose
+```
+
+実行結果:
+
+```
+{{ includex("examples/chapter01/first-scenario.out") }}
 ```
 
 ### 2. レスポンスの検証を追加

@@ -1,4 +1,4 @@
-.PHONY: help install build serve deploy clean test
+.PHONY: help install build serve deploy clean test generate-outputs
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -9,7 +9,21 @@ help: ## Show this help message
 install: ## Install MkDocs and dependencies
 	pip install -r requirements.txt
 
-build: ## Build the MkDocs site
+generate-outputs: ## Generate .out files from runn execution
+	@echo "Generating output files..."
+	@for dir in examples/*/; do \
+		echo "Processing $$dir"; \
+		for file in $$dir*.yml; do \
+			if [ -f "$$file" ]; then \
+				outfile="$${file%.yml}.out"; \
+				echo "  Generating $$outfile"; \
+				runn run "$$file" --verbose > "$$outfile" 2>&1 || true; \
+			fi; \
+		done; \
+	done
+	@echo "Output files generated!"
+
+build: generate-outputs ## Build the MkDocs site
 	mkdocs build
 
 serve: ## Serve the documentation locally (with auto-reload)
