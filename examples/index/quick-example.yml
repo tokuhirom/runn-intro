@@ -1,0 +1,8 @@
+steps:
+  - req: { /login: { post: { body: { user: alice } } } }
+  - req:
+      /profile:
+        get:
+          headers:
+            Authorization: "Bearer {{ steps[0].res.body.token }}"
+    test: current.res.body.name == "Alice"
