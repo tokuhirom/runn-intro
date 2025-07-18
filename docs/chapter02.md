@@ -10,14 +10,18 @@ Runbookは大きく分けて以下のセクションから構成されます：
 
 ```yaml
 desc: シナリオの説明          # 必須: このシナリオが何をテストするか
+
 labels:                      # オプション: シナリオの分類ラベル
   - api
   - user
+
 runners:                     # 必須: 使用するランナーの定義
   req: https://api.example.com
+
 vars:                        # オプション: シナリオ全体で使用する変数
   baseURL: https://api.example.com
   timeout: 30
+
 steps:                       # 必須: 実行するステップの配列
   - req:
       /users:

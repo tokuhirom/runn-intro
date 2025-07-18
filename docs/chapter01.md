@@ -155,27 +155,19 @@ runn run examples/chapter01/first-scenario.yml --verbose
 実際のプロジェクトでは、**Goテストヘルパーとしての利用が圧倒的に強力**です。第7章で詳しく解説しますが、ここで簡単な例を示します：
 
 ```go
-func TestUserAPI(t *testing.T) {
-    // テスト用サーバーを起動
-    db := setupTestDB(t)
-    srv := httptest.NewServer(NewApp(db))
-    defer srv.Close()
-    
-    // runnでテストを実行
-    opts := []runn.Option{
-        runn.T(t),
-        runn.Runner("api", srv.URL),
-    }
-    
-    o, err := runn.Load("testdata/user_scenarios.yml", opts...)
-    if err != nil {
-        t.Fatal(err)
-    }
-    
-    if err := o.RunN(context.Background()); err != nil {
-        t.Fatal(err)
-    }
-}
+{{ includex("examples/chapter01/go-test/main_test.go") }}
+```
+
+テスト対象のサーバーはこのような実装になっています。
+
+```go
+{{ includex("examples/chapter01/go-test/main.go") }}
+```
+
+このテストで使用するYAMLシナリオはこのような感じです：
+
+```yaml
+{{ includex("examples/chapter01/go-test/user-api-test.yml") }}
 ```
 
 ## まとめ

@@ -1,0 +1,36 @@
+desc: ユーザーAPIのテスト
+
+steps:
+  # ユーザーを作成
+  create_user:
+    req:
+      /users:
+        post:
+          body:
+            application/json:
+              name: "テスト太郎"
+              email: "test@example.com"
+    test: |
+      current.res.status == 201 &&
+      current.res.body.name == "テスト太郎" &&
+      current.res.body.email == "test@example.com" &&
+      current.res.body.id > 0
+
+  # 作成したユーザーを取得
+  get_user:
+    req:
+      /users/{{ steps.create_user.res.body.id }}:
+        get: {}
+    test: |
+      current.res.status == 200 &&
+      current.res.body.id == steps.create_user.res.body.id &&
+      current.res.body.name == "テスト太郎" &&
+      current.res.body.email == "test@example.com"
+
+  # 存在しないユーザーを取得（404エラー確認）
+  get_nonexistent_user:
+    req:
+      /users/9999:
+        get: {}
+    test: |
+      current.res.status == 404

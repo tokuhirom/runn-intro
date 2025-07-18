@@ -23,7 +23,7 @@ generate-outputs: ## Generate .out files from runn execution
 	done
 	@echo "Output files generated!"
 
-build: generate-outputs ## Build the MkDocs site
+build: ## Build the MkDocs site
 	mkdocs build
 
 serve: ## Serve the documentation locally (with auto-reload)
