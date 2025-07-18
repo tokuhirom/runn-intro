@@ -86,14 +86,25 @@ runn run scenarios/**/*.yml --fail-fast
 
 ## はじめてのシナリオ作成
 
+実際にシナリオを作る前に、テスト対象になるサーバーを用意します。
+`go-httpbin` を使うとさまざまなリクエストパターンがためせて便利です。
+
+これ以後のサンプルコードでは、`go-httpbin` が起動していることを前提として進めていきます。
+
+```bash
+docker run -p 8080:8080 mccutchen/go-httpbin
+```
+
 ### 1. 最もシンプルなHTTPリクエスト
+
+以下では、
 
 `first-scenario.yml`を作成：
 
 ```yaml
 desc: HTTPBinにGETリクエストを送信
 runners:
-  req: https://httpbin.org
+  req: http://localhost:8080/
 steps:
   - req:
       /get:
