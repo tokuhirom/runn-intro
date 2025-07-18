@@ -1,0 +1,352 @@
+desc: テストデータ生成（faker関数）の例
+steps:
+  # 基本的な個人情報の生成
+  basic_personal_info:
+    desc: 基本的な個人情報の生成
+    dump: |
+      {
+        "person": {
+          "id": faker.uuid(),
+          "name": faker.name(),
+          "email": faker.email(),
+          "phone": faker.phoneNumber(),
+          "username": faker.userName(),
+          "password": faker.password(),
+          "ssn": faker.ssn()
+        },
+        "address": {
+          "street": faker.streetAddress(),
+          "city": faker.city(),
+          "state": faker.state(),
+          "country": faker.country(),
+          "zipCode": faker.zipCode(),
+          "latitude": faker.latitude(),
+          "longitude": faker.longitude()
+        }
+      }
+    test: |
+      # 生成されたデータの基本的な検証
+      len(current.person.id) == 36 &&  # UUID形式
+      contains(current.person.email, "@") &&
+      current.person.name != "" &&
+      current.address.latitude >= -90 && current.address.latitude <= 90 &&
+      current.address.longitude >= -180 && current.address.longitude <= 180
+
+  # 会社・ビジネス関連データ
+  business_data:
+    desc: ビジネス関連のデータ生成
+    dump: |
+      {
+        "company": {
+          "name": faker.company(),
+          "catchPhrase": faker.companyCatchPhrase(),
+          "bs": faker.companyBs(),
+          "ein": faker.ein(),
+          "department": faker.department()
+        },
+        "employee": {
+          "name": faker.name(),
+          "jobTitle": faker.jobTitle(),
+          "jobDescriptor": faker.jobDescriptor(),
+          "jobArea": faker.jobArea(),
+          "jobType": faker.jobType()
+        },
+        "product": {
+          "name": faker.productName(),
+          "material": faker.productMaterial(),
+          "color": faker.color(),
+          "price": faker.price(10, 1000),
+          "sku": faker.uuid()
+        }
+      }
+    test: |
+      current.company.name != "" &&
+      current.employee.jobTitle != "" &&
+      current.product.price >= 10 && current.product.price <= 1000
+
+  # 数値とランダムデータ
+  random_data:
+    desc: 各種ランダムデータの生成
+    dump: |
+      {
+        "numbers": {
+          "int_small": faker.randomInt(1, 10),
+          "int_large": faker.randomInt(1000, 9999),
+          "float_precise": faker.randomFloat(2, 0, 100),
+          "float_currency": faker.randomFloat(2, 10, 1000),
+          "percentage": faker.randomFloat(1, 0, 100)
+        },
+        "boolean": faker.randomBool(),
+        "strings": {
+          "alpha": faker.randomString(10, "alpha"),
+          "numeric": faker.randomString(6, "numeric"),
+          "alphanumeric": faker.randomString(12, "alphanumeric"),
+          "hex": faker.randomString(16, "hex")
+        },
+        "choices": {
+          "status": faker.randomChoice(["active", "inactive", "pending"]),
+          "priority": faker.randomChoice(["low", "medium", "high", "urgent"]),
+          "category": faker.randomChoice(["electronics", "books", "clothing", "food"])
+        },
+        "array_operations": {
+          "shuffled": faker.shuffle([1, 2, 3, 4, 5]),
+          "sample": faker.sample([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3)
+        }
+      }
+    test: |
+      # 数値の範囲確認
+      current.numbers.int_small >= 1 && current.numbers.int_small <= 10 &&
+      current.numbers.int_large >= 1000 && current.numbers.int_large <= 9999 &&
+      current.numbers.percentage >= 0 && current.numbers.percentage <= 100 &&
+      # 文字列の長さ確認
+      len(current.strings.alpha) == 10 &&
+      len(current.strings.numeric) == 6 &&
+      matches(current.strings.numeric, "^[0-9]+$") &&
+      matches(current.strings.hex, "^[0-9a-f]+$") &&
+      # 選択肢の確認
+      current.choices.status in ["active", "inactive", "pending"] &&
+      # 配列操作の確認
+      len(current.array_operations.shuffled) == 5 &&
+      len(current.array_operations.sample) == 3
+
+  # 日付と時刻の生成
+  datetime_generation:
+    desc: 様々な日付・時刻データの生成
+    dump: |
+      {
+        "dates": {
+          "past_year": faker.dateTime().past(1),
+          "past_month": faker.dateTime().past(0.083),  # 約1ヶ月
+          "future_year": faker.dateTime().future(1),
+          "future_week": faker.dateTime().future(0.019),  # 約1週間
+          "recent_days": faker.dateTime().recent(7),
+          "soon_days": faker.dateTime().soon(7)
+        },
+        "specific_dates": {
+          "birthday_young": faker.dateTime().birthday(20, 30),
+          "birthday_senior": faker.dateTime().birthday(50, 65),
+          "between_dates": faker.dateTime().between(
+            "2024-01-01T00:00:00Z",
+            "2024-12-31T23:59:59Z"
+          )
+        },
+        "formatted_dates": {
+          "iso": time.format(faker.dateTime().recent(30), time.RFC3339),
+          "simple": time.format(faker.dateTime().recent(30), "2006-01-02"),
+          "us_style": time.format(faker.dateTime().recent(30), "01/02/2006")
+        }
+      }
+    test: |
+      # 過去の日付は現在より前
+      time.before(current.dates.past_year, time.now()) &&
+      # 未来の日付は現在より後
+      time.after(current.dates.future_year, time.now()) &&
+      # between_datesが指定範囲内
+      time.after(current.specific_dates.between_dates, 
+        time.parse("2023-12-31T23:59:59Z", time.RFC3339)) &&
+      time.before(current.specific_dates.between_dates,
+        time.parse("2025-01-01T00:00:00Z", time.RFC3339))
+
+  # インターネット関連データ
+  internet_data:
+    desc: Web・インターネット関連のデータ生成
+    dump: |
+      {
+        "web": {
+          "url": faker.url(),
+          "domainName": faker.domainName(),
+          "domainWord": faker.domainWord(),
+          "domainSuffix": faker.domainSuffix(),
+          "ipv4": faker.ipv4(),
+          "ipv6": faker.ipv6(),
+          "macAddress": faker.macAddress(),
+          "userAgent": faker.userAgent()
+        },
+        "credentials": {
+          "username": faker.userName(),
+          "email": faker.email(),
+          "password": faker.password(12, true, true, true),  # 12文字、大文字小文字数字含む
+          "apiKey": faker.uuid()
+        },
+        "content": {
+          "slug": faker.slug(),
+          "imageUrl": faker.imageURL(640, 480),
+          "avatarUrl": faker.avatarURL()
+        }
+      }
+    test: |
+      # URL形式の確認
+      startsWith(current.web.url, "http") &&
+      contains(current.web.domainName, ".") &&
+      # IPアドレス形式の確認
+      matches(current.web.ipv4, "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$") &&
+      contains(current.web.ipv6, ":") &&
+      # MACアドレス形式の確認
+      contains(current.web.macAddress, ":") &&
+      # 認証情報の確認
+      contains(current.credentials.email, "@") &&
+      len(current.credentials.password) >= 12
+
+  # テキストコンテンツの生成
+  text_content:
+    desc: 様々なテキストコンテンツの生成
+    dump: |
+      {
+        "lorem": {
+          "word": faker.word(),
+          "words": faker.words(5),
+          "sentence": faker.sentence(),
+          "sentences": faker.sentences(3),
+          "paragraph": faker.paragraph(),
+          "paragraphs": faker.paragraphs(2)
+        },
+        "structured": {
+          "title": faker.sentence(3),
+          "description": faker.sentences(2),
+          "tags": faker.words(5),
+          "category": faker.word()
+        },
+        "code_related": {
+          "variable": faker.word() + "_" + faker.randomString(4, "numeric"),
+          "function": "func_" + faker.word(),
+          "className": upper(substr(faker.word(), 0, 1)) + substr(faker.word(), 1),
+          "hexColor": "#" + faker.randomString(6, "hex")
+        }
+      }
+    test: |
+      # テキストの存在確認
+      current.lorem.word != "" &&
+      len(split(current.lorem.words, " ")) >= 5 &&
+      endsWith(current.lorem.sentence, ".") &&
+      # 構造化データの確認
+      len(current.structured.tags) >= 5 &&
+      # コード関連の確認
+      contains(current.code_related.variable, "_") &&
+      startsWith(current.code_related.function, "func_") &&
+      matches(current.code_related.hexColor, "^#[0-9a-f]{6}$")
+
+  # 実践的な使用例：ユーザー登録データ
+  practical_user_registration:
+    desc: 実際のユーザー登録に使えるデータセット
+    dump: |
+      # 複数のテストユーザーを生成
+      let users = map(range(1, 6), {
+        {
+          "id": faker.uuid(),
+          "username": faker.userName(),
+          "email": faker.email(),
+          "password": faker.password(16, true, true, true),
+          "profile": {
+            "firstName": faker.firstName(),
+            "lastName": faker.lastName(),
+            "fullName": faker.name(),
+            "dateOfBirth": faker.dateTime().birthday(18, 65),
+            "phone": faker.phoneNumber(),
+            "avatar": faker.avatarURL()
+          },
+          "address": {
+            "street": faker.streetAddress(),
+            "city": faker.city(),
+            "state": faker.state(),
+            "zipCode": faker.zipCode(),
+            "country": faker.country()
+          },
+          "preferences": {
+            "language": faker.randomChoice(["en", "ja", "es", "fr", "de"]),
+            "timezone": faker.randomChoice([
+              "UTC", "America/New_York", "Europe/London", 
+              "Asia/Tokyo", "Australia/Sydney"
+            ]),
+            "newsletter": faker.randomBool(),
+            "notifications": {
+              "email": faker.randomBool(),
+              "sms": faker.randomBool(),
+              "push": faker.randomBool()
+            }
+          },
+          "metadata": {
+            "registeredAt": faker.dateTime().recent(30),
+            "lastLoginAt": faker.dateTime().recent(7),
+            "isVerified": faker.randomBool(),
+            "role": faker.randomChoice(["user", "premium", "admin"]),
+            "source": faker.randomChoice(["web", "mobile", "api"])
+          }
+        }
+      });
+      
+      {
+        "users": users,
+        "summary": {
+          "total": len(users),
+          "verified": len(filter(users, {.metadata.isVerified})),
+          "roles": groupBy(users, {.metadata.role}),
+          "sources": groupBy(users, {.metadata.source})
+        }
+      }
+    test: |
+      # 生成されたユーザー数の確認
+      len(current.users) == 5 &&
+      # 各ユーザーの必須フィールド確認
+      all(current.users, {
+        len(.id) == 36 &&
+        contains(.email, "@") &&
+        .profile.firstName != "" &&
+        .profile.lastName != "" &&
+        .metadata.role in ["user", "premium", "admin"]
+      }) &&
+      # サマリーの確認
+      current.summary.total == 5
+
+  # APIテスト用のモックデータ生成
+  api_mock_data:
+    desc: APIテスト用の現実的なモックデータ
+    dump: |
+      {
+        "order": {
+          "orderId": faker.uuid(),
+          "orderNumber": "ORD-" + faker.randomString(8, "numeric"),
+          "customerId": faker.uuid(),
+          "status": faker.randomChoice(["pending", "processing", "shipped", "delivered"]),
+          "items": map(range(1, faker.randomInt(1, 5) + 1), {
+            {
+              "productId": faker.uuid(),
+              "name": faker.productName(),
+              "quantity": faker.randomInt(1, 10),
+              "price": faker.randomFloat(2, 10, 500),
+              "discount": faker.randomFloat(2, 0, 20)
+            }
+          }),
+          "shipping": {
+            "method": faker.randomChoice(["standard", "express", "overnight"]),
+            "address": {
+              "street": faker.streetAddress(),
+              "city": faker.city(),
+              "state": faker.state(),
+              "zipCode": faker.zipCode()
+            },
+            "trackingNumber": upper(faker.randomString(2, "alpha")) + 
+                             faker.randomString(10, "numeric")
+          },
+          "payment": {
+            "method": faker.randomChoice(["credit_card", "paypal", "bank_transfer"]),
+            "status": faker.randomChoice(["pending", "completed", "failed"]),
+            "transactionId": faker.uuid()
+          },
+          "timestamps": {
+            "createdAt": faker.dateTime().recent(7),
+            "updatedAt": faker.dateTime().recent(1),
+            "estimatedDelivery": faker.dateTime().future(0.02)  # 約1週間後
+          }
+        }
+      }
+    test: |
+      # 注文データの検証
+      len(current.order.orderId) == 36 &&
+      startsWith(current.order.orderNumber, "ORD-") &&
+      len(current.order.items) >= 1 &&
+      len(current.order.items) <= 5 &&
+      # 配送情報の検証
+      matches(current.order.shipping.trackingNumber, "^[A-Z]{2}[0-9]{10}$") &&
+      # タイムスタンプの検証
+      time.before(current.order.timestamps.createdAt, time.now()) &&
+      time.after(current.order.timestamps.estimatedDelivery, time.now())
