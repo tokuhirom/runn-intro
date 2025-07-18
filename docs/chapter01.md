@@ -20,7 +20,7 @@
 runnは、これらの課題を**YAMLベースの宣言的な記述**で解決します：
 
 ```yaml
-{{ includex("examples/chapter01/intro-simple-api-test.yml") }}
+{{ includex("examples/chapter01/intro/intro-simple-api-test.yml") }}
 ```
 
 ### runnの3つの顔
@@ -42,7 +42,7 @@ CI/CDでの活用、定期実行タスク、運用自動化など、**テスト�
 HTTP、gRPC、データベース、ブラウザ操作、SSHまで、**すべて同じYAML形式**で記述できます。もう複数のツールを使い分ける必要はありません。
 
 ```yaml
-{{ includex("examples/chapter01/intro-multi-protocol.yml") }}
+{{ includex("examples/chapter01/intro/intro-multi-protocol.yml") }}
 ```
 
 #### 📦 **シングルバイナリ**
@@ -52,7 +52,7 @@ HTTP、gRPC、データベース、ブラウザ操作、SSHまで、**すべて�
 前のステップの結果を次のステップで利用する**ステップ間連携**が自由自在。複雑なシナリオも直感的に記述できます。
 
 ```yaml
-{{ includex("examples/chapter01/intro-step-chaining.yml") }}
+{{ includex("examples/chapter01/intro/intro-step-chaining.yml") }}
 ```
 
 #### 🚀 **Goテスト統合**

@@ -15,7 +15,7 @@
 **たった数行のYAML**で、こんなテストが書けるとしたら？
 
 ```yaml
-{{ includex("examples/index/quick-example.yml") }}
+{{ includex("examples/chapter01/intro/quick-example.yml") }}
 ```
 
 **驚きました？** これが**runn**の力です！

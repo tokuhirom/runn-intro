@@ -1,0 +1,9 @@
+# これだけでAPIテストが完成！
+desc: ユーザー登録から認証までの一連のフロー
+steps:
+  - req:
+      /users:
+        post:
+          body:
+            name: "Alice"
+    test: current.res.status == 201

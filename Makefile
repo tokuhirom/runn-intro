@@ -12,14 +12,16 @@ install: ## Install MkDocs and dependencies
 generate-outputs: ## Generate .out files from runn execution
 	@echo "Generating output files..."
 	@for dir in examples/*/; do \
-		echo "Processing $$dir"; \
-		for file in $$dir*.yml; do \
-			if [ -f "$$file" ]; then \
-				outfile="$${file%.yml}.out"; \
-				echo "  Generating $$outfile"; \
-				runn run "$$file" --verbose > "$$outfile" 2>&1 || true; \
-			fi; \
-		done; \
+		if [ "$${dir}" != "examples/chapter01/intro/" ]; then \
+			echo "Processing $$dir"; \
+			for file in $$dir*.yml; do \
+				if [ -f "$$file" ]; then \
+					outfile="$${file%.yml}.out"; \
+					echo "  Generating $$outfile"; \
+					runn run "$$file" --verbose > "$$outfile" 2>&1 || true; \
+				fi; \
+			done; \
+		fi; \
 	done
 	@echo "Output files generated!"
 
@@ -49,9 +51,15 @@ test: ## Test all runn examples
 test-chapter01: ## Test Chapter 01 examples
 	@echo "Testing Chapter 01 examples..."
 	@cd examples/chapter01 && for file in *.yml; do \
-		echo "Running: $$file"; \
-		runn run "$$file" || exit 1; \
+		if [ -f "$$file" ]; then \
+			echo "Running: $$file"; \
+			runn run "$$file" || exit 1; \
+		fi \
 	done
+	@if [ -d "examples/chapter01/go-test" ]; then \
+		echo "Testing Go integration example..."; \
+		cd examples/chapter01/go-test && go test -v; \
+	fi
 
 test-chapter02: ## Test Chapter 02 examples
 	@echo "Testing Chapter 02 examples..."
