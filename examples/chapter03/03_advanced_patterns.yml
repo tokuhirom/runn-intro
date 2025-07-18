@@ -1,0 +1,221 @@
+desc: 高度な式パターンの例
+vars:
+  environment: "staging"
+  products:
+    - id: 1
+      name: "iPhone 15"
+      price: 999
+      category: "electronics"
+      stock: 50
+      tags: ["smartphone", "apple", "5g"]
+    - id: 2
+      name: "Programming Book"
+      price: 45
+      category: "books"
+      stock: 200
+      tags: ["education", "programming", "go"]
+    - id: 3
+      name: "MacBook Pro"
+      price: 2499
+      category: "electronics"
+      stock: 20
+      tags: ["laptop", "apple", "professional"]
+    - id: 4
+      name: "Coffee Maker"
+      price: 89
+      category: "appliances"
+      stock: 0
+      tags: ["kitchen", "coffee"]
+    - id: 5
+      name: "Algorithm Book"
+      price: 60
+      category: "books"
+      stock: 150
+      tags: ["education", "programming", "algorithms"]
+
+steps:
+  # 三項演算子と条件式
+  conditional_expressions:
+    desc: 条件式の使用例
+    dump: |
+      {
+        "apiUrl": vars.environment == "prod" ? "https://api.example.com" : "https://staging.example.com",
+        "debugMode": vars.environment != "prod",
+        "retryCount": vars.environment == "prod" ? 5 : 3,
+        "cacheEnabled": vars.environment == "prod" || vars.environment == "staging"
+      }
+    test: |
+      current.apiUrl == "https://staging.example.com" &&
+      current.debugMode == true &&
+      current.retryCount == 3 &&
+      current.cacheEnabled == true
+
+  # フィルタリングの高度な使用
+  advanced_filtering:
+    desc: 複雑なフィルタリング条件
+    dump: |
+      {
+        "expensiveProducts": filter(vars.products, {.price >= 100}),
+        "electronics": filter(vars.products, {.category == "electronics"}),
+        "inStock": filter(vars.products, {.stock > 0}),
+        "appleProducts": filter(vars.products, {"apple" in .tags}),
+        "educationalBooks": filter(vars.products, {
+          .category == "books" && "education" in .tags
+        }),
+        "affordableInStock": filter(vars.products, {
+          .price < 100 && .stock > 0
+        })
+      }
+    test: |
+      len(current.expensiveProducts) == 3 &&
+      len(current.electronics) == 2 &&
+      len(current.inStock) == 4 &&
+      len(current.appleProducts) == 2 &&
+      len(current.educationalBooks) == 2 &&
+      len(current.affordableInStock) == 2
+
+  # マッピングとトランスフォーメーション
+  data_transformation:
+    desc: データの変換と加工
+    dump: |
+      {
+        "productNames": map(vars.products, {.name}),
+        "pricesWithTax": map(vars.products, {.price * 1.1}),
+        "summaries": map(vars.products, {
+          "displayName": .name + " ($" + str(.price) + ")",
+          "available": .stock > 0,
+          "discountPrice": .price * 0.9
+        }),
+        "categoryPrices": map(
+          filter(vars.products, {.category == "electronics"}),
+          {{"name": .name, "price": .price}}
+        )
+      }
+    test: |
+      current.productNames[0] == "iPhone 15" &&
+      current.pricesWithTax[0] == 1098.9 &&
+      current.summaries[0].displayName == "iPhone 15 ($999)" &&
+      current.summaries[3].available == false &&
+      len(current.categoryPrices) == 2 &&
+      current.categoryPrices[1].price == 2499
+
+  # 集約関数の使用
+  aggregation_functions:
+    desc: all、any、sum等の集約関数
+    dump: |
+      {
+        "allInStock": all(vars.products, {.stock > 0}),
+        "anyOutOfStock": any(vars.products, {.stock == 0}),
+        "allExpensive": all(vars.products, {.price > 40}),
+        "totalValue": sum(map(vars.products, {.price * .stock})),
+        "averagePrice": sum(map(vars.products, {.price})) / len(vars.products),
+        "maxStock": max(map(vars.products, {.stock})),
+        "minPrice": min(map(vars.products, {.price}))
+      }
+    test: |
+      current.allInStock == false &&
+      current.anyOutOfStock == true &&
+      current.allExpensive == true &&
+      current.totalValue == 119935 &&
+      current.averagePrice == 730.4 &&
+      current.maxStock == 200 &&
+      current.minPrice == 45
+
+  # ネストしたデータ構造の操作
+  nested_operations:
+    desc: 複雑なネスト構造の処理
+    dump: |
+      {
+        "tagFrequency": len(filter(vars.products, {"programming" in .tags})),
+        "productsByCategory": groupBy(vars.products, {.category}),
+        "flattenedTags": flatten(map(vars.products, {.tags})),
+        "uniqueCategories": unique(map(vars.products, {.category}))
+      }
+    test: |
+      current.tagFrequency == 2 &&
+      len(current.productsByCategory.electronics) == 2 &&
+      len(current.productsByCategory.books) == 2 &&
+      len(current.flattenedTags) == 13 &&
+      len(current.uniqueCategories) == 3
+
+  # 文字列の高度な操作
+  string_operations:
+    desc: 文字列処理の応用
+    dump: |
+      {
+        "formatted": map(vars.products, {
+          lower(.category) + "_" + replace(lower(.name), " ", "_")
+        }),
+        "truncated": map(vars.products, {
+          len(.name) > 15 ? .name[:12] + "..." : .name
+        }),
+        "searchResults": filter(vars.products, {
+          contains(lower(.name), "book") || contains(lower(.category), "book")
+        })
+      }
+    test: |
+      current.formatted[0] == "electronics_iphone_15" &&
+      current.formatted[1] == "books_programming_book" &&
+      current.truncated[1] == "Programming Book" &&
+      current.truncated[2] == "MacBook Pro..." &&
+      len(current.searchResults) == 2
+
+  # 複雑な条件の組み合わせ
+  complex_conditions:
+    desc: 複数の条件を組み合わせた処理
+    dump: |
+      {
+        "recommendation": filter(vars.products, {
+          (.category == "electronics" && .price < 1500 && .stock > 0) ||
+          (.category == "books" && "programming" in .tags) ||
+          (.price < 100 && .stock > 100)
+        }),
+        "needsRestock": filter(vars.products, {
+          (.stock < 50 && .category == "electronics") ||
+          (.stock == 0)
+        }),
+        "premiumProducts": filter(vars.products, {
+          .price > 500 && 
+          len(filter(.tags, {. in ["apple", "professional"]})) > 0
+        })
+      }
+    test: |
+      len(current.recommendation) == 4 &&
+      len(current.needsRestock) == 3 &&
+      len(current.premiumProducts) == 2
+
+  # 動的なキーアクセス
+  dynamic_access:
+    desc: 動的なプロパティアクセス
+    loop:
+      count: 3
+    dump: |
+      let field = ["name", "price", "category"][i];
+      {
+        "fieldName": field,
+        "values": map(vars.products, {.[field]}),
+        "filtered": filter(vars.products, {
+          field == "price" ? .[field] > 100 : true
+        })
+      }
+    test: |
+      len(current.values) == 5 &&
+      (i != 1 || all(current.filtered, {.price > 100}))
+
+  # エラーハンドリングとデフォルト値
+  safe_operations:
+    desc: 安全な操作とデフォルト値
+    dump: |
+      {
+        "safeAccess": vars.products[10]?.name ?? "Not Found",
+        "defaultPrice": vars.products[10]?.price ?? 0,
+        "conditionalCalc": len(vars.products) > 0 ? 
+          sum(map(vars.products, {.price})) / len(vars.products) : 0,
+        "safeFilter": len(filter(vars.products, {.stock > 0})) > 0 ?
+          filter(vars.products, {.stock > 0})[0].name : "No items in stock"
+      }
+    test: |
+      current.safeAccess == "Not Found" &&
+      current.defaultPrice == 0 &&
+      current.conditionalCalc == 730.4 &&
+      current.safeFilter == "iPhone 15"

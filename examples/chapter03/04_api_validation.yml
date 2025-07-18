@@ -1,0 +1,243 @@
+desc: APIレスポンスの検証例（モックデータを使用）
+vars:
+  # モックAPIレスポンスデータ
+  mockResponses:
+    userList:
+      status: 200
+      headers:
+        content-type: "application/json"
+        x-total-count: "45"
+      body:
+        data:
+          - id: 1
+            email: "alice@example.com"
+            name: "Alice Johnson"
+            role: "admin"
+            active: true
+            createdAt: "2024-01-15T10:00:00Z"
+          - id: 2
+            email: "bob@example.com"
+            name: "Bob Smith"
+            role: "user"
+            active: true
+            createdAt: "2024-01-16T14:30:00Z"
+          - id: 3
+            email: "charlie@example.com"
+            name: "Charlie Brown"
+            role: "user"
+            active: false
+            createdAt: "2024-01-17T09:15:00Z"
+        pagination:
+          page: 1
+          limit: 10
+          totalPages: 5
+          totalItems: 45
+    
+    userDetail:
+      status: 200
+      body:
+        id: 1
+        email: "alice@example.com"
+        profile:
+          firstName: "Alice"
+          lastName: "Johnson"
+          avatar: "https://example.com/avatars/alice.jpg"
+          bio: "Senior administrator with 5 years experience"
+        permissions:
+          - "users.read"
+          - "users.write"
+          - "users.delete"
+          - "settings.manage"
+        metadata:
+          lastLogin: "2024-02-01T08:30:00Z"
+          loginCount: 234
+          preferences:
+            theme: "dark"
+            notifications:
+              email: true
+              push: false
+    
+    errorResponse:
+      status: 422
+      body:
+        error:
+          code: "VALIDATION_ERROR"
+          message: "Invalid input data"
+          details:
+            - field: "email"
+              message: "Email format is invalid"
+            - field: "password"
+              message: "Password must be at least 8 characters"
+
+steps:
+  # 基本的なステータスとヘッダーの検証
+  validate_basic_response:
+    desc: レスポンスの基本的な検証
+    dump: vars.mockResponses.userList
+    test: |
+      # ステータスコードの確認
+      current.status == 200 &&
+      
+      # ヘッダーの確認
+      current.headers["content-type"] == "application/json" &&
+      current.headers["x-total-count"] == "45" &&
+      
+      # レスポンスボディの存在確認
+      current.body != null &&
+      "data" in current.body &&
+      "pagination" in current.body
+
+  # データ構造の詳細な検証
+  validate_data_structure:
+    desc: レスポンスデータの構造検証
+    dump: vars.mockResponses.userList.body
+    test: |
+      # 配列の長さ確認
+      len(current.data) == 3 &&
+      
+      # 各要素の必須フィールド確認
+      all(current.data, {
+        "id" in . &&
+        "email" in . &&
+        "name" in . &&
+        "role" in . &&
+        "active" in . &&
+        "createdAt" in .
+      }) &&
+      
+      # データ型の確認
+      all(current.data, {
+        type(.id) == "int" &&
+        type(.email) == "string" &&
+        type(.active) == "bool"
+      })
+
+  # ビジネスロジックの検証
+  validate_business_logic:
+    desc: ビジネスルールに基づく検証
+    dump: vars.mockResponses.userList.body
+    test: |
+      # 管理者は1人だけ
+      len(filter(current.data, {.role == "admin"})) == 1 &&
+      
+      # すべてのメールアドレスが有効な形式
+      all(current.data, {
+        contains(.email, "@") &&
+        contains(.email, ".")
+      }) &&
+      
+      # アクティブユーザーの割合が50%以上
+      len(filter(current.data, {.active})) >= len(current.data) / 2 &&
+      
+      # 作成日時が正しい形式（ISO 8601）
+      all(current.data, {
+        matches(.createdAt, "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$")
+      })
+
+  # ページネーション情報の検証
+  validate_pagination:
+    desc: ページネーション情報の整合性確認
+    dump: vars.mockResponses.userList.body.pagination
+    test: |
+      # 基本的な値の検証
+      current.page > 0 &&
+      current.limit > 0 &&
+      current.totalPages > 0 &&
+      current.totalItems >= 0 &&
+      
+      # 整合性の確認
+      current.totalPages == ceil(current.totalItems / current.limit) &&
+      current.page <= current.totalPages &&
+      
+      # ヘッダーとの整合性
+      str(current.totalItems) == vars.mockResponses.userList.headers["x-total-count"]
+
+  # ネストしたデータの詳細検証
+  validate_nested_data:
+    desc: 深くネストしたデータ構造の検証
+    dump: vars.mockResponses.userDetail.body
+    test: |
+      # プロフィール情報の検証
+      current.profile.firstName != "" &&
+      current.profile.lastName != "" &&
+      startsWith(current.profile.avatar, "https://") &&
+      
+      # 権限の検証
+      len(current.permissions) >= 4 &&
+      all(current.permissions, {
+        matches(., "^[a-z]+\\.[a-z]+$")  # format: "resource.action"
+      }) &&
+      "users.read" in current.permissions &&
+      
+      # メタデータの検証
+      current.metadata.loginCount > 0 &&
+      current.metadata.preferences.theme in ["light", "dark"] &&
+      type(current.metadata.preferences.notifications.email) == "bool"
+
+  # エラーレスポンスの検証
+  validate_error_response:
+    desc: エラーレスポンスの構造と内容の検証
+    dump: vars.mockResponses.errorResponse
+    test: |
+      # エラーステータスコード
+      current.status >= 400 &&
+      current.status < 500 &&
+      
+      # エラー構造の検証
+      "error" in current.body &&
+      current.body.error.code != "" &&
+      current.body.error.message != "" &&
+      
+      # エラー詳細の検証
+      len(current.body.error.details) > 0 &&
+      all(current.body.error.details, {
+        "field" in . &&
+        "message" in . &&
+        .field != "" &&
+        .message != ""
+      })
+
+  # 条件付き検証
+  conditional_validation:
+    desc: 条件に基づく動的な検証
+    dump: vars.mockResponses.userList.body
+    test: |
+      # 管理者には特別な検証
+      all(current.data, {
+        .role != "admin" || len(steps.validate_nested_data.permissions) > 3
+      }) &&
+      
+      # 非アクティブユーザーの検証
+      all(filter(current.data, {!.active}), {
+        # 非アクティブユーザーのメールには警告マークがあるかもしれない
+        true  # この例では常にtrue
+      }) &&
+      
+      # ページごとの条件付き検証
+      (current.pagination.page != current.pagination.totalPages || 
+       len(current.data) <= current.pagination.limit)
+
+  # 複雑な計算を含む検証
+  complex_calculations:
+    desc: 集計や計算を含む検証
+    dump: |
+      {
+        "users": vars.mockResponses.userList.body.data,
+        "stats": {
+          "totalUsers": len(vars.mockResponses.userList.body.data),
+          "activeUsers": len(filter(vars.mockResponses.userList.body.data, {.active})),
+          "usersByRole": groupBy(vars.mockResponses.userList.body.data, {.role}),
+          "averageId": sum(map(vars.mockResponses.userList.body.data, {.id})) / 
+                       len(vars.mockResponses.userList.body.data)
+        }
+      }
+    test: |
+      # 統計情報の検証
+      current.stats.totalUsers == 3 &&
+      current.stats.activeUsers == 2 &&
+      len(current.stats.usersByRole.admin) == 1 &&
+      len(current.stats.usersByRole.user) == 2 &&
+      current.stats.averageId == 2.0 &&
+      
+      # 割合の計算
+      (current.stats.activeUsers / current.stats.totalUsers) > 0.6

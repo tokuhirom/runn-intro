@@ -1,0 +1,300 @@
+desc: デバッグテクニックの例
+vars:
+  # デバッグ用のテストデータ
+  complexData:
+    users:
+      - id: 1
+        name: "Alice"
+        scores: [85, 92, 78, 95]
+        metadata:
+          lastActive: "2024-02-01T10:00:00Z"
+          tags: ["premium", "verified"]
+      - id: 2
+        name: "Bob"
+        scores: [70, 65, 80, 75]
+        metadata:
+          lastActive: "2024-01-15T14:30:00Z"
+          tags: ["standard"]
+      - id: 3
+        name: "Charlie"
+        scores: [90, 88, 92, 94]
+        metadata:
+          lastActive: "2024-02-02T09:00:00Z"
+          tags: ["premium", "beta-tester"]
+  
+  thresholds:
+    passingScore: 80
+    premiumMinScore: 85
+
+steps:
+  # dump機能を使った中間結果の確認
+  debug_with_dump:
+    desc: 複雑な式の中間結果を段階的に出力
+    dump: |
+      {
+        "step1_raw_scores": map(vars.complexData.users, {
+          "name": .name,
+          "scores": .scores
+        }),
+        "step2_averages": map(vars.complexData.users, {
+          "name": .name,
+          "average": sum(.scores) / len(.scores)
+        }),
+        "step3_filtered": filter(
+          map(vars.complexData.users, {
+            "name": .name,
+            "average": sum(.scores) / len(.scores)
+          }),
+          {.average >= vars.thresholds.passingScore}
+        ),
+        "step4_final": map(
+          filter(
+            map(vars.complexData.users, {
+              "name": .name,
+              "average": sum(.scores) / len(.scores)
+            }),
+            {.average >= vars.thresholds.passingScore}
+          ),
+          {.name}
+        )
+      }
+    test: |
+      # 各ステップの結果を確認
+      len(current.step1_raw_scores) == 3 &&
+      current.step2_averages[0].average == 87.5 &&
+      len(current.step3_filtered) == 2 &&
+      current.step4_final == ["Alice", "Charlie"]
+
+  # 型情報のデバッグ
+  debug_types:
+    desc: 変数の型情報を確認
+    dump: |
+      {
+        "types": {
+          "users": type(vars.complexData.users),
+          "firstUser": type(vars.complexData.users[0]),
+          "userId": type(vars.complexData.users[0].id),
+          "userName": type(vars.complexData.users[0].name),
+          "scores": type(vars.complexData.users[0].scores),
+          "firstScore": type(vars.complexData.users[0].scores[0]),
+          "tags": type(vars.complexData.users[0].metadata.tags),
+          "nullValue": type(null),
+          "calculation": type(sum(vars.complexData.users[0].scores) / len(vars.complexData.users[0].scores))
+        },
+        "values": {
+          "scoreSum": sum(vars.complexData.users[0].scores),
+          "scoreCount": len(vars.complexData.users[0].scores),
+          "average": sum(vars.complexData.users[0].scores) / len(vars.complexData.users[0].scores)
+        }
+      }
+    test: |
+      current.types.users == "array" &&
+      current.types.firstUser == "map" &&
+      current.types.userId == "int" &&
+      current.types.userName == "string" &&
+      current.types.scores == "array" &&
+      current.types.firstScore == "int" &&
+      current.types.calculation == "float"
+
+  # 条件式のデバッグ
+  debug_conditions:
+    desc: 複雑な条件式を部分ごとに評価
+    dump: |
+      let user = vars.complexData.users[0];
+      let avgScore = sum(user.scores) / len(user.scores);
+      {
+        "user": user.name,
+        "conditions": {
+          "isPremium": "premium" in user.metadata.tags,
+          "isVerified": "verified" in user.metadata.tags,
+          "hasHighScore": avgScore >= vars.thresholds.premiumMinScore,
+          "hasEnoughScores": len(user.scores) >= 4,
+          "isRecentlyActive": user.metadata.lastActive > "2024-01-01T00:00:00Z"
+        },
+        "combined": {
+          "qualifiesForReward": (
+            "premium" in user.metadata.tags &&
+            avgScore >= vars.thresholds.premiumMinScore
+          ),
+          "needsReview": (
+            !"verified" in user.metadata.tags &&
+            avgScore < vars.thresholds.passingScore
+          )
+        },
+        "debug_info": {
+          "avgScore": avgScore,
+          "tags": user.metadata.tags,
+          "threshold": vars.thresholds.premiumMinScore
+        }
+      }
+    test: |
+      current.conditions.isPremium == true &&
+      current.conditions.hasHighScore == true &&
+      current.combined.qualifiesForReward == true &&
+      current.debug_info.avgScore == 87.5
+
+  # エラーケースのデバッグ
+  debug_error_cases:
+    desc: エラーが発生しやすい箇所の特定
+    dump: |
+      {
+        "potentialErrors": {
+          "emptyArray": {
+            "data": [],
+            "willError": "sum([]) / len([])",
+            "safe": len([]) > 0 ? sum([]) / len([]) : 0
+          },
+          "nullAccess": {
+            "data": null,
+            "willError": "null.property",
+            "safe": null?.property ?? "default"
+          },
+          "outOfBounds": {
+            "arrayLength": len(vars.complexData.users),
+            "accessIndex": 10,
+            "willError": "users[10]",
+            "safe": vars.complexData.users[10]?.name ?? "Not found"
+          }
+        },
+        "errorChecks": {
+          "hasUsers": len(vars.complexData.users) > 0,
+          "allHaveScores": all(vars.complexData.users, {len(.scores) > 0}),
+          "allHaveMetadata": all(vars.complexData.users, {.metadata != null})
+        }
+      }
+    test: |
+      current.potentialErrors.emptyArray.safe == 0 &&
+      current.potentialErrors.nullAccess.safe == "default" &&
+      current.potentialErrors.outOfBounds.safe == "Not found" &&
+      current.errorChecks.hasUsers == true &&
+      current.errorChecks.allHaveScores == true
+
+  # パフォーマンスを考慮したデバッグ
+  debug_performance:
+    desc: 計算の効率性を確認
+    dump: |
+      let users = vars.complexData.users;
+      {
+        "inefficient": {
+          "description": "同じ計算を複数回実行",
+          "calculation1": sum(users[0].scores) / len(users[0].scores),
+          "calculation2": sum(users[0].scores) / len(users[0].scores),
+          "calculation3": sum(users[0].scores) / len(users[0].scores)
+        },
+        "efficient": {
+          "description": "計算結果を変数に保存",
+          "average": sum(users[0].scores) / len(users[0].scores),
+          "usage1": "stored in variable",
+          "usage2": "reused from variable",
+          "usage3": "reused from variable"
+        },
+        "complexity": {
+          "nestedLoops": len(users) * len(users[0].scores),
+          "singlePass": len(users) + sum(map(users, {len(.scores)}))
+        }
+      }
+    test: |
+      current.inefficient.calculation1 == 87.5 &&
+      current.efficient.average == 87.5 &&
+      current.complexity.nestedLoops == 12 &&
+      current.complexity.singlePass == 15
+
+  # 段階的な式の構築
+  incremental_expression_building:
+    desc: 複雑な式を段階的に構築してデバッグ
+    dump: |
+      {
+        "stage1": "Get all users",
+        "data1": vars.complexData.users,
+        
+        "stage2": "Calculate averages",
+        "data2": map(vars.complexData.users, {
+          "name": .name,
+          "avg": sum(.scores) / len(.scores)
+        }),
+        
+        "stage3": "Filter by threshold",
+        "data3": filter(
+          map(vars.complexData.users, {
+            "name": .name,
+            "avg": sum(.scores) / len(.scores)
+          }),
+          {.avg >= vars.thresholds.passingScore}
+        ),
+        
+        "stage4": "Add premium status",
+        "data4": map(
+          filter(
+            map(vars.complexData.users, {
+              "name": .name,
+              "avg": sum(.scores) / len(.scores),
+              "tags": .metadata.tags
+            }),
+            {.avg >= vars.thresholds.passingScore}
+          ),
+          {
+            "name": .name,
+            "isPremium": "premium" in .tags
+          }
+        ),
+        
+        "final": "Result summary",
+        "summary": {
+          "totalUsers": len(vars.complexData.users),
+          "passingUsers": len(filter(
+            map(vars.complexData.users, {
+              "avg": sum(.scores) / len(.scores)
+            }),
+            {.avg >= vars.thresholds.passingScore}
+          )),
+          "premiumPassingUsers": len(filter(
+            map(vars.complexData.users, {
+              "avg": sum(.scores) / len(.scores),
+              "tags": .metadata.tags
+            }),
+            {.avg >= vars.thresholds.passingScore && "premium" in .tags}
+          ))
+        }
+      }
+    test: |
+      len(current.data1) == 3 &&
+      len(current.data2) == 3 &&
+      len(current.data3) == 2 &&
+      len(current.data4) == 2 &&
+      current.summary.totalUsers == 3 &&
+      current.summary.passingUsers == 2 &&
+      current.summary.premiumPassingUsers == 2
+
+  # 実行コンテキストの確認
+  debug_context:
+    desc: 実行時のコンテキスト情報を確認
+    loop:
+      count: 2
+    dump: |
+      {
+        "context": {
+          "loopIndex": i,
+          "isFirstIteration": i == 0,
+          "isLastIteration": i == 1,
+          "currentUser": vars.complexData.users[i],
+          "previousStepExists": steps.incremental_expression_building != null
+        },
+        "availableVars": {
+          "hasVars": vars != null,
+          "hasSteps": steps != null,
+          "hasCurrent": true,
+          "hasPrevious": previous != null,
+          "hasEnv": env != null
+        },
+        "userData": {
+          "name": vars.complexData.users[i].name,
+          "scoreCount": len(vars.complexData.users[i].scores),
+          "avgScore": sum(vars.complexData.users[i].scores) / len(vars.complexData.users[i].scores)
+        }
+      }
+    test: |
+      current.context.loopIndex >= 0 &&
+      current.context.loopIndex < 2 &&
+      current.availableVars.hasVars == true &&
+      current.availableVars.hasSteps == true &&
+      current.userData.scoreCount == 4
