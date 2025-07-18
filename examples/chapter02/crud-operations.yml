@@ -1,0 +1,56 @@
+desc: ブログ記事のCRUD操作をテスト
+runners:
+  api: https://jsonplaceholder.typicode.com
+vars:
+  userId: 1
+steps:
+  # 1. 記事を作成
+  create_post:
+    req:
+      /posts:
+        post:
+          body:
+            application/json:
+              title: "テスト記事"
+              body: "これはテスト記事です"
+              userId: "{{ vars.userId }}"
+    test: |
+      steps.create_post.res.status == 201 &&
+      steps.create_post.res.body.id != null
+
+  # 2. 作成した記事を取得
+  get_post:
+    req:
+      /posts/{{ steps.create_post.res.body.id }}:
+        get:
+    test: |
+      steps.get_post.res.status == 200 &&
+      steps.get_post.res.body.title == "テスト記事"
+
+  # 3. 記事を更新
+  update_post:
+    req:
+      /posts/{{ steps.create_post.res.body.id }}:
+        put:
+          body:
+            application/json:
+              id: "{{ steps.create_post.res.body.id }}"
+              title: "更新されたテスト記事"
+              body: "内容も更新しました"
+              userId: "{{ vars.userId }}"
+    test: steps.update_post.res.status == 200
+
+  # 4. 更新を確認
+  verify_update:
+    req:
+      /posts/{{ steps.create_post.res.body.id }}:
+        get:
+    test: |
+      steps.verify_update.res.status == 200
+
+  # 5. 記事を削除（JSONPlaceholderは実際には削除しないが、200を返す）
+  delete_post:
+    req:
+      /posts/{{ steps.create_post.res.body.id }}:
+        delete:
+    test: steps.delete_post.res.status == 200

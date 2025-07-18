@@ -1,0 +1,45 @@
+desc: 認証フローのシミュレーション（httpbin使用）
+runners:
+  auth: https://httpbin.org
+vars:
+  testUser:
+    email: "test@example.com"
+    password: "Test123!@#"
+steps:
+  # ユーザー登録のシミュレーション
+  register:
+    req:
+      /post:
+        post:
+          body:
+            application/json:
+              action: "register"
+              email: "{{ vars.testUser.email }}"
+              password: "{{ vars.testUser.password }}"
+              name: "Test User"
+    test: |
+      steps.register.res.status == 200
+
+  # ログインのシミュレーション
+  login:
+    req:
+      /post:
+        post:
+          body:
+            application/json:
+              action: "login"
+              email: "{{ vars.testUser.email }}"
+              password: "{{ vars.testUser.password }}"
+    test: |
+      steps.login.res.status == 200
+
+  # 認証が必要なAPIにアクセスのシミュレーション
+  access_protected:
+    req:
+      /bearer:
+        get:
+          headers:
+            Authorization: "Bearer dummy-token-{{ steps.login.res.body.json.email }}"
+    test: |
+      steps.access_protected.res.status == 200 &&
+      steps.access_protected.res.body.authenticated == true
