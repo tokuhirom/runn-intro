@@ -1,0 +1,10 @@
+steps:
+  - login:
+      req: { /auth: { post: { body: { user: "alice" } } } }
+  - get_profile:
+      req:
+        /profile:
+          get:
+            headers:
+              # 前のステップで取得したトークンを使用
+              Authorization: "Bearer {{ steps.login.res.body.token }}"
