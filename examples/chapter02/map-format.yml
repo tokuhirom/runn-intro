@@ -1,24 +1,25 @@
 desc: ユーザー作成とログインのテスト（マップ形式）
 runners:
-  req: https://httpbin.org
+  req: https://api.example.com
 steps:
   create_user:                        # 名前付きステップ
     req:
-      /post:
+      /users:
         post:
           body:
             application/json:
               name: "Alice"
               email: "alice@example.com"
-    test: steps.create_user.res.status == 200
+    test: steps.create_user.res.status == 201
   
   login_user:                         # 名前付きステップ
     req:
-      /post:
+      /login:
         post:
           body:
             application/json:
-              email: "{{ steps.create_user.res.body.json.email }}"
+              email: "{{ steps.create_user.res.body.email }}"
               password: "password123"
     test: |
-      steps.login_user.res.status == 200
+      steps.login_user.res.status == 200 &&
+      steps.login_user.res.body.token != null

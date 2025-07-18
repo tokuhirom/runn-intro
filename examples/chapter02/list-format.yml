@@ -1,22 +1,23 @@
 desc: ユーザー作成とログインのテスト（リスト形式）
 runners:
-  req: https://httpbin.org
+  req: https://api.example.com
 steps:
   - req:                              # steps[0]
-      /post:
+      /users:
         post:
           body:
             application/json:
               name: "Alice"
               email: "alice@example.com"
-    test: steps[0].res.status == 200
+    test: steps[0].res.status == 201
   
   - req:                              # steps[1]
-      /post:
+      /login:
         post:
           body:
             application/json:
-              email: "{{ steps[0].res.body.json.email }}"
+              email: "{{ steps[0].res.body.email }}"
               password: "password123"
     test: |
-      steps[1].res.status == 200
+      steps[1].res.status == 200 &&
+      steps[1].res.body.token != null

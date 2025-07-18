@@ -1,0 +1,12 @@
+# 共通のヘッダーを定義
+commonHeaders: &headers
+  Content-Type: application/json
+  X-API-Version: "1.0"
+
+steps:
+  - req:
+      /users:
+        get:
+          headers:
+            <<: *headers          # 共通ヘッダーを使用
+            Authorization: "Bearer token123"

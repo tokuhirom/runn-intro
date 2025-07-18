@@ -1,0 +1,21 @@
+steps:
+  api_call:
+    desc: ユーザー情報を更新する    # ステップの説明
+    if: vars.environment == "test"  # 条件付き実行
+    req:
+      /users/{{ vars.userId }}:
+        put:
+          headers:
+            Content-Type: application/json
+            Authorization: "Bearer {{ vars.token }}"
+          body:
+            application/json:
+              name: "Updated Name"
+              email: "updated@example.com"
+          timeout: 10s              # タイムアウト設定
+    test: |                        # テストアサーション
+      current.res.status == 200 &&
+      current.res.body.name == "Updated Name"
+    dump:                          # デバッグ用の値出力
+      status: current.res.status
+      body: current.res.body

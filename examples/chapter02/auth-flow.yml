@@ -1,45 +1,67 @@
-desc: 認証フローのシミュレーション（httpbin使用）
+desc: JWT認証フローの完全なテスト
 runners:
-  auth: https://httpbin.org
+  auth: https://auth.example.com
+  api: https://api.example.com
 vars:
   testUser:
     email: "test@example.com"
     password: "Test123!@#"
 steps:
-  # ユーザー登録のシミュレーション
+  # ユーザー登録
   register:
     req:
-      /post:
+      auth:///register:
         post:
           body:
             application/json:
-              action: "register"
               email: "{{ vars.testUser.email }}"
               password: "{{ vars.testUser.password }}"
               name: "Test User"
     test: |
-      steps.register.res.status == 200
+      steps.register.res.status == 201
 
-  # ログインのシミュレーション
+  # ログイン
   login:
     req:
-      /post:
+      auth:///login:
         post:
           body:
             application/json:
-              action: "login"
               email: "{{ vars.testUser.email }}"
               password: "{{ vars.testUser.password }}"
     test: |
-      steps.login.res.status == 200
+      steps.login.res.status == 200 &&
+      steps.login.res.body.accessToken != null &&
+      steps.login.res.body.refreshToken != null
 
-  # 認証が必要なAPIにアクセスのシミュレーション
+  # 認証が必要なAPIにアクセス
   access_protected:
     req:
-      /bearer:
+      api:///profile:
         get:
           headers:
-            Authorization: "Bearer dummy-token-{{ steps.login.res.body.json.email }}"
+            Authorization: "Bearer {{ steps.login.res.body.accessToken }}"
     test: |
       steps.access_protected.res.status == 200 &&
-      steps.access_protected.res.body.authenticated == true
+      steps.access_protected.res.body.email == vars.testUser.email
+
+  # トークンをリフレッシュ
+  refresh:
+    req:
+      auth:///refresh:
+        post:
+          body:
+            application/json:
+              refreshToken: "{{ steps.login.res.body.refreshToken }}"
+    test: |
+      steps.refresh.res.status == 200 &&
+      steps.refresh.res.body.accessToken != null
+
+  # 新しいトークンでアクセス
+  access_with_new_token:
+    req:
+      api:///profile:
+        get:
+          headers:
+            Authorization: "Bearer {{ steps.refresh.res.body.accessToken }}"
+    test: steps.access_with_new_token.res.status == 200

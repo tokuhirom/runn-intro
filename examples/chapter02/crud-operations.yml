@@ -1,8 +1,8 @@
 desc: ブログ記事のCRUD操作をテスト
 runners:
-  api: https://jsonplaceholder.typicode.com
+  api: https://blog-api.example.com
 vars:
-  userId: 1
+  authorId: "author-123"
 steps:
   # 1. 記事を作成
   create_post:
@@ -12,8 +12,8 @@ steps:
           body:
             application/json:
               title: "テスト記事"
-              body: "これはテスト記事です"
-              userId: "{{ vars.userId }}"
+              content: "これはテスト記事です"
+              authorId: "{{ vars.authorId }}"
     test: |
       steps.create_post.res.status == 201 &&
       steps.create_post.res.body.id != null
@@ -34,10 +34,8 @@ steps:
         put:
           body:
             application/json:
-              id: "{{ steps.create_post.res.body.id }}"
               title: "更新されたテスト記事"
-              body: "内容も更新しました"
-              userId: "{{ vars.userId }}"
+              content: "内容も更新しました"
     test: steps.update_post.res.status == 200
 
   # 4. 更新を確認
@@ -46,11 +44,18 @@ steps:
       /posts/{{ steps.create_post.res.body.id }}:
         get:
     test: |
-      steps.verify_update.res.status == 200
+      steps.verify_update.res.body.title == "更新されたテスト記事"
 
-  # 5. 記事を削除（JSONPlaceholderは実際には削除しないが、200を返す）
+  # 5. 記事を削除
   delete_post:
     req:
       /posts/{{ steps.create_post.res.body.id }}:
         delete:
-    test: steps.delete_post.res.status == 200
+    test: steps.delete_post.res.status == 204
+
+  # 6. 削除を確認
+  verify_delete:
+    req:
+      /posts/{{ steps.create_post.res.body.id }}:
+        get:
+    test: steps.verify_delete.res.status == 404

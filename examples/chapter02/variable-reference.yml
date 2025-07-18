@@ -1,0 +1,9 @@
+steps:
+  - req:
+      /{{ vars.apiVersion }}/users:  # パス内での変数展開
+        get:
+          headers:
+            X-API-Key: "{{ vars.apiKey }}"
+            X-Timeout: "{{ vars.timeout }}"
+    test: |
+      current.res.status == 200

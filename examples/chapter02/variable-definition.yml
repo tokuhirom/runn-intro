@@ -1,0 +1,16 @@
+vars:
+  # 静的な値
+  apiVersion: v1
+  timeout: 30
+  
+  # 環境変数から取得
+  apiKey: ${API_KEY}
+  environment: ${ENV:-development}  # デフォルト値付き
+  
+  # 複雑なデータ構造
+  testUser:
+    name: "Test User"
+    email: "test@example.com"
+    roles:
+      - admin
+      - user

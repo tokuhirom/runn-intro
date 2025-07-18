@@ -1,0 +1,13 @@
+vars:
+  baseURL: ${BASE_URL:-https://api.example.com}
+  apiKey: ${API_KEY}
+  environment: ${ENV:-development}
+  
+  # 環境別の設定をマップで管理
+  config:
+    development:
+      timeout: 60
+      retries: 3
+    production:
+      timeout: 30
+      retries: 1
