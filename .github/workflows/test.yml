@@ -16,6 +16,7 @@ jobs:
           - chapter01
           - chapter02
           - chapter03
+          - chapter04
     
     steps:
     - name: Checkout code
