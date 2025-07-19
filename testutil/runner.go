@@ -15,18 +15,20 @@ import (
 func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
 	t.Helper()
 
-	// Find all YAML files
-	files, err := filepath.Glob(filepath.Join(chapterDir, "*.yml"))
+	// Find all YAML files (再帰的に探索)
+	var files []string
+	err := filepath.WalkDir(chapterDir, func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if !d.IsDir() && strings.HasSuffix(d.Name(), ".yml") {
+			files = append(files, path)
+		}
+		return nil
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	// Also check subdirectories
-	subFiles, err := filepath.Glob(filepath.Join(chapterDir, "*/*.yml"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	files = append(files, subFiles...)
 
 	// Run each file
 	for _, file := range files {
