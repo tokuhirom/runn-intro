@@ -1,6 +1,0 @@
-steps:
-  type_conversion:
-    test: |
-      # 文字列から数値への変換は自動では行われない
-      current.res.body.count == "10" &&  # 文字列として比較
-      int(current.res.body.count) == 10  # 数値として比較

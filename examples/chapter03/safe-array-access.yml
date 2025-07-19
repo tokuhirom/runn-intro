@@ -1,6 +1,0 @@
-steps:
-  safe_array_access:
-    test: |
-      # 配列が空でないことを確認してからアクセス
-      len(current.res.body.items) > 0 &&
-      current.res.body.items[0].name == "test"

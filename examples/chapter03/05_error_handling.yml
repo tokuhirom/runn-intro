@@ -31,175 +31,93 @@ steps:
   # null値の安全な処理
   null_safe_access:
     desc: null値に対する安全なアクセス
-    dump: |
-      {
-        "safeEmailAccess": vars.testData.incompleteUser.email ?? "no-email@example.com",
-        "safeProfileAccess": vars.testData.incompleteUser.profile?.age ?? 0,
-        "safeNestedAccess": vars.testData.incompleteUser.profile?.location ?? "Unknown",
-        "validUserLocation": vars.testData.validUser.profile?.location ?? "Unknown",
-        "nullCheck": vars.testData.nullValue ?? "default value",
-        "chainedSafeAccess": vars.testData.incompleteUser.profile?.settings?.theme ?? "light"
-      }
     test: |
-      # デフォルト値が正しく設定されているか
-      current.safeEmailAccess == "no-email@example.com" &&
-      current.safeProfileAccess == 0 &&
-      current.safeNestedAccess == "Unknown" &&
-      current.validUserLocation == "Tokyo" &&
-      current.nullCheck == "default value" &&
-      current.chainedSafeAccess == "light"
+      // デフォルト値の処理（三項演算子を使用）
+      ("email" in vars.testData.incompleteUser ? vars.testData.incompleteUser.email : "no-email@example.com") == "no-email@example.com" &&
+      // プロフィールの存在確認
+      ("profile" in vars.testData.incompleteUser ? vars.testData.incompleteUser.profile.age : 0) == 0 &&
+      // 有効なユーザーのプロフィール
+      ("profile" in vars.testData.validUser && "location" in vars.testData.validUser.profile ? vars.testData.validUser.profile.location : "Unknown") == "Tokyo" &&
+      // null値のチェック
+      (vars.testData.nullValue != null ? vars.testData.nullValue : "default value") == "default value"
 
   # 配列の境界チェック
-  array_boundary_check:
-    desc: 配列アクセス時の境界チェック
-    dump: |
-      {
-        "firstUser": len(vars.testData.users) > 0 ? vars.testData.users[0].name : "No users",
-        "lastUser": len(vars.testData.users) > 0 ? 
-                    vars.testData.users[len(vars.testData.users) - 1].name : "No users",
-        "outOfBounds": vars.testData.users[10]?.name ?? "Index out of bounds",
-        "emptyArrayAccess": vars.testData.emptyArray[0]?.id ?? -1,
-        "safeSlice": len(vars.testData.users) >= 2 ? 
-                     vars.testData.users[0:2] : vars.testData.users
-      }
+  array_bounds_check:
+    desc: 配列アクセスの安全性確保
     test: |
-      current.firstUser == "User1" &&
-      current.lastUser == "User3" &&
-      current.outOfBounds == "Index out of bounds" &&
-      current.emptyArrayAccess == -1 &&
-      len(current.safeSlice) == 2
+      // 配列の長さチェック
+      len(vars.testData.users) == 3 &&
+      // 範囲内アクセス
+      (len(vars.testData.users) > 0 ? vars.testData.users[0].name : "No users") == "User1" &&
+      // 範囲外アクセスの回避
+      (len(vars.testData.users) > 10 ? vars.testData.users[10].name : "Index out of bounds") == "Index out of bounds" &&
+      // 空配列のチェック
+      (len(vars.testData.emptyArray) > 0 ? vars.testData.emptyArray[0] : "Empty array") == "Empty array"
 
-  # 型の安全な変換
-  safe_type_conversion:
-    desc: 型変換時のエラーハンドリング
-    dump: |
-      {
-        "stringToInt": int("123"),
-        "invalidStringToInt": int("abc") ?? 0,
-        "floatToInt": int(123.45),
-        "boolToString": str(true),
-        "nullToString": str(vars.testData.nullValue) ?? "null",
-        "safeNumberParsing": type("123") == "string" ? int("123") : "123"
-      }
+  # フィルタリング結果の安全な処理
+  safe_filtering:
+    desc: フィルタリング結果が空の場合の処理
     test: |
-      current.stringToInt == 123 &&
-      current.floatToInt == 123 &&
-      current.boolToString == "true" &&
-      current.safeNumberParsing == 123
+      // アクティブユーザーのフィルタリング
+      len(filter(vars.testData.users, .active)) == 2 &&
+      // 存在しない条件でのフィルタリング
+      len(filter(vars.testData.users, .name == "NonExistent")) == 0 &&
+      // フィルタ結果の安全なアクセス
+      (len(filter(vars.testData.users, .active)) > 0 ? filter(vars.testData.users, .active)[0].name : "No active users") == "User1" &&
+      (len(filter(vars.testData.users, .name == "NonExistent")) > 0 ? filter(vars.testData.users, .name == "NonExistent")[0].name : "Not found") == "Not found"
 
-  # 条件付きエラー回避
-  conditional_error_avoidance:
-    desc: 条件を使ったエラー回避パターン
-    dump: |
-      {
-        "divisionByZero": len(vars.testData.emptyArray) > 0 ? 
-                          100 / len(vars.testData.emptyArray) : 0,
-        "safeAverage": len(vars.testData.users) > 0 ?
-                       sum(map(vars.testData.users, {.id})) / len(vars.testData.users) : 0,
-        "safeFilter": len(filter(vars.testData.users, {.active})) > 0 ?
-                      filter(vars.testData.users, {.active})[0].name : "No active users",
-        "safeMax": len(vars.testData.emptyArray) > 0 ?
-                   max(vars.testData.emptyArray) : 0
-      }
+  # 計算エラーの回避
+  safe_calculations:
+    desc: ゼロ除算などの計算エラーを回避
     test: |
-      current.divisionByZero == 0 &&
-      current.safeAverage == 2 &&
-      current.safeFilter == "User1" &&
-      current.safeMax == 0
+      // ゼロ除算の回避
+      (len(vars.testData.users) > 0 ? 100 / len(vars.testData.users) : 0) > 0 &&
+      (len(vars.testData.emptyArray) > 0 ? 100 / len(vars.testData.emptyArray) : -1) == -1 &&
+      // 平均値の安全な計算
+      (len(vars.testData.users) > 0 ? sum(map(vars.testData.users, .id)) / len(vars.testData.users) : 0) == 2
 
-  # 複雑な条件での安全な処理
-  complex_safe_operations:
-    desc: 複雑な操作での安全性確保
-    dump: |
-      let users = vars.testData.users;
-      let emptyUsers = vars.testData.emptyArray;
-      {
-        "firstActiveUser": len(filter(users, {.active})) > 0 ?
-                          filter(users, {.active})[0] :
-                          {"name": "No active user", "id": -1},
-        "userEmails": all(users, {"email" in .}) ?
-                      map(users, {.email}) :
-                      map(users, {.name + "@example.com"}),
-        "groupedByActive": len(users) > 0 ?
-                          groupBy(users, {.active}) :
-                          {"true": [], "false": []},
-        "safeReduce": len(emptyUsers) > 0 ?
-                      reduce(emptyUsers, 0, {# + ##}) :
-                      0
-      }
+  # 条件付き処理の連鎖
+  conditional_chain:
+    desc: 複数の条件を連鎖させた安全な処理
     test: |
-      current.firstActiveUser.name == "User1" &&
-      current.firstActiveUser.id == 1 &&
-      len(current.userEmails) == 3 &&
-      current.userEmails[0] == "User1@example.com" &&
-      len(current.groupedByActive.true) == 2 &&
-      current.safeReduce == 0
-
-  # 再帰的な安全アクセス
-  recursive_safe_access:
-    desc: 深いネスト構造への安全なアクセス
-    dump: |
-      {
-        "deepAccess1": vars.testData?.validUser?.profile?.age ?? 0,
-        "deepAccess2": vars.testData?.incompleteUser?.profile?.age ?? 0,
-        "deepAccess3": vars.testData?.nonexistent?.profile?.age ?? 0,
-        "arrayDeepAccess": vars.testData.users[0]?.profile?.settings?.theme ?? "default",
-        "mixedAccess": vars.testData?.users[100]?.profile?.age ?? -1
-      }
-    test: |
-      current.deepAccess1 == 30 &&
-      current.deepAccess2 == 0 &&
-      current.deepAccess3 == 0 &&
-      current.arrayDeepAccess == "default" &&
-      current.mixedAccess == -1
+      // ユーザーの検証と処理
+      ("email" in vars.testData.validUser ? 
+        (len(vars.testData.validUser.email) > 0 ? 
+          vars.testData.validUser.email : 
+          "empty email") : 
+        "no email field") == "alice@example.com" &&
+      // 不完全なユーザーの検証
+      ("email" in vars.testData.incompleteUser ? 
+        (len(vars.testData.incompleteUser.email) > 0 ? 
+          vars.testData.incompleteUser.email : 
+          "empty email") : 
+        "no email field") == "no email field"
 
   # エラー状態の検出と処理
   error_detection:
-    desc: エラー状態の検出とレポート
-    dump: |
-      {
-        "validationErrors": filter([
-          vars.testData.incompleteUser.email == null ? 
-            {"field": "email", "error": "Email is required"} : null,
-          vars.testData.incompleteUser.profile == null ? 
-            {"field": "profile", "error": "Profile is required"} : null,
-          len(vars.testData.users) == 0 ? 
-            {"field": "users", "error": "At least one user is required"} : null
-        ], {. != null}),
-        "hasErrors": vars.testData.incompleteUser.email == null || 
-                     vars.testData.incompleteUser.profile == null,
-        "errorCount": len(filter([
-          vars.testData.incompleteUser.email,
-          vars.testData.incompleteUser.profile
-        ], {. == null}))
-      }
+    desc: エラー状態を検出して適切に処理
     test: |
-      len(current.validationErrors) == 2 &&
-      current.validationErrors[0].field == "email" &&
-      current.validationErrors[1].field == "profile" &&
-      current.hasErrors == true &&
-      current.errorCount == 2
+      // 必須フィールドの検証
+      ("id" in vars.testData.validUser && "name" in vars.testData.validUser) == true &&
+      ("id" in vars.testData.incompleteUser && "name" in vars.testData.incompleteUser) == true &&
+      ("email" in vars.testData.incompleteUser) == false &&
+      // エラー状態の分類
+      ("email" in vars.testData.incompleteUser ? "valid" : "missing_email") == "missing_email" &&
+      ("profile" in vars.testData.incompleteUser ? "has_profile" : "no_profile") == "no_profile"
 
-  # フォールバックチェーン
-  fallback_chain:
-    desc: 複数のフォールバックを持つ処理
-    dump: |
-      {
-        "userEmail": vars.testData.validUser.email ??
-                     vars.testData.validUser.name + "@example.com" ??
-                     "unknown@example.com",
-        "userAge": vars.testData.incompleteUser.profile?.age ??
-                   vars.testData.validUser.profile?.age ??
-                   18,
-        "primaryServer": vars.servers?.primary ??
-                        vars.servers?.secondary ??
-                        "https://default.example.com",
-        "configValue": env.APP_CONFIG ??
-                      vars.config?.appConfig ??
-                      "default-config"
-      }
+  # 複雑なデータ構造での安全なナビゲーション
+  safe_navigation:
+    desc: ネストした構造を安全に辿る
     test: |
-      current.userEmail == "alice@example.com" &&
-      current.userAge == 30 &&
-      current.primaryServer == "https://default.example.com" &&
-      current.configValue != ""
+      // 存在するパスの検証
+      ("profile" in vars.testData.validUser && 
+       "location" in vars.testData.validUser.profile) == true &&
+      // 存在しないパスの検証
+      ("profile" in vars.testData.incompleteUser) == false &&
+      // 条件付きアクセス
+      ("profile" in vars.testData.validUser ? 
+        vars.testData.validUser.profile.age : 
+        -1) == 30 &&
+      ("profile" in vars.testData.incompleteUser ? 
+        vars.testData.incompleteUser.profile.age : 
+        -1) == -1
