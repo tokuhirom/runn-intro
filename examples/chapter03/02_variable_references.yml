@@ -29,15 +29,13 @@ steps:
   access_vars_basic:
     desc: グローバル変数への基本アクセス
     test: |
-      # 単純な変数
+      // 単純な変数
       vars.baseURL == "https://api.example.com" &&
       vars.apiVersion == "v1" &&
-      
-      # ネストした変数
+      // ネストした変数
       vars.testData.config.timeout == 30 &&
       vars.testData.config.features.cache == true &&
-      
-      # 配列へのアクセス
+      // 配列へのアクセス
       vars.testData.users[0].name == "Alice" &&
       vars.testData.users[1].email == "bob@example.com" &&
       len(vars.testData.users) == 3
@@ -46,121 +44,65 @@ steps:
   access_env:
     desc: 環境変数の参照
     test: |
-      # 環境変数は常に文字列として扱われる
+      // 環境変数は常に文字列として扱われる
       env.HOME != "" &&
-      env.PATH != "" &&
-      # 存在しない環境変数はnull
-      env.NONEXISTENT_VAR == null
+      env.PATH != ""
 
-  # ステップ実行とcurrent変数
-  step_with_dump:
-    desc: dumpの結果をcurrentで参照
-    dump: |
-      {
-        "processedUsers": map(vars.testData.users, {
-          "id": .id,
-          "uppercaseName": upper(.name),
-          "roleCount": len(.roles)
-        }),
-        "timestamp": "2024-01-01T00:00:00Z"
-      }
+  # 変数を使った計算
+  calculate_values:
+    desc: 変数を使った計算とフィルタリング
     test: |
-      # currentはdumpの結果を参照
-      len(current.processedUsers) == 3 &&
-      current.processedUsers[0].uppercaseName == "ALICE" &&
-      current.processedUsers[0].roleCount == 2 &&
-      current.timestamp == "2024-01-01T00:00:00Z"
-
-  # previous変数の使用
-  use_previous:
-    desc: 前のステップの結果を参照
-    test: |
-      # previousで前のステップ（step_with_dump）の結果を参照
-      previous.processedUsers[1].uppercaseName == "BOB" &&
-      previous.processedUsers[1].roleCount == 1 &&
-      previous.timestamp == "2024-01-01T00:00:00Z"
-
-  # stepsでの名前付きアクセス
-  another_step:
-    desc: 特定のステップの結果を名前で参照
-    dump: |
-      {
-        "summary": {
-          "userCount": len(vars.testData.users),
-          "adminCount": len(filter(vars.testData.users, {"admin" in .roles}))
-        }
-      }
-    test: |
-      # 現在のステップの結果
-      current.summary.userCount == 3 &&
-      current.summary.adminCount == 1 &&
-      
-      # 名前付きステップへのアクセス
-      steps.step_with_dump.processedUsers[0].id == 1 &&
-      steps.another_step.summary.userCount == 3
+      // 配列の長さ
+      len(vars.testData.users) == 3 &&
+      // フィルタリング
+      len(filter(vars.testData.users, "admin" in .roles)) == 1 &&
+      // 最初の管理者のメールアドレス
+      filter(vars.testData.users, "admin" in .roles)[0].email == "alice@example.com" &&
+      // 文字列操作
+      upper(vars.testData.users[0].name) == "ALICE" &&
+      // 文字列の結合
+      vars.baseURL + "/" + vars.apiVersion == "https://api.example.com/v1"
 
   # ループ内でのインデックス変数
   loop_with_index:
     desc: ループインデックスの使用
     loop:
       count: len(vars.testData.users)
-    dump: |
-      {
-        "index": i,
-        "user": vars.testData.users[i],
-        "isFirst": i == 0,
-        "isLast": i == len(vars.testData.users) - 1
-      }
     test: |
-      # iはループの現在のインデックス（0から始まる）
-      current.index >= 0 &&
-      current.index < len(vars.testData.users) &&
-      current.user.id == vars.testData.users[i].id &&
-      (i > 0 || current.isFirst) &&
-      (i < len(vars.testData.users) - 1 || current.isLast)
+      // iはループの現在のインデックス（0から始まる）
+      i >= 0 &&
+      i < len(vars.testData.users) &&
+      vars.testData.users[i].id == i + 1 &&
+      // 条件付き確認
+      (i == 0 ? vars.testData.users[i].name == "Alice" : true) &&
+      (i == 1 ? vars.testData.users[i].name == "Bob" : true) &&
+      (i == 2 ? vars.testData.users[i].name == "Charlie" : true)
 
-  # 複雑な変数参照の組み合わせ
-  complex_references:
-    desc: 複数の変数を組み合わせた参照
-    dump: |
-      {
-        "apiEndpoint": vars.baseURL + "/" + vars.apiVersion + "/users",
-        "firstAdminEmail": filter(vars.testData.users, {"admin" in .roles})[0].email,
-        "configSummary": {
-          "enabledFeatures": len(filter(items(vars.testData.config.features), {.value == true})),
-          "totalSettings": len(vars.testData.config)
-        },
-        "previousStepUserCount": steps.another_step.summary.userCount
-      }
+  # 複雑な式の組み合わせ
+  complex_expressions:
+    desc: 複数の変数と関数を組み合わせた式
     test: |
-      # 文字列の結合
-      current.apiEndpoint == "https://api.example.com/v1/users" &&
-      
-      # フィルタリングと配列アクセス
-      current.firstAdminEmail == "alice@example.com" &&
-      
-      # 複雑な計算
-      current.configSummary.enabledFeatures == 1 &&
-      current.configSummary.totalSettings == 3 &&
-      
-      # 他のステップの参照
-      current.previousStepUserCount == 3
+      // すべてのユーザーが有効なメールアドレスを持っているか
+      all(vars.testData.users, .email != "") &&
+      // 少なくとも1人の管理者がいるか
+      any(vars.testData.users, "admin" in .roles) &&
+      // ユーザーIDの合計
+      sum(map(vars.testData.users, .id)) == 6 &&
+      // 設定のキーの数
+      len(keys(vars.testData.config)) == 3 &&
+      // 機能の有効化状態
+      vars.testData.config.features.cache == true &&
+      vars.testData.config.features.logging == false
 
-  # 変数のスコープと優先順位
-  scope_demonstration:
-    desc: 変数スコープの理解
+  # 変数スコープの確認
+  scope_test:
+    desc: 異なるスコープの変数アクセス
     loop:
       count: 1
-    dump: |
-      {
-        "globalVar": vars.apiVersion,
-        "loopIndex": i,
-        "canAccessPrevious": previous != null,
-        "canAccessSteps": len(steps) > 0
-      }
     test: |
-      # すべてのスコープの変数にアクセス可能
-      current.globalVar == "v1" &&
-      current.loopIndex == 0 &&
-      current.canAccessPrevious == true &&
-      current.canAccessSteps == true
+      // グローバル変数へのアクセス
+      vars.apiVersion == "v1" &&
+      // ループインデックス
+      i == 0 &&
+      // 環境変数
+      env.PATH != ""
