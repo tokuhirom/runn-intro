@@ -1,0 +1,73 @@
+# testdata/debugging.yml
+desc: デバッグ技法の実践
+runners:
+  api: https://api.example.com
+
+vars:
+  test_email: "test@example.com"
+  test_password: "test123"
+  complex_payload:
+    data: "complex test data"
+    nested:
+      field: "value"
+
+steps:
+  # ステップ1: 基本的な接続確認
+  connectivity_check:
+    req:
+      api:///health:
+        get:
+    test: current.res.status == 200
+    dump:
+      health_status: current.res.body
+
+  # ステップ2: 認証の確認
+  auth_debug:
+    req:
+      api:///auth/login:
+        post:
+          body:
+            application/json:
+              email: "{{ vars.test_email }}"
+              password: "{{ vars.test_password }}"
+    test: true  # エラーでも続行してデバッグ
+    dump:
+      auth_request:
+        url: current.req.url
+        headers: current.req.headers
+        body: current.req.body
+      auth_response:
+        status: current.res.status
+        headers: current.res.headers
+        body: current.res.body
+
+  # ステップ3: 詳細なリクエスト/レスポンス情報
+  detailed_debug:
+    req:
+      api:///complex-endpoint:
+        post:
+          body:
+            application/json: "{{ vars.complex_payload }}"
+    test: true
+    dump:
+      request_analysis:
+        method: current.req.method
+        url: current.req.url
+        headers: current.req.headers
+        body_size: len(toJSON(current.req.body))
+        body_preview: |
+          len(toJSON(current.req.body)) > 1000 ?
+          "Large payload (" + string(len(toJSON(current.req.body))) + " bytes)" :
+          current.req.body
+      
+      response_analysis:
+        status: current.res.status
+        headers: current.res.headers
+        body_size: len(toJSON(current.res.body))
+        response_time: current.res.response_time
+        error_details: |
+          current.res.status >= 400 ? {
+            "error_code": current.res.body.code ?? "unknown",
+            "error_message": current.res.body.message ?? "no message",
+            "error_details": current.res.body.details ?? {}
+          } : null

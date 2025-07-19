@@ -1,0 +1,16 @@
+# testdata/performance/load_test.yml
+desc: 負荷テストシナリオ
+vars:
+  concurrent_users: 50
+  requests_per_user: 100
+
+steps:
+  # 並行ユーザーシミュレーション
+  concurrent_load:
+    loop:
+      count: "{{ vars.concurrent_users }}"
+    include:
+      path: ./user_simulation.yml
+      vars:
+        user_id: "{{ i }}"
+        requests_count: "{{ vars.requests_per_user }}"

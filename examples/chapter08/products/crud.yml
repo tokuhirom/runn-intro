@@ -1,0 +1,112 @@
+# testdata/scenarios/products/crud.yml
+desc: 商品CRUD操作のテスト
+runners:
+  api: https://api.example.com
+
+vars:
+  test_product:
+    name: "テスト商品"
+    description: "これはテスト用の商品です"
+    price: 1999
+    category_id: 1
+    stock: 100
+    sku: "TEST-PRODUCT-001"
+
+steps:
+  # 管理者認証
+  admin_auth:
+    include:
+      path: ../auth/login.yml
+
+  # 商品作成（管理者権限必要）
+  create_product:
+    req:
+      api:///products:
+        post:
+          headers:
+            Authorization: "Bearer {{ steps.admin_auth.admin_login.res.body.token }}"
+          body:
+            application/json: "{{ vars.test_product }}"
+    test: |
+      current.res.status == 201 &&
+      current.res.body.id > 0 &&
+      current.res.body.name == vars.test_product.name &&
+      current.res.body.sku == vars.test_product.sku
+
+  # 商品一覧取得（認証不要）
+  list_products:
+    req:
+      api:///products:
+        get:
+          query:
+            page: 1
+            limit: 10
+    test: |
+      current.res.status == 200 &&
+      len(current.res.body.products) > 0 &&
+      current.res.body.pagination.total > 0
+
+  # 特定商品の取得
+  get_product:
+    req:
+      api:///products/{{ steps.create_product.res.body.id }}:
+        get:
+    test: |
+      current.res.status == 200 &&
+      current.res.body.id == steps.create_product.res.body.id &&
+      current.res.body.name == vars.test_product.name
+
+  # 商品の更新
+  update_product:
+    req:
+      api:///products/{{ steps.create_product.res.body.id }}:
+        put:
+          headers:
+            Authorization: "Bearer {{ steps.admin_auth.admin_login.res.body.token }}"
+          body:
+            application/json:
+              name: "更新されたテスト商品"
+              price: 2499
+              stock: 150
+    test: |
+      current.res.status == 200 &&
+      current.res.body.name == "更新されたテスト商品" &&
+      current.res.body.price == 2499
+
+  # 在庫確認
+  check_stock:
+    req:
+      api:///products/{{ steps.create_product.res.body.id }}/stock:
+        get:
+    test: |
+      current.res.status == 200 &&
+      current.res.body.stock == 150
+
+  # 商品検索
+  search_products:
+    req:
+      api:///products/search:
+        get:
+          query:
+            q: "更新されたテスト"
+            category: 1
+    test: |
+      current.res.status == 200 &&
+      len(current.res.body.products) > 0 &&
+      any(current.res.body.products, {.id == steps.create_product.res.body.id})
+
+  # 商品削除
+  delete_product:
+    req:
+      api:///products/{{ steps.create_product.res.body.id }}:
+        delete:
+          headers:
+            Authorization: "Bearer {{ steps.admin_auth.admin_login.res.body.token }}"
+    test: current.res.status == 204
+
+  # 削除確認
+  verify_deletion:
+    req:
+      api:///products/{{ steps.create_product.res.body.id }}:
+        get:
+    test: current.res.status == 404

@@ -1,0 +1,73 @@
+# testdata/scenarios/auth/login.yml
+desc: ユーザー認証フローのテスト
+runners:
+  api: https://api.example.com
+
+vars:
+  admin_email: "admin@example.com"
+  admin_password: "admin123"
+  test_user_email: "user@example.com"
+  test_user_password: "user123"
+
+steps:
+  # 管理者ログイン
+  admin_login:
+    req:
+      api:///auth/login:
+        post:
+          body:
+            application/json:
+              email: "{{ vars.admin_email }}"
+              password: "{{ vars.admin_password }}"
+    test: |
+      current.res.status == 200 &&
+      current.res.body.token != null &&
+      current.res.body.user.role == "admin" &&
+      current.res.body.expires_in > 0
+
+  # 一般ユーザーログイン
+  user_login:
+    req:
+      api:///auth/login:
+        post:
+          body:
+            application/json:
+              email: "{{ vars.test_user_email }}"
+              password: "{{ vars.test_user_password }}"
+    test: |
+      current.res.status == 200 &&
+      current.res.body.token != null &&
+      current.res.body.user.role == "user"
+
+  # 無効な認証情報
+  invalid_login:
+    req:
+      api:///auth/login:
+        post:
+          body:
+            application/json:
+              email: "invalid@example.com"
+              password: "wrongpassword"
+    test: |
+      current.res.status == 401 &&
+      current.res.body.error != null
+
+  # トークンの検証
+  verify_admin_token:
+    req:
+      api:///auth/verify:
+        get:
+          headers:
+            Authorization: "Bearer {{ steps.admin_login.res.body.token }}"
+    test: |
+      current.res.status == 200 &&
+      current.res.body.user.email == vars.admin_email
+
+  # 期限切れトークンのシミュレーション
+  expired_token_test:
+    req:
+      api:///auth/verify:
+        get:
+          headers:
+            Authorization: "Bearer expired.jwt.token"
+    test: current.res.status == 401

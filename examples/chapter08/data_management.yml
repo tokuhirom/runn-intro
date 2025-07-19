@@ -1,0 +1,46 @@
+# testdata/data_management.yml
+desc: テストデータ管理のベストプラクティス
+runners:
+  api: https://api.example.com
+
+vars:
+  # 固定データ：テストの再現性が重要な場合
+  fixed_test_data:
+    admin_user:
+      email: "admin@example.com"
+      password: "admin123"
+    test_categories:
+      - { id: 1, name: "Electronics" }
+      - { id: 2, name: "Books" }
+      - { id: 3, name: "Clothing" }
+  
+  # ランダムデータ：データの多様性が重要な場合
+  random_test_data:
+    users: |
+      map(range(1, 6), {
+        "name": faker.name(),
+        "email": faker.email(),
+        "age": faker.randomInt(18, 65),
+        "department": faker.randomChoice(["IT", "Sales", "Marketing"])
+      })
+
+steps:
+  # 固定データを使用したテスト
+  test_with_fixed_data:
+    req:
+      api:///auth/login:
+        post:
+          body:
+            application/json: "{{ vars.fixed_test_data.admin_user }}"
+    test: current.res.status == 200
+
+  # ランダムデータを使用したテスト
+  test_with_random_data:
+    loop:
+      count: len(vars.random_test_data.users)
+    req:
+      api:///users:
+        post:
+          body:
+            application/json: "{{ vars.random_test_data.users[i] }}"
+    test: current.res.status == 201
