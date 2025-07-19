@@ -1,0 +1,31 @@
+desc: 包括的なエラーハンドリング
+runners:
+  api: https://api.example.com
+
+vars:
+  resource_id: "res123"
+
+steps:
+  robust_api_call:
+    loop:
+      count: 3
+      until: |
+        current.res.status == 200 ||
+        current.res.status == 404  # 404は正常な結果として扱う
+      minInterval: 1
+      maxInterval: 5
+    req:
+      api:///api/resource/{{ vars.resource_id }}:
+        get:
+    test: |
+      current.res.status in [200, 404]
+    
+    dump:
+      # エラー情報の詳細記録
+      error_info: |
+        current.res.status >= 400 ? {
+          "status": current.res.status,
+          "error": current.res.body.error ?? "Unknown error",
+          "timestamp": time.now(),
+          "attempt": i + 1
+        } : null

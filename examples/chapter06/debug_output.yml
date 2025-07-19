@@ -1,0 +1,45 @@
+desc: デバッグ情報の出力
+runners:
+  api: https://api.example.com
+
+vars:
+  complex_data:
+    operation: "create"
+    resource: "user"
+    data:
+      name: "Test User"
+      email: "test@example.com"
+
+steps:
+  debug_step:
+    req:
+      api:///api/complex-operation:
+        post:
+          body:
+            application/json: "{{ vars.complex_data }}"
+    
+    # 詳細なデバッグ情報
+    dump:
+      request_info:
+        url: current.req.url
+        method: current.req.method
+        headers: current.req.headers
+        body_size: len(toJSON(current.req.body))
+      
+      response_info:
+        status: current.res.status
+        headers: current.res.headers
+        body_size: len(toJSON(current.res.body))
+        response_time: current.res.response_time
+      
+      validation_details:
+        expected_fields: ["id", "name", "status"]
+        actual_fields: keys(current.res.body)
+        missing_fields: |
+          filter(["id", "name", "status"], {
+            !(. in keys(current.res.body))
+          })
+        extra_fields: |
+          filter(keys(current.res.body), {
+            !(. in ["id", "name", "status"])
+          })

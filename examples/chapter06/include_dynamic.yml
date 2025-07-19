@@ -1,0 +1,35 @@
+desc: 動的なインクルード
+vars:
+  test_type: "integration"
+  integration_data:
+    db_name: "test_db"
+    test_user: "test_user"
+  test_scenarios:
+    - path: "./scenarios/user_test.yml"
+      data:
+        username: "alice"
+    - path: "./scenarios/product_test.yml"
+      data:
+        product_id: 123
+    - path: "./scenarios/order_test.yml"
+      data:
+        order_id: 456
+
+steps:
+  # 条件に基づくインクルード
+  conditional_include:
+    if: vars.test_type == "integration"
+    include:
+      path: ./integration/full_test.yml
+      vars:
+        test_data: "{{ vars.integration_data }}"
+
+  # ループ内でのインクルード
+  multiple_scenarios:
+    loop:
+      count: len(vars.test_scenarios)
+    include:
+      path: "{{ vars.test_scenarios[i].path }}"
+      vars:
+        scenario_data: "{{ vars.test_scenarios[i].data }}"
+        iteration: "{{ i }}"

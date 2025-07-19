@@ -1,0 +1,48 @@
+desc: 動的なループ制御
+runners:
+  api: https://api.example.com
+
+vars:
+  page_size: 10
+  max_pages: 100
+  items_to_process:
+    - id: 1
+      name: "Item 1"
+      needs_processing: true
+    - id: 2
+      name: "Item 2"
+      needs_processing: false
+    - id: 3
+      name: "Item 3"
+      needs_processing: true
+
+steps:
+  # ページネーションを使った全データ取得
+  paginated_fetch:
+    loop:
+      count: vars.max_pages
+      until: len(current.res.body.data) < vars.page_size  # 最後のページに到達
+    req:
+      api:///users:
+        get:
+          query:
+            page: "{{ i + 1 }}"
+            limit: "{{ vars.page_size }}"
+    test: current.res.status == 200
+    dump:
+      page_number: i + 1
+      items_count: len(current.res.body.data)
+      total_fetched: |
+        sum(map(steps.paginated_fetch, {len(.res.body.data)}))
+
+  # 条件に基づく動的ループ
+  conditional_processing:
+    loop:
+      count: len(vars.items_to_process)
+    if: vars.items_to_process[i].needs_processing
+    req:
+      api:///process:
+        post:
+          body:
+            application/json: "{{ vars.items_to_process[i] }}"
+    test: current.res.status == 200

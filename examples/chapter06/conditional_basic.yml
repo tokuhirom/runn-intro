@@ -1,0 +1,43 @@
+desc: 基本的な条件分岐
+runners:
+  api: https://api.example.com
+
+vars:
+  enable_new_feature: true
+
+steps:
+  # 環境による条件分岐
+  environment_specific:
+    if: env.ENVIRONMENT == "production"
+    req:
+      api:///production-only-endpoint:
+        get:
+    test: current.res.status == 200
+
+  # 変数による条件分岐
+  feature_flag_check:
+    if: vars.enable_new_feature
+    req:
+      api:///new-feature:
+        get:
+    test: current.res.status == 200
+
+  # ユーザー作成ステップ（常に実行）
+  user_creation:
+    req:
+      api:///users:
+        post:
+          body:
+            application/json:
+              name: "Test User"
+              email: "test@example.com"
+    test: |
+      current.res.status == 201 || current.res.status == 409
+
+  # 前のステップの結果による条件分岐
+  conditional_on_previous:
+    if: steps.user_creation.res.status == 201
+    req:
+      api:///users/{{ steps.user_creation.res.body.id }}/activate:
+        post:
+    test: current.res.status == 200

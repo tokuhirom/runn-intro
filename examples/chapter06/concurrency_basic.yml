@@ -1,0 +1,27 @@
+desc: 並行実行の制御
+# 同時実行数の制限
+concurrency: 5
+
+runners:
+  api: https://api.example.com
+
+vars:
+  api_endpoints:
+    - "/api/health"
+    - "/api/status"
+    - "/api/version"
+    - "/api/ping"
+    - "/api/ready"
+    - "/api/metrics"
+    - "/api/info"
+    - "/api/check"
+
+steps:
+  # 複数のAPIエンドポイントを並行テスト
+  parallel_api_tests:
+    loop:
+      count: len(vars.api_endpoints)
+    req:
+      "{{ vars.api_endpoints[i] }}":
+        get:
+    test: current.res.status == 200

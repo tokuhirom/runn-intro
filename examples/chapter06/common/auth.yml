@@ -1,0 +1,14 @@
+# common/auth.yml
+desc: 認証処理
+steps:
+  login:
+    req:
+      "{{ parent.vars.base_url }}/auth/login":
+        post:
+          body:
+            application/json:
+              username: "{{ vars.username }}"
+              password: "{{ vars.password }}"
+    test: current.res.status == 200
+    dump:
+      auth_token: current.res.body.token

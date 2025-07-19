@@ -1,0 +1,50 @@
+desc: 条件付きループ（リトライ機能）
+runners:
+  api: https://api.example.com
+
+vars:
+  operation_id: "op123"
+
+steps:
+  # 成功するまでリトライ
+  retry_until_success:
+    loop:
+      count: 10  # 最大10回
+      until: current.res.status == 200  # 成功条件
+      minInterval: 1  # 最小間隔（秒）
+      maxInterval: 5  # 最大間隔（秒）
+    req:
+      api:///unstable-endpoint:
+        get:
+    test: current.res.status == 200
+
+  # 複雑な条件でのリトライ
+  complex_retry:
+    loop:
+      count: 5
+      until: |
+        current.res.status == 200 &&
+        current.res.body.status == "ready" &&
+        len(current.res.body.items) > 0
+      minInterval: 2
+      maxInterval: 10
+    req:
+      api:///async-operation/{{ vars.operation_id }}/status:
+        get:
+    test: |
+      current.res.body.status == "ready"
+
+  # エラー条件でのループ終了
+  stop_on_error:
+    loop:
+      count: 100
+      until: current.res.status >= 400  # エラーが発生したら停止
+    req:
+      api:///batch-process:
+        post:
+          body:
+            application/json:
+              batch_id: "{{ i }}"
+    test: |
+      current.res.status < 400 ||  # 成功
+      (current.res.status >= 400 && i > 0)  # エラーだが少なくとも1回は成功

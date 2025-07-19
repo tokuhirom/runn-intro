@@ -1,0 +1,41 @@
+desc: 外部コマンドランナー
+vars:
+  namespace: "default"
+  project_root: "/app"
+  image_name: "myapp"
+  tag: "latest"
+
+runners:
+  # 外部ツールの実行
+  kubectl:
+    type: exec
+    command: kubectl
+    default_args:
+      - --kubeconfig={{ env.KUBECONFIG }}
+      - --namespace={{ vars.namespace }}
+
+  # Docker操作
+  docker:
+    type: exec
+    command: docker
+    working_dir: "{{ vars.project_root }}"
+
+steps:
+  k8s_deployment:
+    exec:
+      kubectl:///:
+        args:
+          - apply
+          - -f
+          - deployment.yaml
+    test: current.exit_code == 0
+
+  docker_build:
+    exec:
+      docker:///:
+        args:
+          - build
+          - -t
+          - "{{ vars.image_name }}:{{ vars.tag }}"
+          - .
+    test: current.exit_code == 0

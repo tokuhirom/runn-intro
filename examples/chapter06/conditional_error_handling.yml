@@ -1,0 +1,36 @@
+desc: エラーハンドリングと条件分岐
+runners:
+  api: https://api.example.com
+
+steps:
+  # エラー時の代替処理
+  primary_request:
+    req:
+      api:///primary-endpoint:
+        get:
+    test: true  # エラーでも続行
+
+  fallback_request:
+    if: steps.primary_request.res.status != 200
+    req:
+      api:///fallback-endpoint:
+        get:
+    test: current.res.status == 200
+
+  # 成功時の追加処理
+  success_processing:
+    if: |
+      steps.primary_request.res.status == 200 ||
+      steps.fallback_request.res.status == 200
+    req:
+      api:///process-result:
+        post:
+          body:
+            application/json:
+              source: |
+                steps.primary_request.res.status == 200 ? "primary" : "fallback"
+              data: |
+                steps.primary_request.res.status == 200 ? 
+                steps.primary_request.res.body : 
+                steps.fallback_request.res.body
+    test: current.res.status == 200

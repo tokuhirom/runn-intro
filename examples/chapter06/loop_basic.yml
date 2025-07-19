@@ -1,0 +1,36 @@
+desc: 基本的なループ処理
+runners:
+  api: https://api.example.com
+
+vars:
+  test_users:
+    - name: "Alice"
+      email: "alice@example.com"
+    - name: "Bob"
+      email: "bob@example.com"
+    - name: "Charlie"
+      email: "charlie@example.com"
+
+steps:
+  # 単純な回数指定ループ
+  simple_loop:
+    loop: 5
+    req:
+      api:///api/ping:
+        get:
+    test: current.res.status == 200
+    dump:
+      iteration: i  # ループインデックス（0から開始）
+
+  # 配列の各要素に対するループ
+  array_loop:
+    loop:
+      count: len(vars.test_users)
+    req:
+      api:///users:
+        post:
+          body:
+            application/json:
+              name: "{{ vars.test_users[i].name }}"
+              email: "{{ vars.test_users[i].email }}"
+    test: current.res.status == 201

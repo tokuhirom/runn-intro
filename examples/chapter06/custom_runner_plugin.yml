@@ -1,0 +1,27 @@
+desc: カスタムランナーの使用例
+runners:
+  # カスタムHTTPクライアント
+  custom_http:
+    type: http
+    base_url: https://api.example.com
+    default_headers:
+      User-Agent: "MyApp/1.0"
+      Accept: "application/json"
+    timeout: 30s
+    retry_count: 3
+
+  # カスタムデータベース接続
+  custom_db:
+    type: db
+    dsn: "{{ env.DATABASE_URL }}"
+    max_connections: 10
+    connection_timeout: 5s
+
+steps:
+  custom_request:
+    req:
+      custom_http:///users:
+        get:
+          headers:
+            X-Custom-Header: "custom-value"
+    test: current.res.status == 200
