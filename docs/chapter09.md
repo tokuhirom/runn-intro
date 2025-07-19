@@ -6,144 +6,31 @@
 
 ### Runbookの基本構造
 
-```yaml
-# 必須フィールド
-desc: string                    # シナリオの説明
-
-# オプションフィールド
-labels: [string]               # シナリオの分類ラベル
-runners: map[string]Runner     # 使用するランナーの定義
-vars: map[string]any          # シナリオ全体で使用する変数
-needs: map[string]Need        # 依存関係の定義
-concurrency: string|int       # 並行実行制御
-if: string                    # 条件付き実行
-loop: Loop                    # ループ設定
-
-# 必須フィールド
-steps: [Step]|map[string]Step  # 実行するステップ
-```
+{{ includex("examples/chapter09/runbook_structure.yml") }}
 
 ### Step（ステップ）の構造
 
-```yaml
-# ステップの基本構造
-step_name:
-  desc: string                 # ステップの説明（オプション）
-  if: string                   # 条件付き実行（オプション）
-  loop: Loop                   # ループ設定（オプション）
-  
-  # 実行内容（いずれか一つ）
-  req: HTTPRequest            # HTTPリクエスト
-  greq: GRPCRequest          # gRPCリクエスト
-  db: DBQuery                # データベースクエリ
-  cdp: CDPAction             # ブラウザ操作
-  ssh: SSHCommand            # SSH実行
-  exec: ExecCommand          # ローカルコマンド実行
-  include: Include           # 他のシナリオをインクルード
-  
-  # 検証・出力
-  test: string               # テストアサーション（オプション）
-  dump: map[string]any       # デバッグ出力（オプション）
-```
+{{ includex("examples/chapter09/step_structure.yml") }}
 
 ### Runner（ランナー）の定義
 
-```yaml
-runners:
-  # HTTPランナー
-  api_name: "https://api.example.com"
-  
-  # または詳細設定
-  api_name:
-    type: http
-    base_url: "https://api.example.com"
-    timeout: 30s
-    headers:
-      User-Agent: "MyApp/1.0"
-    
-  # データベースランナー
-  db_name: "postgres://user:pass@host:5432/dbname"
-  
-  # gRPCランナー
-  grpc_name: "grpc://grpc.example.com:443"
-  
-  # CDPランナー
-  browser_name: "chrome://new"
-  
-  # SSHランナー
-  ssh_name: "ssh://user@host:22"
-```
+{{ includex("examples/chapter09/runner_definition.yml") }}
 
 ### Loop（ループ）の設定
 
-```yaml
-# 単純な回数指定
-loop: 5
-
-# 詳細設定
-loop:
-  count: 10                    # 最大実行回数
-  until: string               # 終了条件（式）
-  minInterval: 1              # 最小間隔（秒）
-  maxInterval: 10             # 最大間隔（秒）
-  jitter: true               # ランダムな間隔を追加
-  multiplier: 1.5            # 間隔の倍率
-  concurrent: 1              # 並行実行数
-```
+{{ includex("examples/chapter09/loop_settings.yml") }}
 
 ### HTTPRequest（HTTPリクエスト）の構造
 
-```yaml
-req:
-  /path/to/endpoint:
-    method:                    # get, post, put, patch, delete
-      headers:
-        Header-Name: "value"
-      query:
-        param1: "value1"
-        param2: "value2"
-      body:
-        application/json:      # JSON形式
-          key: "value"
-        application/x-www-form-urlencoded:  # フォーム形式
-          key: "value"
-        multipart/form-data:   # マルチパート形式
-          file: "@/path/to/file"
-          field: "value"
-        text/plain: |          # プレーンテキスト
-          テキストデータ
-      timeout: 30s             # タイムアウト
-      followRedirect: true     # リダイレクト追従
-```
+{{ includex("examples/chapter09/http_request_structure.yml") }}
 
 ### DBQuery（データベースクエリ）の構造
 
-```yaml
-db:
-  runner_name:///
-    query: |
-      SELECT * FROM users
-      WHERE id = $1
-    params:
-      - "{{ vars.user_id }}"
-    timeout: 30s
-```
+{{ includex("examples/chapter09/db_query_structure.yml") }}
 
 ### CDPAction（ブラウザ操作）の構造
 
-```yaml
-cdp:
-  runner_name:///
-    actions:
-      - navigate: "https://example.com"
-      - waitVisible: "selector"
-      - click: "button"
-      - type:
-          selector: "input"
-          text: "入力テキスト"
-      - screenshot: "/path/to/screenshot.png"
-      - evaluate: "JavaScript code"
-```
+{{ includex("examples/chapter09/cdp_action_structure.yml") }}
 
 ## 全ビルトイン関数一覧
 

@@ -1,0 +1,49 @@
+desc: ステップの基本構造例
+runners:
+  api: https://api.example.com
+  db: postgres://user:pass@localhost:5432/testdb
+  browser: chrome://new
+  server: ssh://user@host:22
+
+steps:
+  # ステップの基本構造を示す例
+  http_request_example:
+    desc: HTTPリクエストの例                # ステップの説明（オプション）
+    if: env.RUN_HTTP_TEST == "true"        # 条件付き実行（オプション）
+    loop: 3                                 # ループ設定（オプション）
+    req:                                    # HTTPリクエスト
+      api:///users:
+        get:
+    test: current.res.status == 200         # テストアサーション（オプション）
+    dump:                                   # デバッグ出力（オプション）
+      status: current.res.status
+      
+  db_query_example:
+    desc: データベースクエリの例
+    db:                                     # データベースクエリ
+      db:///:
+        query: SELECT COUNT(*) as count FROM users
+    test: current.rows[0].count >= 0
+    
+  browser_action_example:
+    desc: ブラウザ操作の例
+    cdp:                                    # ブラウザ操作
+      browser:///:
+        actions:
+          - navigate: https://example.com
+          
+  ssh_command_example:
+    desc: SSHコマンド実行の例
+    ssh:                                    # SSH実行
+      server:///:
+        command: echo "Hello from SSH"
+        
+  local_command_example:
+    desc: ローカルコマンド実行の例
+    exec:                                   # ローカルコマンド実行
+      command: echo "Hello from local"
+      
+  include_example:
+    desc: 他のシナリオをインクルードする例
+    include:                                # 他のシナリオをインクルード
+      path: ./another_scenario.yml

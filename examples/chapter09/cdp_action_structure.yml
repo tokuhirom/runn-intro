@@ -1,0 +1,19 @@
+desc: CDP（ブラウザ操作）アクション構造の例
+runners:
+  browser: chrome://new
+
+steps:
+  browser_test:
+    cdp:
+      browser:///:
+        actions:
+          - navigate: "https://example.com"
+          - waitVisible: "h1"
+          - click: "button#submit"
+          - type:
+              selector: "input#search"
+              text: "テスト入力"
+          - screenshot: "./screenshot.png"
+          - evaluate: "document.title"
+    test: |
+      current.res.actions[5].result == "Example Domain"

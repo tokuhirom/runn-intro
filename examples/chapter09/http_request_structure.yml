@@ -1,0 +1,66 @@
+desc: HTTPリクエスト構造の例
+runners:
+  api: https://api.example.com
+
+steps:
+  # 各種メソッドの例
+  get_request:
+    req:
+      api:///path/to/endpoint:
+        get:                         # GETメソッド
+          headers:
+            Accept: "application/json"
+          query:
+            param1: "value1"
+            param2: "value2"
+          timeout: 30s
+          followRedirect: true
+    test: current.res.status == 200
+    
+  post_json:
+    req:
+      api:///users:
+        post:                        # POSTメソッド
+          headers:
+            Content-Type: "application/json"
+          body:
+            application/json:        # JSON形式
+              name: "Test User"
+              email: "test@example.com"
+    test: current.res.status == 201
+    
+  post_form:
+    req:
+      api:///form-endpoint:
+        post:
+          body:
+            application/x-www-form-urlencoded:  # フォーム形式
+              field1: "value1"
+              field2: "value2"
+    test: current.res.status == 200
+    
+  post_multipart:
+    req:
+      api:///upload:
+        post:
+          body:
+            multipart/form-data:     # マルチパート形式
+              file: "@./test-file.txt"
+              description: "Test file upload"
+    test: current.res.status == 200
+    
+  put_text:
+    req:
+      api:///documents/1:
+        put:                         # PUTメソッド
+          body:
+            text/plain: |            # プレーンテキスト
+              これはテスト用の
+              テキストデータです
+    test: current.res.status == 200
+    
+  delete_request:
+    req:
+      api:///users/1:
+        delete:                      # DELETEメソッド
+    test: current.res.status == 204

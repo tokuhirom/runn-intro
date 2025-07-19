@@ -1,0 +1,26 @@
+desc: ループ設定の例
+runners:
+  api: https://api.example.com
+
+steps:
+  # 単純な回数指定
+  simple_loop:
+    loop: 5
+    req:
+      api:///health:
+        get:
+    test: current.res.status == 200
+
+  # 詳細設定
+  detailed_loop:
+    loop:
+      count: 10                    # 最大実行回数
+      until: current.res.status == 200  # 終了条件（式）
+      minInterval: 1              # 最小間隔（秒）
+      maxInterval: 10             # 最大間隔（秒）
+      jitter: true               # ランダムな間隔を追加
+      multiplier: 1.5            # 間隔の倍率
+    req:
+      api:///unstable-endpoint:
+        get:
+    test: current.res.status == 200
