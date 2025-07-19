@@ -1,6 +1,12 @@
+runners:
+  api: https://api.example.com
+vars:
+  apiVersion: "v1"
+  apiKey: "test-api-key"
+  timeout: "30"
 steps:
   - req:
-      /{{ vars.apiVersion }}/users:  # パス内での変数展開
+      api:///{{ vars.apiVersion }}/users:  # パス内での変数展開
         get:
           headers:
             X-API-Key: "{{ vars.apiKey }}"

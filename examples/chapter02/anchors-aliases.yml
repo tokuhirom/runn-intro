@@ -3,9 +3,12 @@ commonHeaders: &headers
   Content-Type: application/json
   X-API-Version: "1.0"
 
+runners:
+  api: https://api.example.com
+
 steps:
   - req:
-      /users:
+      api:///users:
         get:
           headers:
             <<: *headers          # 共通ヘッダーを使用

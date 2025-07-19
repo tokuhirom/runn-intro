@@ -3,7 +3,7 @@ runners:
   req: https://api.example.com
 steps:
   - req:                              # steps[0]
-      /users:
+      req:///users:
         post:
           body:
             application/json:
@@ -12,7 +12,7 @@ steps:
     test: steps[0].res.status == 201
   
   - req:                              # steps[1]
-      /login:
+      req:///login:
         post:
           body:
             application/json:

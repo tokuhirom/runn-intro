@@ -1,6 +1,6 @@
 vars:
   baseURL: ${BASE_URL:-https://api.example.com}
-  apiKey: ${API_KEY}
+  apiKey: ${API_KEY:-test-api-key}
   environment: ${ENV:-development}
   
   # 環境別の設定をマップで管理
@@ -11,3 +11,15 @@ vars:
     production:
       timeout: 30
       retries: 1
+
+runners:
+  api: "{{ vars.baseURL }}"
+
+steps:
+  test_request:
+    req:
+      api:///test:
+        get:
+          headers:
+            X-API-Key: "{{ vars.apiKey }}"
+    test: current.res.status == 200

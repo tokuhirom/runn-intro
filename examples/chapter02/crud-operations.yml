@@ -1,13 +1,13 @@
 desc: ブログ記事のCRUD操作をテスト
 runners:
-  api: https://blog-api.example.com
+  api: https://blog-api.example.com/api
 vars:
   authorId: "author-123"
 steps:
   # 1. 記事を作成
   create_post:
     req:
-      /posts:
+      api:///posts:
         post:
           body:
             application/json:
@@ -21,7 +21,7 @@ steps:
   # 2. 作成した記事を取得
   get_post:
     req:
-      /posts/{{ steps.create_post.res.body.id }}:
+      api:///posts/{{ steps.create_post.res.body.id }}:
         get:
     test: |
       steps.get_post.res.status == 200 &&
@@ -30,7 +30,7 @@ steps:
   # 3. 記事を更新
   update_post:
     req:
-      /posts/{{ steps.create_post.res.body.id }}:
+      api:///posts/{{ steps.create_post.res.body.id }}:
         put:
           body:
             application/json:
@@ -41,7 +41,7 @@ steps:
   # 4. 更新を確認
   verify_update:
     req:
-      /posts/{{ steps.create_post.res.body.id }}:
+      api:///posts/{{ steps.create_post.res.body.id }}:
         get:
     test: |
       steps.verify_update.res.body.title == "更新されたテスト記事"
@@ -49,13 +49,13 @@ steps:
   # 5. 記事を削除
   delete_post:
     req:
-      /posts/{{ steps.create_post.res.body.id }}:
+      api:///posts/{{ steps.create_post.res.body.id }}:
         delete:
     test: steps.delete_post.res.status == 204
 
   # 6. 削除を確認
   verify_delete:
     req:
-      /posts/{{ steps.create_post.res.body.id }}:
+      api:///posts/{{ steps.create_post.res.body.id }}:
         get:
     test: steps.verify_delete.res.status == 404

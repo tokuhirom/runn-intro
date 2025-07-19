@@ -4,7 +4,7 @@ vars:
   timeout: 30
   
   # 環境変数から取得
-  apiKey: ${API_KEY}
+  apiKey: ${API_KEY:-test-api-key}
   environment: ${ENV:-development}  # デフォルト値付き
   
   # 複雑なデータ構造
@@ -14,3 +14,15 @@ vars:
     roles:
       - admin
       - user
+
+runners:
+  api: https://api.example.com
+
+steps:
+  test_vars:
+    req:
+      api:///{{ vars.apiVersion }}/test:
+        get:
+          headers:
+            X-API-Key: "{{ vars.apiKey }}"
+    test: current.res.status == 200

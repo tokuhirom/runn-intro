@@ -1,9 +1,11 @@
+runners:
+  api: https://api.example.com
 steps:
   - desc: |
       これは複数行の
       説明文です
     req:
-      /test:
+      api:///test:
         post:
           body:
             text/plain: |

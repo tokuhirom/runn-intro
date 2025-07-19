@@ -1,9 +1,15 @@
+runners:
+  api: https://api.example.com
+vars:
+  environment: "test"
+  userId: "123"
+  token: "test-token"
 steps:
   api_call:
     desc: ユーザー情報を更新する    # ステップの説明
     if: vars.environment == "test"  # 条件付き実行
     req:
-      /users/{{ vars.userId }}:
+      api:///users/{{ vars.userId }}:
         put:
           headers:
             Content-Type: application/json

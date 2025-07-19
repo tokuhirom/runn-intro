@@ -4,7 +4,7 @@ runners:
 steps:
   create_user:                        # 名前付きステップ
     req:
-      /users:
+      req:///users:
         post:
           body:
             application/json:
@@ -14,7 +14,7 @@ steps:
   
   login_user:                         # 名前付きステップ
     req:
-      /login:
+      req:///login:
         post:
           body:
             application/json:
