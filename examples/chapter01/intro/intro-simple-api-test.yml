@@ -1,9 +1,15 @@
 # これだけでAPIテストが完成！
 desc: ユーザー登録から認証までの一連のフロー
+
+runners:
+  req: http://localhost:8085
+
 steps:
   - req:
       /users:
         post:
           body:
-            name: "Alice"
+            application/json:
+              name: "Alice"
+              email: "alice@example.com"
     test: current.res.status == 201

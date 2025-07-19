@@ -1,0 +1,13 @@
+desc: HTTPプロトコルの例
+
+runners:
+  api: http://localhost:8080
+
+steps:
+  - desc: HTTPリクエストの例
+    api:
+      /get:
+        get:
+          query:
+            param: value
+    test: current.res.status == 200
