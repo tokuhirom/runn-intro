@@ -72,7 +72,9 @@ func TestUserAPI(t *testing.T) {
 }
 ```
 
+```yaml
 {{ includex("examples/chapter07/user_test.yml") }}
+```
 
 ## 基本的な統合方法
 
@@ -425,7 +427,9 @@ func TestAuthenticationFlow(t *testing.T) {
 }
 ```
 
+```yaml
 {{ includex("examples/chapter07/auth_flow.yml") }}
+```
 
 ### E2Eワークフローテスト
 
@@ -490,7 +494,9 @@ func TestE2EWorkflow(t *testing.T) {
 }
 ```
 
+```yaml
 {{ includex("examples/chapter07/e2e_workflow.yml") }}
+```
 
 ## パフォーマンステスト
 
@@ -545,9 +551,13 @@ func TestAPIPerformance(t *testing.T) {
 }
 ```
 
+```yaml
 {{ includex("examples/chapter07/performance_test.yml") }}
+```
 
+```yaml
 {{ includex("examples/chapter07/performance/user_simulation.yml") }}
+```
 
 ## デバッグとトラブルシューティング
 
@@ -629,7 +639,9 @@ func TestWithDetailedErrorInfo(t *testing.T) {
 
 ### GitHub Actionsでの実行
 
+```yaml
 {{ includex("examples/chapter07/github_actions.yml") }}
+```
 
 ### Dockerを使った統合テスト
 

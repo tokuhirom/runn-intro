@@ -147,14 +147,19 @@ func setupTestEnvironment(t *testing.T) *TestEnvironment {
 
     return env
 }
-```#### 認証フロ
-ーのテスト
+```
 
+#### 認証フローのテスト
+
+```yaml
 {{ includex("examples/chapter08/auth/login.yml") }}
+```
 
 #### 商品管理のテスト
 
+```yaml
 {{ includex("examples/chapter08/products/crud.yml") }}
+```
 
 ### 2. マイクロサービスの統合テスト
 
@@ -188,7 +193,9 @@ func TestMicroservicesIntegration(t *testing.T) {
 }
 ```
 
+```yaml
 {{ includex("examples/chapter08/microservices/user_journey.yml") }}
+```
 
 ## ベストプラクティス
 
@@ -196,21 +203,29 @@ func TestMicroservicesIntegration(t *testing.T) {
 
 #### 固定データとランダムデータの使い分け
 
+```yaml
 {{ includex("examples/chapter08/data_management.yml") }}
+```
 
 ### 2. エラーハンドリングとリトライ戦略
 
+```yaml
 {{ includex("examples/chapter08/error_handling.yml") }}
+```
 
 ### 3. 環境別設定の管理
 
+```yaml
 {{ includex("examples/chapter08/environment_config.yml") }}
+```
 
 ## デバッグ方法
 
 ### 1. 段階的なデバッグ
 
+```yaml
 {{ includex("examples/chapter08/debugging.yml") }}
+```
 
 ## パフォーマンスチューニング
 
@@ -267,7 +282,9 @@ func TestAPIPerformance(t *testing.T) {
 }
 ```
 
+```yaml
 {{ includex("examples/chapter08/performance/load_test.yml") }}
+```
 
 ## まとめ
 

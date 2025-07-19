@@ -6,31 +6,45 @@
 
 ### Runbookの基本構造
 
+```yaml
 {{ includex("examples/chapter09/runbook_structure.yml") }}
+```
 
 ### Step（ステップ）の構造
 
+```yaml
 {{ includex("examples/chapter09/step_structure.yml") }}
+```
 
 ### Runner（ランナー）の定義
 
+```yaml
 {{ includex("examples/chapter09/runner_definition.yml") }}
+```
 
 ### Loop（ループ）の設定
 
+```yaml
 {{ includex("examples/chapter09/loop_settings.yml") }}
+```
 
 ### HTTPRequest（HTTPリクエスト）の構造
 
+```yaml
 {{ includex("examples/chapter09/http_request_structure.yml") }}
+```
 
 ### DBQuery（データベースクエリ）の構造
 
+```yaml
 {{ includex("examples/chapter09/db_query_structure.yml") }}
+```
 
 ### CDPAction（ブラウザ操作）の構造
 
+```yaml
 {{ includex("examples/chapter09/cdp_action_structure.yml") }}
+```
 
 ## 全ビルトイン関数一覧
 
@@ -269,7 +283,7 @@ A: `go.mod`に`github.com/k1LoW/runn`を追加し、テストファイルで`run
 A: シンプルなシナリオはリスト形式、複雑なシナリオや可読性を重視する場合はマップ形式を推奨します。
 
 **Q: 変数はどのように定義・参照しますか？**
-A: `vars:`セクションで定義し、`{{ vars.変数名 }}`で参照します。環境変数は`{{ env.環境変数名 }}`で参照できます。
+A: `vars:`セクションで定義し、`{% raw %}{{ vars.変数名 }}{% endraw %}`で参照します。環境変数は`{% raw %}{{ env.環境変数名 }}{% endraw %}`で参照できます。
 
 **Q: 前のステップの結果を次のステップで使用するには？**
 A: `steps.ステップ名.res.body`（マップ形式）または`steps[インデックス].res.body`（リスト形式）で参照します。
