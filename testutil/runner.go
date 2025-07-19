@@ -27,6 +27,11 @@ func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
 	
 	// Run each file
 	for _, file := range files {
+		// Skip conceptual example files
+		if filepath.Base(file) == "intro-multi-protocol.yml" {
+			continue
+		}
+		
 		t.Run(filepath.Base(file), func(t *testing.T) {
 			opts := []runn.Option{
 				runn.T(t),
