@@ -1,0 +1,19 @@
+desc: 基本的なfaker関数の使用例
+steps:
+  faker_basic:
+    dump: |
+      {
+        "name": faker.name(),
+        "email": faker.email(),
+        "phone": faker.phoneNumber(),
+        "address": faker.address(),
+        "company": faker.company(),
+        "jobTitle": faker.jobTitle(),
+        "uuid": faker.uuid(),
+        "url": faker.url()
+      }
+    test: |
+      # 生成されたデータの基本的な検証
+      contains(current.email, "@") &&
+      len(current.uuid) == 36 &&
+      startsWith(current.url, "http")

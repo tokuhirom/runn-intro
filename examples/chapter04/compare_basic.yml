@@ -1,0 +1,15 @@
+desc: compare関数の基本的な使用例
+steps:
+  compare_example:
+    dump: |
+      {
+        "expected": {"name": "Alice", "age": 30, "city": "Tokyo"},
+        "actual": {"name": "Alice", "age": 31, "country": "Japan"}
+      }
+    test: |
+      # compare関数で差分を検出
+      compare(current.expected, current.actual) != null
+    
+    dump_diff:
+      # 差分の詳細を表示
+      diff: compare(current.expected, current.actual)
