@@ -1,5 +1,5 @@
 vars:
-  baseURL: ${BASE_URL:-https://api.example.com}
+  baseURL: ${BASE_URL:-http://localhost:8080}
   apiKey: ${API_KEY:-test-api-key}
   environment: ${ENV:-development}
   
@@ -18,7 +18,7 @@ runners:
 steps:
   test_request:
     req:
-      api:///test:
+      /test:
         get:
           headers:
             X-API-Key: "{{ vars.apiKey }}"

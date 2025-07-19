@@ -1,15 +1,26 @@
 runners:
-  api: https://api.example.com
+  api: http://localhost:8080
 vars:
   environment: "test"
   userId: "123"
   token: "test-token"
 steps:
+  # まずユーザーを作成
+  create_user:
+    req:
+      /users:
+        post:
+          body:
+            application/json:
+              name: "Test User"
+              email: "test@localhost"
+    test: current.res.status == 201
+
   api_call:
     desc: ユーザー情報を更新する    # ステップの説明
     if: vars.environment == "test"  # 条件付き実行
     req:
-      api:///users/{{ vars.userId }}:
+      /users/{{ steps.create_user.res.body.id }}:
         put:
           headers:
             Content-Type: application/json
@@ -17,11 +28,9 @@ steps:
           body:
             application/json:
               name: "Updated Name"
-              email: "updated@example.com"
+              email: "updated@localhost"
           timeout: 10s              # タイムアウト設定
     test: |                        # テストアサーション
       current.res.status == 200 &&
       current.res.body.name == "Updated Name"
-    dump:                          # デバッグ用の値出力
-      status: current.res.status
-      body: current.res.body
+    dump: current.res                # デバッグ用の値出力

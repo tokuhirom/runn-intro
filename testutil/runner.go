@@ -27,8 +27,9 @@ func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
 	
 	// Run each file
 	for _, file := range files {
-		// Skip conceptual example files
-		if filepath.Base(file) == "intro-multi-protocol.yml" {
+		// Skip conceptual example files and database examples
+		baseName := filepath.Base(file)
+		if baseName == "intro-multi-protocol.yml" || baseName == "database-query.yml" {
 			continue
 		}
 		
@@ -38,6 +39,11 @@ func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
 				runn.T(t),
 				runn.Runner("req", serverURL),
 				runn.Runner("api", serverURL),
+				runn.Runner("auth", serverURL),
+				runn.Runner("blog-api", serverURL),
+				runn.Runner("https://api.example.com", serverURL),
+				runn.Runner("https://auth.example.com", serverURL),
+				runn.Runner("https://blog-api.example.com", serverURL),
 				runn.Runner("http://localhost:8080", serverURL),
 			}
 			

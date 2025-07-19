@@ -1,18 +1,18 @@
 desc: ユーザー作成とログインのテスト（リスト形式）
 runners:
-  req: https://api.example.com
+  req: http://localhost:8080
 steps:
   - req:                              # steps[0]
-      req:///users:
+      /users:
         post:
           body:
             application/json:
               name: "Alice"
-              email: "alice@example.com"
+              email: "alice@localhost"
     test: steps[0].res.status == 201
   
   - req:                              # steps[1]
-      req:///login:
+      /login:
         post:
           body:
             application/json:

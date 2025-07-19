@@ -4,11 +4,11 @@ commonHeaders: &headers
   X-API-Version: "1.0"
 
 runners:
-  api: https://api.example.com
+  api: http://localhost:8080
 
 steps:
   - req:
-      api:///users:
+      /users:
         get:
           headers:
             <<: *headers          # 共通ヘッダーを使用

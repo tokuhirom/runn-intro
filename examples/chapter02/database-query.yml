@@ -1,11 +1,11 @@
 runners:
   db: postgres://user:pass@localhost:5432/testdb
 vars:
-  testEmail: "alice@example.com"
+  testEmail: "alice@localhost"
 steps:
   check_user:
     db:
-      db:///
+      db:
         query: |
           SELECT id, name, email, created_at
           FROM users
