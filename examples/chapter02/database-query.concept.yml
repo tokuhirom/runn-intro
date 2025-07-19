@@ -1,3 +1,4 @@
+# TODO: Run this example in a test database
 runners:
   db: postgres://user:pass@localhost:5432/testdb
 vars:

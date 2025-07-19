@@ -131,7 +131,7 @@ runnの変数システムは**驚くほどパワフル**です：
 SQLクエリも**YAMLで自然に記述**：
 
 ```yaml
-{{ includex("examples/chapter02/database-query.yml") }}
+{{ includex("examples/chapter02/database-query.concept.yml") }}
 ```
 
 **ポイント：** HTTPもDBも、同じ`test`構文でアサーション！統一感が素晴らしい。

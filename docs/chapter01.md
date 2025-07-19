@@ -42,7 +42,7 @@ CI/CDでの活用、定期実行タスク、運用自動化など、**テスト�
 HTTP、gRPC、データベース、ブラウザ操作、SSHまで、**すべて同じYAML形式**で記述できます。もう複数のツールを使い分ける必要はありません。
 
 ```yaml
-{{ includex("examples/chapter01/intro/intro-multi-protocol.yml") }}
+{{ includex("examples/chapter01/intro/intro-multi-protocol.concept.yml") }}
 ```
 
 #### 📦 **シングルバイナリ**

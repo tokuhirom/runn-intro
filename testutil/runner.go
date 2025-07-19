@@ -34,7 +34,8 @@ func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
 	for _, file := range files {
 		// Skip conceptual example files and database examples
 		baseName := filepath.Base(file)
-		if baseName == "intro-multi-protocol.yml" || baseName == "database-query.yml" {
+		if strings.HasSuffix(baseName, ".concept.yml") {
+			t.Logf("Skip %s, due to conceptual example files can't run.", baseName)
 			continue
 		}
 
