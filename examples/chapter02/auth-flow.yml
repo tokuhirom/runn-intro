@@ -1,7 +1,7 @@
 desc: JWT認証フローの完全なテスト
 runners:
-  auth: https://auth.example.com
-  api: https://api.example.com
+  auth: http://localhost:8080
+  api: http://localhost:8080
 vars:
   testUser:
     email: "test@example.com"
@@ -10,7 +10,7 @@ steps:
   # ユーザー登録
   register:
     req:
-      auth:///register:
+      /register:
         post:
           body:
             application/json:
@@ -23,7 +23,7 @@ steps:
   # ログイン
   login:
     req:
-      auth:///login:
+      /login:
         post:
           body:
             application/json:
@@ -37,7 +37,7 @@ steps:
   # 認証が必要なAPIにアクセス
   access_protected:
     req:
-      api:///profile:
+      /profile:
         get:
           headers:
             Authorization: "Bearer {{ steps.login.res.body.accessToken }}"
@@ -48,7 +48,7 @@ steps:
   # トークンをリフレッシュ
   refresh:
     req:
-      auth:///refresh:
+      /refresh:
         post:
           body:
             application/json:
@@ -60,7 +60,7 @@ steps:
   # 新しいトークンでアクセス
   access_with_new_token:
     req:
-      api:///profile:
+      /profile:
         get:
           headers:
             Authorization: "Bearer {{ steps.refresh.res.body.accessToken }}"

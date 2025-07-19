@@ -1,20 +1,20 @@
 desc: ユーザー作成とログインのテスト（マップ形式）
 runners:
-  req: https://api.example.com
+  req: http://localhost:8080
 steps:
   create_user:                        # 名前付きステップ
     req:
-      req:///users:
+      /users:
         post:
           body:
             application/json:
               name: "Alice"
-              email: "alice@example.com"
+              email: "alice@localhost"
     test: steps.create_user.res.status == 201
   
   login_user:                         # 名前付きステップ
     req:
-      req:///login:
+      /login:
         post:
           body:
             application/json:

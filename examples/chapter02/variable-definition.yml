@@ -10,18 +10,18 @@ vars:
   # 複雑なデータ構造
   testUser:
     name: "Test User"
-    email: "test@example.com"
+    email: "test@localhost"
     roles:
       - admin
       - user
 
 runners:
-  api: https://api.example.com
+  api: http://localhost:8080
 
 steps:
   test_vars:
     req:
-      api:///{{ vars.apiVersion }}/test:
+      /{{ vars.apiVersion }}/test:
         get:
           headers:
             X-API-Key: "{{ vars.apiKey }}"
