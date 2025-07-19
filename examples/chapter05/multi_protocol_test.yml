@@ -1,0 +1,59 @@
+desc: 複数のランナーを組み合わせたE2Eテスト
+runners:
+  api: https://api.example.com
+  db: postgres://user:pass@localhost:5432/testdb
+  browser: chrome://new
+
+vars:
+  test_user:
+    name: "{{ faker.name() }}"
+    email: "{{ faker.email() }}"
+
+steps:
+  # 1. データベースにテストデータを準備
+  setup_test_data:
+    db:
+      db:///
+        query: |
+          INSERT INTO users (name, email, active)
+          VALUES ($1, $2, true)
+          RETURNING id
+        params:
+          - "{{ vars.test_user.name }}"
+          - "{{ vars.test_user.email }}"
+    test: current.rows[0].id > 0
+
+  # 2. APIでユーザー情報を取得
+  api_get_user:
+    req:
+      api:///users/{{ steps.setup_test_data.rows[0].id }}:
+        get:
+    test: |
+      current.res.status == 200 &&
+      current.res.body.name == vars.test_user.name
+
+  # 3. ブラウザでユーザー管理画面を確認
+  browser_verify_user:
+    cdp:
+      browser:///
+        actions:
+          - navigate: https://admin.example.com/users
+          - waitVisible: '.user-list'
+          - type:
+              selector: '.search-input'
+              text: "{{ vars.test_user.email }}"
+          - click: '.search-button'
+          - waitVisible: '.user-row'
+          - text: '.user-row .user-name'
+    test: current.text == vars.test_user.name
+
+  # 4. データベースからテストデータを削除
+  cleanup_test_data:
+    db:
+      db:///
+        query: |
+          DELETE FROM users
+          WHERE id = $1
+        params:
+          - "{{ steps.setup_test_data.rows[0].id }}"
+    test: current.rowsAffected == 1

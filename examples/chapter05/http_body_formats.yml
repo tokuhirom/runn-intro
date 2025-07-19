@@ -1,0 +1,60 @@
+desc: 様々なボディ形式のHTTPリクエスト
+runners:
+  api: https://api.example.com/v1
+steps:
+  # JSON形式
+  json_request:
+    req:
+      api:///data:
+        post:
+          body:
+            application/json:
+              key: "value"
+              nested:
+                array: [1, 2, 3]
+
+  # フォームデータ
+  form_request:
+    req:
+      api:///form:
+        post:
+          body:
+            application/x-www-form-urlencoded:
+              username: alice
+              password: secret123
+
+  # マルチパートフォーム
+  multipart_request:
+    req:
+      api:///upload:
+        post:
+          body:
+            multipart/form-data:
+              file: "@./testdata/sample.txt"
+              description: "Test file upload"
+
+  # プレーンテキスト
+  text_request:
+    req:
+      api:///webhook:
+        post:
+          body:
+            text/plain: |
+              This is a plain text message
+              with multiple lines
+
+  # XML形式
+  xml_request:
+    req:
+      api:///soap:
+        post:
+          body:
+            application/xml: |
+              <?xml version="1.0" encoding="UTF-8"?>
+              <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                <soap:Body>
+                  <GetUser>
+                    <UserId>123</UserId>
+                  </GetUser>
+                </soap:Body>
+              </soap:Envelope>

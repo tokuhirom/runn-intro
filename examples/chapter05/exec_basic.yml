@@ -1,0 +1,41 @@
+desc: ローカルコマンドの実行
+env:
+  PATH: "${PATH}"
+steps:
+  # 基本的なコマンド実行
+  basic_exec:
+    exec:
+      command: echo "Hello, World!"
+    test: |
+      current.exit_code == 0 &&
+      current.stdout == "Hello, World!\n"
+
+  # 環境変数を設定してコマンド実行
+  exec_with_env:
+    exec:
+      command: env | grep TEST_VAR
+      env:
+        TEST_VAR: "test_value"
+        PATH: "{{ env.PATH }}"
+    test: |
+      current.exit_code == 0 &&
+      current.stdout contains "TEST_VAR=test_value"
+
+  # 作業ディレクトリを指定
+  exec_with_workdir:
+    exec:
+      command: pwd
+      dir: /tmp
+    test: current.stdout contains "/tmp"
+
+  # 複雑なシェルコマンド
+  complex_shell:
+    exec:
+      command: |
+        for i in {1..5}; do
+          echo "Count: $i"
+        done | grep "Count: [35]"
+    test: |
+      current.exit_code == 0 &&
+      current.stdout contains "Count: 3" &&
+      current.stdout contains "Count: 5"

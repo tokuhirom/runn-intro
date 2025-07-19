@@ -1,0 +1,36 @@
+desc: サーバー監視とヘルスチェック
+runners:
+  server: ssh://user@example.com:22
+steps:
+  health_check:
+    ssh:
+      server:///
+        command: |
+          # サービスの状態確認
+          systemctl is-active nginx
+          systemctl is-active postgresql
+          
+          # ポートの確認
+          netstat -tlnp | grep :80
+          netstat -tlnp | grep :5432
+          
+          # ディスク使用量
+          df -h | grep -E '(Filesystem|/dev/)'
+          
+          # メモリ使用量
+          free -m
+          
+          # CPU負荷
+          uptime
+    test: |
+      current.exit_code == 0 &&
+      current.stdout contains "active" &&
+      !(current.stdout contains "failed")
+    
+    dump:
+      health_status: |
+        {
+          "services_active": current.stdout contains "active",
+          "ports_open": current.stdout contains ":80" && current.stdout contains ":5432",
+          "timestamp": time.now()
+        }

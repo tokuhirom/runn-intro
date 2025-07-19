@@ -1,0 +1,22 @@
+desc: プロトコルバッファの動的読み込み
+runners:
+  grpc:
+    addr: grpc://localhost:50051
+    # .protoファイルを指定
+    protos:
+      - ./proto/service.proto
+      - ./proto/common.proto
+    # インポートパスを指定
+    import_paths:
+      - ./proto
+      - ./third_party/proto
+
+steps:
+  dynamic_proto:
+    greq:
+      grpc:///myservice.MyService/GetData:
+        message:
+          id: 123
+          filters:
+            - field: "name"
+              value: "test"

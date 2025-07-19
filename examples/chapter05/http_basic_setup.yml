@@ -1,0 +1,6 @@
+desc: HTTPランナーの基本設定
+runners:
+  api: https://api.example.com/v1
+  # 複数のエンドポイントを定義可能
+  auth: https://auth.example.com
+  webhook: http://localhost:8080/webhook

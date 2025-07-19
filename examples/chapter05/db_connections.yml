@@ -1,0 +1,13 @@
+desc: 対応データベースの接続設定
+runners:
+  # PostgreSQL
+  postgres: postgres://user:password@localhost:5432/testdb?sslmode=disable
+  
+  # MySQL
+  mysql: mysql://user:password@localhost:3306/testdb
+  
+  # SQLite
+  sqlite: sqlite:///path/to/database.db
+  
+  # Cloud Spanner
+  spanner: spanner://projects/my-project/instances/my-instance/databases/my-db

@@ -1,0 +1,35 @@
+desc: 障害時の動作確認
+runners:
+  api: https://api.example.com
+steps:
+  # 正常時のレスポンス確認
+  normal_request:
+    req:
+      api:///health:
+        get:
+    test: current.res.status == 200
+
+  # サーバーに負荷をかける
+  load_test:
+    loop:
+      count: 100
+      concurrent: 10
+    req:
+      api:///heavy-operation:
+        post:
+          body:
+            application/json:
+              data: "{{ faker.randomString(1000) }}"
+    test: current.res.status in [200, 202, 429]  # 成功またはレート制限
+
+  # 障害後の復旧確認
+  recovery_check:
+    loop:
+      count: 5
+      until: current.res.status == 200
+      minInterval: 1
+      maxInterval: 5
+    req:
+      api:///health:
+        get:
+    test: current.res.status == 200

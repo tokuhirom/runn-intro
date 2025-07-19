@@ -1,0 +1,60 @@
+desc: トランザクション処理の例
+runners:
+  postgres: postgres://user:password@localhost:5432/testdb?sslmode=disable
+vars:
+  user_id: 1
+  total_amount: 1000
+  order_items:
+    - product_id: 101
+      quantity: 2
+      price: 250
+    - product_id: 102
+      quantity: 1
+      price: 500
+  should_rollback: false
+steps:
+  # トランザクション開始
+  begin_transaction:
+    db:
+      postgres:///
+        query: BEGIN
+
+  # 複数の操作を実行
+  insert_order:
+    db:
+      postgres:///
+        query: |
+          INSERT INTO orders (user_id, total_amount)
+          VALUES ($1, $2)
+          RETURNING id
+        params:
+          - "{{ vars.user_id }}"
+          - "{{ vars.total_amount }}"
+
+  insert_order_items:
+    loop:
+      count: len(vars.order_items)
+    db:
+      postgres:///
+        query: |
+          INSERT INTO order_items (order_id, product_id, quantity, price)
+          VALUES ($1, $2, $3, $4)
+        params:
+          - "{{ steps.insert_order.rows[0].id }}"
+          - "{{ vars.order_items[i].product_id }}"
+          - "{{ vars.order_items[i].quantity }}"
+          - "{{ vars.order_items[i].price }}"
+
+  # トランザクションコミット
+  commit_transaction:
+    db:
+      postgres:///
+        query: COMMIT
+    test: current.rowsAffected == 0  # COMMITは行に影響しない
+
+  # エラー時のロールバック例
+  rollback_on_error:
+    if: vars.should_rollback
+    db:
+      postgres:///
+        query: ROLLBACK

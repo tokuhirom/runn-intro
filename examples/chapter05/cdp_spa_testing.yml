@@ -1,0 +1,39 @@
+desc: SPAアプリケーションのテスト
+runners:
+  browser: chrome://new
+steps:
+  spa_testing:
+    cdp:
+      browser:///
+        actions:
+          - navigate: https://spa-app.example.com
+          
+          # 初期ローディング完了まで待機
+          - wait: |
+              window.app && window.app.initialized === true
+          
+          # ルーティングのテスト
+          - click: 'a[href="/products"]'
+          - waitVisible: '.product-list'
+          
+          # 動的コンテンツの読み込み待機
+          - wait: |
+              document.querySelectorAll('.product-item').length > 0
+          
+          # 検索機能のテスト
+          - type:
+              selector: '.search-input'
+              text: 'laptop'
+          - click: '.search-button'
+          
+          # 検索結果の待機
+          - wait: |
+              document.querySelector('.search-results') &&
+              !document.querySelector('.loading')
+          
+          - textAll: '.product-item .product-name'
+    
+    test: |
+      all(current.textAll, {
+        lower(.) contains "laptop"
+      })
