@@ -1,6 +1,8 @@
 desc: 変数を使用したPOSTリクエスト
+
 runners:
   req: http://localhost:8080
+
 vars:
   username: testuser
   email: test@example.com

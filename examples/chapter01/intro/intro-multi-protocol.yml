@@ -1,5 +1,5 @@
 # HTTPもgRPCもDBも、すべて同じ形式！
 steps:
   - req: { /users: { get: {} } }           # HTTP
-  - grpc: { getUser: { id: 1 } }          # gRPC  
+  - grpc: { getUser: { id: 1 } }          # gRPC
   - db: { query: "SELECT * FROM users" }   # Database
