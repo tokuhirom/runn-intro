@@ -72,31 +72,7 @@ func TestUserAPI(t *testing.T) {
 }
 ```
 
-```yaml
-# testdata/user_test.yml
-desc: ユーザーAPI テスト
-steps:
-  create_user:
-    req:
-      api:///users:
-        post:
-          body:
-            application/json:
-              name: "Alice"
-              email: "alice@example.com"
-    test: |
-      current.res.status == 201 &&
-      current.res.body.name == "Alice" &&
-      current.res.body.id > 0
-
-  get_user:
-    req:
-      api:///users/{{ steps.create_user.res.body.id }}:
-        get:
-    test: |
-      current.res.status == 200 &&
-      current.res.body.name == "Alice"
-```
+{{ includex("examples/chapter07/user_test.yml") }}
 
 ## 基本的な統合方法
 
@@ -449,83 +425,7 @@ func TestAuthenticationFlow(t *testing.T) {
 }
 ```
 
-```yaml
-# testdata/auth_flow.yml
-desc: 認証フローの完全テスト
-steps:
-  # ユーザー登録
-  register_user:
-    req:
-      api:///auth/register:
-        post:
-          body:
-            application/json:
-              username: "{{ vars.test_username }}"
-              password: "{{ vars.test_password }}"
-              email: "test@example.com"
-    test: current.res.status == 201
-
-  # ログイン
-  login:
-    req:
-      api:///auth/login:
-        post:
-          body:
-            application/json:
-              username: "{{ vars.test_username }}"
-              password: "{{ vars.test_password }}"
-    test: |
-      current.res.status == 200 &&
-      current.res.body.token != null &&
-      current.res.body.expires_in > 0
-
-  # 認証が必要なエンドポイントへのアクセス
-  access_protected:
-    req:
-      api:///profile:
-        get:
-          headers:
-            Authorization: "Bearer {{ steps.login.res.body.token }}"
-    test: |
-      current.res.status == 200 &&
-      current.res.body.username == vars.test_username
-
-  # トークンの検証
-  verify_token:
-    dump:
-      # JWTトークンをデコード（実際の実装では適切なライブラリを使用）
-      token_payload: |
-        fromBase64(split(steps.login.res.body.token, ".")[1])
-    test: |
-      current.token_payload.username == vars.test_username
-
-  # 無効なトークンでのアクセス
-  invalid_token_access:
-    req:
-      api:///profile:
-        get:
-          headers:
-            Authorization: "Bearer invalid-token"
-    test: current.res.status == 401
-
-  # ログアウト
-  logout:
-    req:
-      api:///auth/logout:
-        post:
-          headers:
-            Authorization: "Bearer {{ steps.login.res.body.token }}"
-    test: current.res.status == 200
-
-  # ログアウト後のアクセス
-  access_after_logout:
-    req:
-      api:///profile:
-        get:
-          headers:
-            Authorization: "Bearer {{ steps.login.res.body.token }}"
-    test: current.res.status == 401
-```
+{{ includex("examples/chapter07/auth_flow.yml") }}
 
 ### E2Eワークフローテスト
 
@@ -590,129 +490,7 @@ func TestE2EWorkflow(t *testing.T) {
 }
 ```
 
-```yaml
-# testdata/e2e_workflow.yml
-desc: E2Eワークフローテスト - 顧客登録から注文完了まで
-steps:
-  # 1. 顧客登録
-  register_customer:
-    req:
-      api:///customers:
-        post:
-          body:
-            application/json: "{{ vars.test_customer }}"
-    test: |
-      current.res.status == 201 &&
-      current.res.body.id > 0
-
-  # 2. 商品情報の取得
-  get_product:
-    req:
-      api:///products/{{ vars.test_product_id }}:
-        get:
-    test: |
-      current.res.status == 200 &&
-      current.res.body.stock >= vars.test_quantity
-
-  # 3. カートに商品を追加
-  add_to_cart:
-    req:
-      api:///customers/{{ steps.register_customer.res.body.id }}/cart:
-        post:
-          body:
-            application/json:
-              product_id: "{{ vars.test_product_id }}"
-              quantity: "{{ vars.test_quantity }}"
-    test: current.res.status == 200
-
-  # 4. 注文の作成
-  create_order:
-    req:
-      api:///orders:
-        post:
-          body:
-            application/json:
-              customer_id: "{{ steps.register_customer.res.body.id }}"
-              items:
-                - product_id: "{{ vars.test_product_id }}"
-                  quantity: "{{ vars.test_quantity }}"
-                  price: "{{ steps.get_product.res.body.price }}"
-    test: |
-      current.res.status == 201 &&
-      current.res.body.order_id != null &&
-      current.res.body.total_amount == steps.get_product.res.body.price * vars.test_quantity
-
-  # 5. 決済処理
-  process_payment:
-    req:
-      payment:///payments:
-        post:
-          body:
-            application/json:
-              order_id: "{{ steps.create_order.res.body.order_id }}"
-              amount: "{{ steps.create_order.res.body.total_amount }}"
-              customer_id: "{{ steps.register_customer.res.body.id }}"
-    test: |
-      current.res.status == 200 &&
-      current.res.body.status == "completed"
-
-  # 6. 注文ステータスの更新
-  update_order_status:
-    req:
-      api:///orders/{{ steps.create_order.res.body.order_id }}/payment:
-        put:
-          body:
-            application/json:
-              transaction_id: "{{ steps.process_payment.res.body.transaction_id }}"
-              status: "paid"
-    test: current.res.status == 200
-
-  # 7. 在庫の確認
-  verify_stock_update:
-    req:
-      api:///products/{{ vars.test_product_id }}:
-        get:
-    test: |
-      current.res.body.stock == steps.get_product.res.body.stock - vars.test_quantity
-
-  # 8. 通知の送信確認
-  verify_notification:
-    req:
-      notification:///notifications:
-        get:
-          query:
-            customer_id: "{{ steps.register_customer.res.body.id }}"
-            type: "order_confirmation"
-    test: |
-      current.res.status == 200 &&
-      len(current.res.body.notifications) > 0 &&
-      current.res.body.notifications[0].order_id == steps.create_order.res.body.order_id
-
-  # 9. データベースの整合性確認
-  verify_database_consistency:
-    db:
-      db:///
-        query: |
-          SELECT 
-            o.id as order_id,
-            o.status,
-            o.total_amount,
-            c.name as customer_name,
-            p.name as product_name,
-            p.stock
-          FROM orders o
-          JOIN customers c ON o.customer_id = c.id
-          JOIN order_items oi ON o.id = oi.order_id
-          JOIN products p ON oi.product_id = p.id
-          WHERE o.id = $1
-        params:
-          - "{{ steps.create_order.res.body.order_id }}"
-    test: |
-      len(current.rows) == 1 &&
-      current.rows[0].status == "paid" &&
-      current.rows[0].customer_name == vars.test_customer.name &&
-      current.rows[0].stock == steps.get_product.res.body.stock - vars.test_quantity
-```
+{{ includex("examples/chapter07/e2e_workflow.yml") }}
 
 ## パフォーマンステスト
 
@@ -767,38 +545,9 @@ func TestAPIPerformance(t *testing.T) {
 }
 ```
 
-```yaml
-# testdata/performance_test.yml
-desc: APIパフォーマンステスト
-steps:
-  # 並行負荷テスト
-  load_test:
-    loop:
-      count: "{{ vars.concurrent_users }}"
-    include:
-      path: ./performance/user_simulation.yml
-      vars:
-        user_id: "{{ i }}"
-        requests_count: "{{ vars.requests_per_user }}"
-```
+{{ includex("examples/chapter07/performance_test.yml") }}
 
-```yaml
-# testdata/performance/user_simulation.yml
-desc: 単一ユーザーのシミュレーション
-steps:
-  user_requests:
-    loop:
-      count: "{{ vars.requests_count }}"
-    req:
-      api:///users:
-        get:
-          query:
-            page: "{{ (i % 100) + 1 }}"
-            limit: 10
-    test: |
-      current.res.status == 200 &&
-      current.res.response_time < 1000  # 1秒以内のレスポンス
-```
+{{ includex("examples/chapter07/performance/user_simulation.yml") }}
 
 ## デバッグとトラブルシューティング
 
@@ -880,68 +629,7 @@ func TestWithDetailedErrorInfo(t *testing.T) {
 
 ### GitHub Actionsでの実行
 
-```yaml
-# .github/workflows/api_test.yml
-name: API Tests
-
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    
-    services:
-      postgres:
-        image: postgres:13
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: testdb
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.21
-    
-    - name: Install dependencies
-      run: go mod download
-    
-    - name: Run database migrations
-      run: |
-        go run ./cmd/migrate up
-      env:
-        DATABASE_URL: postgres://postgres:postgres@localhost:5432/testdb?sslmode=disable
-    
-    - name: Run API tests
-      run: |
-        go test -v ./... -tags=integration
-      env:
-        DATABASE_URL: postgres://postgres:postgres@localhost:5432/testdb?sslmode=disable
-        TEST_ENV: ci
-    
-    - name: Upload test results
-      uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: test-results
-        path: |
-          test_screenshots/
-          test_http_dumps/
-          coverage.out
-```
+{{ includex("examples/chapter07/github_actions.yml") }}
 
 ### Dockerを使った統合テスト
 

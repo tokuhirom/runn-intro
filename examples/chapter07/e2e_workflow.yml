@@ -1,0 +1,135 @@
+# testdata/e2e_workflow.yml
+desc: E2Eワークフローテスト - 顧客登録から注文完了まで
+runners:
+  api: https://api.example.com
+  notification: https://notification.example.com
+  payment: https://payment.example.com
+  db: postgres://user:pass@localhost:5432/testdb?sslmode=disable
+
+vars:
+  test_customer:
+    name: "Test Customer"
+    email: "customer@example.com"
+    phone: "+81-90-1234-5678"
+  test_product_id: 1
+  test_quantity: 2
+
+steps:
+  # 1. 顧客登録
+  register_customer:
+    req:
+      api:///customers:
+        post:
+          body:
+            application/json: "{{ vars.test_customer }}"
+    test: |
+      current.res.status == 201 &&
+      current.res.body.id > 0
+
+  # 2. 商品情報の取得
+  get_product:
+    req:
+      api:///products/{{ vars.test_product_id }}:
+        get:
+    test: |
+      current.res.status == 200 &&
+      current.res.body.stock >= vars.test_quantity
+
+  # 3. カートに商品を追加
+  add_to_cart:
+    req:
+      api:///customers/{{ steps.register_customer.res.body.id }}/cart:
+        post:
+          body:
+            application/json:
+              product_id: "{{ vars.test_product_id }}"
+              quantity: "{{ vars.test_quantity }}"
+    test: current.res.status == 200
+
+  # 4. 注文の作成
+  create_order:
+    req:
+      api:///orders:
+        post:
+          body:
+            application/json:
+              customer_id: "{{ steps.register_customer.res.body.id }}"
+              items:
+                - product_id: "{{ vars.test_product_id }}"
+                  quantity: "{{ vars.test_quantity }}"
+                  price: "{{ steps.get_product.res.body.price }}"
+    test: |
+      current.res.status == 201 &&
+      current.res.body.order_id != null &&
+      current.res.body.total_amount == steps.get_product.res.body.price * vars.test_quantity
+
+  # 5. 決済処理
+  process_payment:
+    req:
+      payment:///payments:
+        post:
+          body:
+            application/json:
+              order_id: "{{ steps.create_order.res.body.order_id }}"
+              amount: "{{ steps.create_order.res.body.total_amount }}"
+              customer_id: "{{ steps.register_customer.res.body.id }}"
+    test: |
+      current.res.status == 200 &&
+      current.res.body.status == "completed"
+
+  # 6. 注文ステータスの更新
+  update_order_status:
+    req:
+      api:///orders/{{ steps.create_order.res.body.order_id }}/payment:
+        put:
+          body:
+            application/json:
+              transaction_id: "{{ steps.process_payment.res.body.transaction_id }}"
+              status: "paid"
+    test: current.res.status == 200
+
+  # 7. 在庫の確認
+  verify_stock_update:
+    req:
+      api:///products/{{ vars.test_product_id }}:
+        get:
+    test: |
+      current.res.body.stock == steps.get_product.res.body.stock - vars.test_quantity
+
+  # 8. 通知の送信確認
+  verify_notification:
+    req:
+      notification:///notifications:
+        get:
+          query:
+            customer_id: "{{ steps.register_customer.res.body.id }}"
+            type: "order_confirmation"
+    test: |
+      current.res.status == 200 &&
+      len(current.res.body.notifications) > 0 &&
+      current.res.body.notifications[0].order_id == steps.create_order.res.body.order_id
+
+  # 9. データベースの整合性確認
+  verify_database_consistency:
+    db:
+      db:///:
+        query: |
+          SELECT 
+            o.id as order_id,
+            o.status,
+            o.total_amount,
+            c.name as customer_name,
+            p.name as product_name,
+            p.stock
+          FROM orders o
+          JOIN customers c ON o.customer_id = c.id
+          JOIN order_items oi ON o.id = oi.order_id
+          JOIN products p ON oi.product_id = p.id
+          WHERE o.id = $1
+        params:
+          - "{{ steps.create_order.res.body.order_id }}"
+    test: |
+      len(current.rows) == 1 &&
+      current.rows[0].status == "paid" &&
+      current.rows[0].customer_name == vars.test_customer.name &&
+      current.rows[0].stock == steps.get_product.res.body.stock - vars.test_quantity

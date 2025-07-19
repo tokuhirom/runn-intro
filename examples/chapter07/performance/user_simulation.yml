@@ -1,0 +1,22 @@
+# testdata/performance/user_simulation.yml
+desc: 単一ユーザーのシミュレーション
+runners:
+  api: https://api.example.com
+
+vars:
+  user_id: 1
+  requests_count: 100
+
+steps:
+  user_requests:
+    loop:
+      count: "{{ vars.requests_count }}"
+    req:
+      api:///users:
+        get:
+          query:
+            page: "{{ (i % 100) + 1 }}"
+            limit: 10
+    test: |
+      current.res.status == 200 &&
+      current.res.response_time < 1000  # 1秒以内のレスポンス

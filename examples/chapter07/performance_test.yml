@@ -1,0 +1,16 @@
+# testdata/performance_test.yml
+desc: APIパフォーマンステスト
+vars:
+  concurrent_users: 50
+  requests_per_user: 100
+
+steps:
+  # 並行負荷テスト
+  load_test:
+    loop:
+      count: "{{ vars.concurrent_users }}"
+    include:
+      path: ./performance/user_simulation.yml
+      vars:
+        user_id: "{{ i }}"
+        requests_count: "{{ vars.requests_per_user }}"

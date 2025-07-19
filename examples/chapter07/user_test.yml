@@ -1,0 +1,26 @@
+# testdata/user_test.yml
+desc: ユーザーAPI テスト
+runners:
+  api: https://api.example.com
+
+steps:
+  create_user:
+    req:
+      api:///users:
+        post:
+          body:
+            application/json:
+              name: "Alice"
+              email: "alice@example.com"
+    test: |
+      current.res.status == 201 &&
+      current.res.body.name == "Alice" &&
+      current.res.body.id > 0
+
+  get_user:
+    req:
+      api:///users/{{ steps.create_user.res.body.id }}:
+        get:
+    test: |
+      current.res.status == 200 &&
+      current.res.body.name == "Alice"

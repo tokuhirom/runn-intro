@@ -1,0 +1,82 @@
+# testdata/auth_flow.yml
+desc: 認証フローの完全テスト
+runners:
+  api: https://api.example.com
+
+vars:
+  test_username: "testuser"
+  test_password: "testpass123"
+
+steps:
+  # ユーザー登録
+  register_user:
+    req:
+      api:///auth/register:
+        post:
+          body:
+            application/json:
+              username: "{{ vars.test_username }}"
+              password: "{{ vars.test_password }}"
+              email: "test@example.com"
+    test: current.res.status == 201
+
+  # ログイン
+  login:
+    req:
+      api:///auth/login:
+        post:
+          body:
+            application/json:
+              username: "{{ vars.test_username }}"
+              password: "{{ vars.test_password }}"
+    test: |
+      current.res.status == 200 &&
+      current.res.body.token != null &&
+      current.res.body.expires_in > 0
+
+  # 認証が必要なエンドポイントへのアクセス
+  access_protected:
+    req:
+      api:///profile:
+        get:
+          headers:
+            Authorization: "Bearer {{ steps.login.res.body.token }}"
+    test: |
+      current.res.status == 200 &&
+      current.res.body.username == vars.test_username
+
+  # トークンの検証
+  verify_token:
+    dump:
+      # JWTトークンをデコード（実際の実装では適切なライブラリを使用）
+      token_payload: |
+        fromBase64(split(steps.login.res.body.token, ".")[1])
+    test: |
+      current.token_payload.username == vars.test_username
+
+  # 無効なトークンでのアクセス
+  invalid_token_access:
+    req:
+      api:///profile:
+        get:
+          headers:
+            Authorization: "Bearer invalid-token"
+    test: current.res.status == 401
+
+  # ログアウト
+  logout:
+    req:
+      api:///auth/logout:
+        post:
+          headers:
+            Authorization: "Bearer {{ steps.login.res.body.token }}"
+    test: current.res.status == 200
+
+  # ログアウト後のアクセス
+  access_after_logout:
+    req:
+      api:///profile:
+        get:
+          headers:
+            Authorization: "Bearer {{ steps.login.res.body.token }}"
+    test: current.res.status == 401

@@ -1,0 +1,60 @@
+# .github/workflows/api_test.yml
+name: API Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testdb
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.21
+    
+    - name: Install dependencies
+      run: go mod download
+    
+    - name: Run database migrations
+      run: |
+        go run ./cmd/migrate up
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/testdb?sslmode=disable
+    
+    - name: Run API tests
+      run: |
+        go test -v ./... -tags=integration
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/testdb?sslmode=disable
+        TEST_ENV: ci
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: |
+          test_screenshots/
+          test_http_dumps/
+          coverage.out
