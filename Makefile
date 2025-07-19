@@ -49,17 +49,7 @@ test: ## Test all runn examples
 	@echo "All tests passed!"
 
 test-chapter01: ## Test Chapter 01 examples
-	@echo "Testing Chapter 01 examples..."
-	@cd examples/chapter01 && for file in *.yml; do \
-		if [ -f "$$file" ]; then \
-			echo "Running: $$file"; \
-			runn run "$$file" || exit 1; \
-		fi \
-	done
-	@if [ -d "examples/chapter01/go-test" ]; then \
-		echo "Testing Go integration example..."; \
-		cd examples/chapter01/go-test && go test -v; \
-	fi
+	go test -v -run TestChapter01
 
 test-chapter02: ## Test Chapter 02 examples
 	@echo "Testing Chapter 02 examples..."

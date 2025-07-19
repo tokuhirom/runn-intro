@@ -1,6 +1,8 @@
 desc: HTTPBinにGETリクエストを送信
+
 runners:
   req: http://localhost:8080
+
 steps:
   - req:
       /get:

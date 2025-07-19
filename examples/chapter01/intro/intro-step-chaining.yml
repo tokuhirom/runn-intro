@@ -1,10 +1,21 @@
+desc: ステップ間でデータを連携
+
+runners:
+  req: http://localhost:8080
+
 steps:
-  - login:
-      req: { /auth: { post: { body: { user: "alice" } } } }
-  - get_profile:
-      req:
-        /profile:
-          get:
-            headers:
-              # 前のステップで取得したトークンを使用
-              Authorization: "Bearer {{ steps.login.res.body.token }}"
+  login:
+    req:
+      /auth:
+        post:
+          body:
+            application/json:
+              username: "alice"
+              password: "secret"
+  get_profile:
+    req:
+      /profile:
+        get:
+          headers:
+            # 前のステップで取得したトークンを使用
+            Authorization: "Bearer {{ steps.login.res.body.token }}"

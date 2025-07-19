@@ -1,8 +1,19 @@
+desc: runnのクイックサンプル
+
+runners:
+  req: http://localhost:8080
+
 steps:
-  - req: { /login: { post: { body: { user: alice } } } }
+  - req:
+      /login:
+        post:
+          body:
+            application/json:
+              email: "user@example.com"
+              password: "password123"
   - req:
       /profile:
         get:
           headers:
             Authorization: "Bearer {{ steps[0].res.body.token }}"
-    test: current.res.body.name == "Alice"
+    test: current.res.body.name == "テストユーザー"
