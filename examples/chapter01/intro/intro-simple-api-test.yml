@@ -2,7 +2,7 @@
 desc: ユーザー登録から認証までの一連のフロー
 
 runners:
-  req: http://localhost:8085
+  req: http://localhost:8080
 
 steps:
   - req:

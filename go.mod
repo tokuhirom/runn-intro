@@ -99,6 +99,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/mattn/go-shellwords v1.0.12 // indirect
 	github.com/mattn/go-tty v0.0.5 // indirect
+	github.com/mccutchen/go-httpbin/v2 v2.18.3 // indirect
 	github.com/minio/pkg v1.7.5 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect

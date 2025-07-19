@@ -1,7 +1,7 @@
 desc: ユーザーAPIのテスト
 
 runners:
-  req: http://localhost:8085
+  req: http://localhost:8080
 
 steps:
   # ユーザーを作成

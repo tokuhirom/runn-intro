@@ -311,6 +311,8 @@ github.com/mattn/go-shellwords v1.0.12 h1:M2zGm7EW6UQJvDeQxo4T51eKPurbeFbe8WtebG
 github.com/mattn/go-shellwords v1.0.12/go.mod h1:EZzvwXDESEeg03EKmM+RmDnNOPKG4lLtQsUlTZDWQ8Y=
 github.com/mattn/go-tty v0.0.5 h1:s09uXI7yDbXzzTTfw3zonKFzwGkyYlgU3OMjqA0ddz4=
 github.com/mattn/go-tty v0.0.5/go.mod h1:u5GGXBtZU6RQoKV8gY5W6UhMudbR5vXnUe7j3pxse28=
+github.com/mccutchen/go-httpbin/v2 v2.18.3 h1:DyckIScjHLJtmlSju+rgjqqI1nL8AdMZHsLSljlbnMU=
+github.com/mccutchen/go-httpbin/v2 v2.18.3/go.mod h1:GBy5I7XwZ4ZLhT3hcq39I4ikwN9x4QUt6EAxNiR8Jus=
 github.com/migueleliasweb/go-github-mock v0.0.23 h1:GOi9oX/+Seu9JQ19V8bPDLqDI7M9iEOjo3g8v1k6L2c=
 github.com/migueleliasweb/go-github-mock v0.0.23/go.mod h1:NsT8FGbkvIZQtDu38+295sZEX8snaUiiQgsGxi6GUxk=
 github.com/minio/pkg v1.7.5 h1:UOUJjewE5zoaDPlCMJtNx/swc1jT1ZR+IajT7hrLd44=

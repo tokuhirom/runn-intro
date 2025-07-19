@@ -33,10 +33,12 @@ func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
 		}
 		
 		t.Run(filepath.Base(file), func(t *testing.T) {
+			// Override runners to use test server URL
 			opts := []runn.Option{
 				runn.T(t),
 				runn.Runner("req", serverURL),
 				runn.Runner("api", serverURL),
+				runn.Runner("http://localhost:8080", serverURL),
 			}
 			
 			o, err := runn.Load(file, opts...)
