@@ -1,0 +1,5 @@
+desc: urlencode 関数の使用例
+steps:
+  urlencode_example:
+    dump: |
+      urlencode("Hello, World!")

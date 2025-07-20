@@ -1,0 +1,18 @@
+desc: bool 関数の使用例
+steps:
+  bool_example:
+    test: |
+      bool(true) == true &&
+      bool(false) == false &&
+      bool("string") == false &&
+      bool("") == false &&
+      bool(0) == false &&
+      bool(1) == true &&
+      bool(2) == true &&
+      bool(0.0) == false &&
+      bool(1.0) == true &&
+      bool(2.0) == true &&
+      bool([]) == false &&
+      bool([1]) == false &&
+      bool({}) == false &&
+      bool({'a': 3}) == false
