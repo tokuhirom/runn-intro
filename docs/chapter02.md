@@ -108,12 +108,6 @@ runnの変数システムは**驚くほどパワフル**です：
 {{ includex("examples/chapter02/variable-reference.yml") }}
 ```
 
-`API_KEY=MY_GREAT_API_KEY` のように環境変数を設定したときは標準出力には以下のように出ます。
-
-```
-{{ includex("examples/chapter02/variable-reference.stdout") }}
-```
-
 **ワンポイント：** `{% raw %}{{ vars.変数名 }}{% endraw %}`の記法で、どこでも変数を展開できます！
 
 ## 実践！ステップ記述の完全ガイド

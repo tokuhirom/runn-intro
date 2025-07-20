@@ -20,17 +20,12 @@ deploy: ## Deploy to GitHub Pages (requires push permissions)
 
 clean: ## Clean the build directory
 	rm -rf site/
+	rm -rf *.out
+	rm -rf *.stdout
+	rm -rf *.stderr
 
 test: ## Test all runn examples
-	@echo "Testing runn examples..."
-	@for dir in examples/*/; do \
-		echo "Testing $$dir"; \
-		for file in $$dir*.yml; do \
-			echo "  Running: $$file"; \
-			runn run "$$file" || exit 1; \
-		done; \
-	done
-	@echo "All tests passed!"
+	go test ./...
 
 test-chapter01: ## Test Chapter 01 examples
 	go test -v -run TestChapter01
@@ -42,8 +37,4 @@ test-chapter03: ## Test Chapter 03 examples
 	go test -v -run TestChapter03
 
 test-chapter04: ## Test Chapter 04 examples
-	@echo "Testing Chapter 04 examples..."
-	@cd examples/chapter04 && for file in *.yml; do \
-		echo "Running: $$file"; \
-		runn run "$$file" || exit 1; \
-	done
+	go test -v -run TestChapter04

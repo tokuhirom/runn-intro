@@ -1,0 +1,5 @@
+steps:
+  conditional_expr:
+    dump: |
+      // 三項演算子
+      vars.environment == "prod" ? "https://api.example.com" : "http://localhost:8080"
