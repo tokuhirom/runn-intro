@@ -1,17 +1,17 @@
-desc: シナリオの説明          # 必須: このシナリオが何をテストするか
+desc: シナリオの説明            # このシナリオが何をテストするか
 
-labels:                      # オプション: シナリオの分類ラベル
+labels:                      # シナリオの分類ラベル(フィルタリングに利用)
   - api
   - user
 
-runners:                     # 必須: 使用するランナーの定義
+runners:                     # 使用するランナーの定義
   blog: http://localhost:8080
 
-vars:                        # オプション: シナリオ全体で使用する変数
+vars:                        # シナリオで使用する変数
   baseURL: http://localhost:8080
   timeout: 30
 
-steps:                       # 必須: 実行するステップの配列
+steps:                       # 実行するステップの定義
   - blog:
       /users:
         get: {}
