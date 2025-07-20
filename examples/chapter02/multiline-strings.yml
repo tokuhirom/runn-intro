@@ -1,11 +1,12 @@
 runners:
-  api: http://localhost:8080
+  httpbin: http://localhost:8080
+
 steps:
   - desc: |
       これは複数行の
       説明文です
-    req:
-      /test:
+    httpbin:
+      /post:
         post:
           body:
             text/plain: |

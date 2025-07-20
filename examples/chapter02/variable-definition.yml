@@ -16,13 +16,18 @@ vars:
       - user
 
 runners:
-  api: http://localhost:8080
+  httpbin: http://localhost:8080
 
 steps:
   test_vars:
-    req:
-      /{{ vars.apiVersion }}/test:
+    httpbin:
+      /anything:
         get:
           headers:
             X-API-Key: "{{ vars.apiKey }}"
     test: current.res.status == 200
+
+  show_vars:
+    desc: "変数の値を表示"
+    # 変数の値をデバッグ出力
+    dump: vars.apiKey

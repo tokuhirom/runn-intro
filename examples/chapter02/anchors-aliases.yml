@@ -4,10 +4,10 @@ commonHeaders: &headers
   X-API-Version: "1.0"
 
 runners:
-  api: http://localhost:8080
+  blog: http://localhost:8080
 
 steps:
-  - req:
+  - blog:
       /users:
         get:
           headers:

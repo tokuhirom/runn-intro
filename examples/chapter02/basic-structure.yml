@@ -5,14 +5,14 @@ labels:                      # オプション: シナリオの分類ラベル
   - user
 
 runners:                     # 必須: 使用するランナーの定義
-  req: http://localhost:8080
+  blog: http://localhost:8080
 
 vars:                        # オプション: シナリオ全体で使用する変数
   baseURL: http://localhost:8080
   timeout: 30
 
 steps:                       # 必須: 実行するステップの配列
-  - req:
+  - blog:
       /users:
         get: {}
     test: current.res.status == 200

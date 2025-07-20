@@ -1,12 +1,32 @@
 # TODO: Run this example in a test database
 runners:
-  db: postgres://user:pass@localhost:5432/testdb
+  testdb: sqlite:///tmp/runn-test.db
+
 vars:
-  testEmail: "alice@localhost"
+  testEmail: "alice@example.com"
+
 steps:
-  check_user:
+  setup-db:
     db:
-      db:
+      testdb:
+        query: |
+          CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          );
+
+  insert-user:
+    db:
+      testdb:
+        query: |
+          INSERT INTO users (name, email)
+            VALUES ('Alice', '{{ vars.testEmail }}')
+
+  check-user:
+    db:
+      testdb:
         query: |
           SELECT id, name, email, created_at
           FROM users

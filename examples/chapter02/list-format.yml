@@ -1,8 +1,10 @@
 desc: ユーザー作成とログインのテスト（リスト形式）
+
 runners:
-  req: http://localhost:8080
+  blog: http://localhost:8080
+
 steps:
-  - req:                              # steps[0]
+  - blog:                              # steps[0]
       /users:
         post:
           body:
@@ -11,7 +13,7 @@ steps:
               email: "alice@localhost"
     test: steps[0].res.status == 201
   
-  - req:                              # steps[1]
+  - blog:                              # steps[1]
       /login:
         post:
           body:

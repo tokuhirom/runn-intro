@@ -1,13 +1,15 @@
 runners:
-  api: http://localhost:8080
+  blog: http://localhost:8080
+
 vars:
   environment: "test"
   userId: "123"
   token: "test-token"
+
 steps:
   # まずユーザーを作成
   create_user:
-    req:
+    blog:
       /users:
         post:
           body:
@@ -19,7 +21,7 @@ steps:
   api_call:
     desc: ユーザー情報を更新する    # ステップの説明
     if: vars.environment == "test"  # 条件付き実行
-    req:
+    blog:
       /users/{{ steps.create_user.res.body.id }}:
         put:
           headers:

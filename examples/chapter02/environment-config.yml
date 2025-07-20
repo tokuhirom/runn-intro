@@ -13,11 +13,11 @@ vars:
       retries: 1
 
 runners:
-  api: "{{ vars.baseURL }}"
+  blog: "{{ vars.baseURL }}"
 
 steps:
   test_request:
-    req:
+    blog:
       /test:
         get:
           headers:

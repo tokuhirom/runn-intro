@@ -44,6 +44,8 @@ func RunChapterTests(t *testing.T, chapterDir string) {
 	defer blogServer.Close()
 	blogServerURL := blogServer.URL
 
+	t.Setenv("API_KEY", "MY_GREAT_API_KEY")
+
 	// Run each file
 	for _, file := range files {
 		// Skip conceptual example files and database examples
@@ -54,9 +56,14 @@ func RunChapterTests(t *testing.T, chapterDir string) {
 		}
 
 		t.Run(filepath.Base(file), func(t *testing.T) {
+			var stderrWriter bytes.Buffer
+			var stdoutWriter bytes.Buffer
+
 			// Override runners to use test server URL
 			opts := []runn.Option{
 				runn.T(t),
+				runn.Stderr(&stderrWriter),
+				runn.Stdout(&stdoutWriter),
 			}
 
 			// go-httpbin runnerが必要な場合はここでURLをセット
@@ -87,7 +94,7 @@ func RunChapterTests(t *testing.T, chapterDir string) {
 
 			// Outの結果をバッファに書き出し、.outファイルに保存
 			var buf bytes.Buffer
-			err = result.Out(&buf, false)
+			err = result.Out(&buf, true)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -99,6 +106,22 @@ func RunChapterTests(t *testing.T, chapterDir string) {
 			outFile := strings.Replace(file, ".yml", ".out", 1)
 			if err := os.WriteFile(outFile, plain, 0644); err != nil {
 				t.Fatalf("failed to write out file: %v", err)
+			}
+
+			stdoutBytes := stdoutWriter.Bytes()
+			if len(stdoutBytes) > 0 {
+				outStdoutFile := strings.Replace(file, ".yml", ".stdout", 1)
+				if err := os.WriteFile(outStdoutFile, stdoutBytes, 0644); err != nil {
+					t.Fatalf("failed to write stdout file: %v", err)
+				}
+			}
+
+			stderrBytes := stderrWriter.Bytes()
+			if len(stderrBytes) > 0 {
+				errFile := strings.Replace(file, ".yml", ".stderr", 1)
+				if err := os.WriteFile(errFile, stderrBytes, 0644); err != nil {
+					t.Fatalf("failed to write err file: %v", err)
+				}
 			}
 		})
 	}
