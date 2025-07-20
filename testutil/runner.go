@@ -5,6 +5,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -30,6 +31,11 @@ func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
 		t.Fatal(err)
 	}
 
+	// go-httpbinサーバーを起動（必要な場合に使うため）
+	httpbinServer := NewTestServer()
+	defer httpbinServer.Close()
+	httpbinServerURL := httpbinServer.URL
+
 	// Run each file
 	for _, file := range files {
 		// Skip conceptual example files and database examples
@@ -53,6 +59,19 @@ func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
 				runn.Runner("http://localhost:8080", serverURL),
 			}
 
+			// go-httpbin runnerが必要な場合はここでURLをセット
+			keys, err := GetRunnerKeys(file)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			for _, key := range keys {
+				if key == "httpbin" {
+					// keys に httpbin が含まれていたら httpbin を起動し、serverURL を指定
+					opts = append(opts, runn.Runner("httpbin", httpbinServerURL))
+				}
+			}
+
 			o, err := runn.Load(file, opts...)
 			if err != nil {
 				t.Fatal(err)
@@ -68,10 +87,21 @@ func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
 			if err != nil {
 				t.Fatal(err)
 			}
+
+			// ANSIエスケープシーケンスを除去
+			plain := buf.Bytes()
+			plain = stripANSI(plain)
+
 			outFile := strings.Replace(file, ".yml", ".out", 1)
-			if err := os.WriteFile(outFile, buf.Bytes(), 0644); err != nil {
+			if err := os.WriteFile(outFile, plain, 0644); err != nil {
 				t.Fatalf("failed to write out file: %v", err)
 			}
 		})
 	}
+}
+
+// ANSIエスケープシーケンス除去用関数
+func stripANSI(b []byte) []byte {
+	re := regexp.MustCompile(`\x1b\[[0-9;]*[a-zA-Z]`)
+	return re.ReplaceAll(b, []byte(""))
 }
