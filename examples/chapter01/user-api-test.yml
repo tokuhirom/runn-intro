@@ -1,12 +1,12 @@
 desc: ユーザーAPIのテスト
 
 runners:
-  req: http://localhost:8080
+  blog: http://localhost:8080
 
 steps:
   # ユーザーを作成
   create_user:
-    req:
+    blog:
       /users:
         post:
           body:
@@ -21,7 +21,7 @@ steps:
 
   # 作成したユーザーを取得
   get_user:
-    req:
+    blog:
       /users/{{ steps.create_user.res.body.id }}:
         get: {}
     test: |
@@ -32,7 +32,7 @@ steps:
 
   # 存在しないユーザーを取得（404エラー確認）
   get_nonexistent_user:
-    req:
+    blog:
       /users/9999:
         get: {}
     test: |

@@ -1,8 +1,9 @@
 desc: JSONレスポンスの内容を検証
 runners:
-  req: http://localhost:8080
+  httpbin: http://localhost:8080
+
 steps:
-  - req:
+  - httpbin:
       /json:
         get: {}
     test: |

@@ -3,6 +3,8 @@ package testutil
 import (
 	"bytes"
 	"context"
+	"github.com/mccutchen/go-httpbin/v2/httpbin"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -13,7 +15,7 @@ import (
 )
 
 // RunChapterTests runs all YAML tests in a chapter directory
-func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
+func RunChapterTests(t *testing.T, chapterDir string) {
 	t.Helper()
 
 	// Find all YAML files (再帰的に探索)
@@ -32,9 +34,15 @@ func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
 	}
 
 	// go-httpbinサーバーを起動（必要な場合に使うため）
-	httpbinServer := NewTestBlogServer()
+	httpbinObj := httpbin.New()
+	httpbinServer := httptest.NewServer(httpbinObj.Handler())
 	defer httpbinServer.Close()
 	httpbinServerURL := httpbinServer.URL
+
+	// blogサーバーを起動（必要な場合に使うため）
+	blogServer := NewTestBlogServer()
+	defer blogServer.Close()
+	blogServerURL := blogServer.URL
 
 	// Run each file
 	for _, file := range files {
@@ -49,14 +57,6 @@ func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
 			// Override runners to use test server URL
 			opts := []runn.Option{
 				runn.T(t),
-				runn.Runner("req", serverURL),
-				runn.Runner("api", serverURL),
-				runn.Runner("auth", serverURL),
-				runn.Runner("blog-api", serverURL),
-				runn.Runner("https://api.example.com", serverURL),
-				runn.Runner("https://auth.example.com", serverURL),
-				runn.Runner("https://blog-api.example.com", serverURL),
-				runn.Runner("http://localhost:8080", serverURL),
 			}
 
 			// go-httpbin runnerが必要な場合はここでURLをセット
@@ -69,6 +69,10 @@ func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
 				if key == "httpbin" {
 					// keys に httpbin が含まれていたら httpbin を起動し、serverURL を指定
 					opts = append(opts, runn.Runner("httpbin", httpbinServerURL))
+				}
+				if key == "blog" {
+					// keys に blog が含まれていたら blog を起動し、serverURL を指定
+					opts = append(opts, runn.Runner("blog", blogServerURL))
 				}
 			}
 

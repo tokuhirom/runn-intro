@@ -4,7 +4,7 @@ runners:
   httpbin: http://localhost:8080
 
 steps:
-  - req:
+  - httpbin:
       /get:
         get:
           headers:

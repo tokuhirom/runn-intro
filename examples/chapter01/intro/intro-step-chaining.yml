@@ -1,11 +1,11 @@
 desc: ステップ間でデータを連携
 
 runners:
-  req: http://localhost:8080
+  blog: http://localhost:8080
 
 steps:
   login:
-    req:
+    blog:
       /auth:
         post:
           body:
@@ -13,7 +13,7 @@ steps:
               username: "alice"
               password: "secret"
   get_profile:
-    req:
+    blog:
       /profile:
         get:
           headers:
