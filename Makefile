@@ -39,11 +39,7 @@ test-chapter02: ## Test Chapter 02 examples
 	go test -v -run TestChapter02
 
 test-chapter03: ## Test Chapter 03 examples
-	@echo "Testing Chapter 03 examples..."
-	@cd examples/chapter03 && for file in *.yml; do \
-		echo "Running: $$file"; \
-		runn run "$$file" || exit 1; \
-	done
+	go test -v -run TestChapter03
 
 test-chapter04: ## Test Chapter 04 examples
 	@echo "Testing Chapter 04 examples..."

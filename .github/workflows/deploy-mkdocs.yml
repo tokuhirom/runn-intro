@@ -41,6 +41,8 @@ jobs:
       - name: Generate output files
         run: make test-chapter02
 
+      - run: make test-chapter03
+
       - name: Build MkDocs site
         run: mkdocs build
         
