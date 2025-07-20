@@ -108,6 +108,12 @@ runnの変数システムは**驚くほどパワフル**です：
 {{ includex("examples/chapter02/variable-reference.yml") }}
 ```
 
+`API_KEY=MY_GREAT_API_KEY` のように環境変数を設定したときは標準出力には以下のように出ます。
+
+```
+{{ includex("examples/chapter02/variable-reference.stdout") }}
+```
+
 **ワンポイント：** `{% raw %}{{ vars.変数名 }}{% endraw %}`の記法で、どこでも変数を展開できます！
 
 ## 実践！ステップ記述の完全ガイド
@@ -118,6 +124,12 @@ runnの変数システムは**驚くほどパワフル**です：
 
 ```yaml
 {{ includex("examples/chapter02/http-request-complete.yml") }}
+```
+
+標準出力には以下のように出る！
+
+```
+{{ includex("examples/chapter02/http-request-complete.stdout") }}
 ```
 
 **驚きの機能群：**
@@ -131,7 +143,7 @@ runnの変数システムは**驚くほどパワフル**です：
 SQLクエリも**YAMLで自然に記述**：
 
 ```yaml
-{{ includex("examples/chapter02/database-query.yml") }}
+{{ includex("examples/chapter02/database-query.concept.yml") }}
 ```
 
 **ポイント：** HTTPもDBも、同じ`test`構文でアサーション！統一感が素晴らしい。
@@ -146,23 +158,14 @@ SQLクエリも**YAMLで自然に記述**：
 {{ includex("examples/chapter02/crud-operations.yml") }}
 ```
 
+```
+{{ includex("examples/chapter02/crud-operations.out") }}
+```
+
 **学べること：**
 - Create → Read → Update → Delete の完全なフロー
 - ステップ間でのID受け渡し
 - 削除後の404確認まで網羅
-
-### マスターピース2: 本格的な認証フロー
-
-**JWT認証の完全なテスト**：
-
-```yaml
-{{ includex("examples/chapter02/auth-flow.yml") }}
-```
-
-**プロの技：**
-- 複数のrunnerを使い分け（`auth:///`と`api:///`）
-- トークンのリフレッシュまでカバー
-- 実際のプロダクションで使えるレベル
 
 ## YAML記述の秘伝テクニック
 

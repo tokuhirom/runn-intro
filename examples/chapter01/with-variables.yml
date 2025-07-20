@@ -1,13 +1,14 @@
 desc: 変数を使用したPOSTリクエスト
 
 runners:
-  req: http://localhost:8080
+  httpbin: http://localhost:8080
 
 vars:
   username: testuser
   email: test@example.com
+
 steps:
-  - req:
+  - httpbin:
       /post:
         post:
           body:

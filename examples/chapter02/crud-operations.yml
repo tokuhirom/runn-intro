@@ -1,12 +1,14 @@
 desc: ブログ記事のCRUD操作をテスト
 runners:
-  api: http://localhost:8080/api
+  blog: http://localhost:8080/api
+
 vars:
   authorId: "author-123"
+
 steps:
   # 1. 記事を作成
   create_post:
-    req:
+    blog:
       /posts:
         post:
           body:
@@ -20,7 +22,7 @@ steps:
 
   # 2. 作成した記事を取得
   get_post:
-    req:
+    blog:
       /posts/{{ steps.create_post.res.body.id }}:
         get: {}
     test: |
@@ -29,7 +31,7 @@ steps:
 
   # 3. 記事を更新
   update_post:
-    req:
+    blog:
       /posts/{{ steps.create_post.res.body.id }}:
         put:
           body:
@@ -40,7 +42,7 @@ steps:
 
   # 4. 更新を確認
   verify_update:
-    req:
+    blog:
       /posts/{{ steps.create_post.res.body.id }}:
         get: {}
     test: |
@@ -48,14 +50,14 @@ steps:
 
   # 5. 記事を削除
   delete_post:
-    req:
+    blog:
       /posts/{{ steps.create_post.res.body.id }}:
         delete: {}
     test: steps.delete_post.res.status == 204
 
   # 6. 削除を確認
   verify_delete:
-    req:
+    blog:
       /posts/{{ steps.create_post.res.body.id }}:
         get: {}
     test: steps.verify_delete.res.status == 404

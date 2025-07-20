@@ -1,0 +1,38 @@
+# TODO: Run this example in a test database
+runners:
+  testdb: sqlite:///tmp/runn-test.db
+
+vars:
+  testEmail: "alice@example.com"
+
+steps:
+  setup-db:
+    db:
+      testdb:
+        query: |
+          CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          );
+
+  insert-user:
+    db:
+      testdb:
+        query: |
+          INSERT INTO users (name, email)
+            VALUES ('Alice', '{{ vars.testEmail }}')
+
+  check-user:
+    db:
+      testdb:
+        query: |
+          SELECT id, name, email, created_at
+          FROM users
+          WHERE email = $1
+        params:
+          - "{{ vars.testEmail }}"
+    test: |
+      len(steps.check_user.rows) == 1 &&
+      steps.check_user.rows[0].name == "Alice"

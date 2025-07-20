@@ -1,4 +1,4 @@
-.PHONY: help install build serve deploy clean test generate-outputs
+.PHONY: help install build serve deploy clean test
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -8,22 +8,6 @@ help: ## Show this help message
 
 install: ## Install MkDocs and dependencies
 	pip install -r requirements.txt
-
-generate-outputs: ## Generate .out files from runn execution
-	@echo "Generating output files..."
-	@for dir in examples/*/; do \
-		if [ "$${dir}" != "examples/chapter01/intro/" ]; then \
-			echo "Processing $$dir"; \
-			for file in $$dir*.yml; do \
-				if [ -f "$$file" ]; then \
-					outfile="$${file%.yml}.out"; \
-					echo "  Generating $$outfile"; \
-					runn run "$$file" --verbose > "$$outfile" 2>&1 || true; \
-				fi; \
-			done; \
-		fi; \
-	done
-	@echo "Output files generated!"
 
 build: ## Build the MkDocs site
 	mkdocs build
@@ -52,11 +36,7 @@ test-chapter01: ## Test Chapter 01 examples
 	go test -v -run TestChapter01
 
 test-chapter02: ## Test Chapter 02 examples
-	@echo "Testing Chapter 02 examples..."
-	@cd examples/chapter02 && for file in *.yml; do \
-		echo "Running: $$file"; \
-		runn run "$$file" || exit 1; \
-	done
+	go test -v -run TestChapter02
 
 test-chapter03: ## Test Chapter 03 examples
 	@echo "Testing Chapter 03 examples..."

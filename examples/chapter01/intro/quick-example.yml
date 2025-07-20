@@ -1,17 +1,17 @@
 desc: runnのクイックサンプル
 
 runners:
-  req: http://localhost:8080
+  blog: http://localhost:8080
 
 steps:
-  - req:
+  - blog:
       /login:
         post:
           body:
             application/json:
               email: "user@example.com"
               password: "password123"
-  - req:
+  - blog:
       /profile:
         get:
           headers:
