@@ -20,6 +20,9 @@ deploy: ## Deploy to GitHub Pages (requires push permissions)
 
 clean: ## Clean the build directory
 	rm -rf site/
+	rm -rf *.out
+	rm -rf *.stdout
+	rm -rf *.stderr
 
 test: ## Test all runn examples
 	go test ./...
