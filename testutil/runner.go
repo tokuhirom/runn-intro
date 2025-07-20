@@ -2,7 +2,7 @@ package testutil
 
 import (
 	"bytes"
-	"context"
+	"github.com/k1LoW/runn"
 	"github.com/mccutchen/go-httpbin/v2/httpbin"
 	"net/http/httptest"
 	"os"
@@ -10,17 +10,15 @@ import (
 	"regexp"
 	"strings"
 	"testing"
-
-	"github.com/k1LoW/runn"
 )
 
 // RunChapterTests runs all YAML tests in a chapter directory
-func RunChapterTests(t *testing.T, chapterDir string) {
+func RunChapterTests(t *testing.T, targetDir string) {
 	t.Helper()
 
 	// Find all YAML files (再帰的に探索)
 	var files []string
-	err := filepath.WalkDir(chapterDir, func(path string, d os.DirEntry, err error) error {
+	err := filepath.WalkDir(targetDir, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -32,6 +30,12 @@ func RunChapterTests(t *testing.T, chapterDir string) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	RunTestForFiles(t, files)
+}
+
+func RunTestForFiles(t *testing.T, files []string) {
+	t.Helper()
 
 	// go-httpbinサーバーを起動（必要な場合に使うため）
 	httpbinObj := httpbin.New()
@@ -61,9 +65,13 @@ func RunChapterTests(t *testing.T, chapterDir string) {
 
 			// Override runners to use test server URL
 			opts := []runn.Option{
-				runn.T(t),
 				runn.Stderr(&stderrWriter),
 				runn.Stdout(&stdoutWriter),
+			}
+
+			if !strings.HasSuffix(file, ".fail.yml") {
+				// .fail.yml ファイルの場合はエラーになるので t　を渡さない。それ以外の場合は渡す
+				opts = append(opts, runn.T(t))
 			}
 
 			// go-httpbin runnerが必要な場合はここでURLをセット
@@ -87,8 +95,8 @@ func RunChapterTests(t *testing.T, chapterDir string) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if err := o.RunN(context.Background()); err != nil {
-				t.Fatal(err)
+			if err := o.RunN(t.Context()); err != nil {
+				t.Errorf("Unexpected error for %s: %v", file, err)
 			}
 			result := o.Result()
 

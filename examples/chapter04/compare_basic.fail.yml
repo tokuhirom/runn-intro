@@ -1,0 +1,24 @@
+desc: compare関数の基本的な使用例
+
+vars:
+  # 比較用のデータ
+  expected:
+    name: "Alice"
+    age: 30
+    city: "Tokyo"
+
+  actual:
+    name: "Alice"
+    age: 31
+    country: "Japan"
+
+steps:
+  compare_example:
+    test: |
+      // compare関数で差分を検出
+      compare(vars.expected, vars.actual)
+
+  compare_with_ignore:
+    test: |
+      // compare関数で差分を検出
+      compare(vars.expected, vars.actual, ['.name'])
