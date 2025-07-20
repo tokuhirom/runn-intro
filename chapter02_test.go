@@ -7,7 +7,7 @@ import (
 )
 
 func TestChapter02(t *testing.T) {
-	server := testutil.NewTestServer()
+	server := testutil.NewTestBlogServer()
 	defer server.Close()
 
 	testutil.RunChapterTests(t, "examples/chapter02", server.URL)

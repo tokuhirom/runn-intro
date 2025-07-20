@@ -32,7 +32,7 @@ func RunChapterTests(t *testing.T, chapterDir string, serverURL string) {
 	}
 
 	// go-httpbinサーバーを起動（必要な場合に使うため）
-	httpbinServer := NewTestServer()
+	httpbinServer := NewTestBlogServer()
 	defer httpbinServer.Close()
 	httpbinServerURL := httpbinServer.URL
 

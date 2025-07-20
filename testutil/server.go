@@ -11,8 +11,8 @@ import (
 	"time"
 )
 
-// NewTestServer creates a test server with go-httpbin and custom endpoints
-func NewTestServer() *httptest.Server {
+// NewTestBlogServer creates a test server with go-httpbin and custom endpoints
+func NewTestBlogServer() *httptest.Server {
 	// State for users
 	var (
 		users      = make(map[int]User)
@@ -41,6 +41,7 @@ func NewTestServer() *httptest.Server {
 	handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Handle custom endpoints first
 		switch {
+		// ユーザー登録エンドポイント
 		case r.URL.Path == "/register" && r.Method == "POST":
 			var regReq struct {
 				Email    string `json:"email"`
@@ -71,6 +72,7 @@ func NewTestServer() *httptest.Server {
 				slog.Error("failed to encode response", "error", err)
 			}
 
+		// トークンリフレッシュエンドポイント
 		case r.URL.Path == "/refresh" && r.Method == "POST":
 			var refreshReq struct {
 				RefreshToken string `json:"refreshToken"`
@@ -94,6 +96,7 @@ func NewTestServer() *httptest.Server {
 				http.Error(w, "Invalid refresh token", http.StatusUnauthorized)
 			}
 
+		// ユーザー一覧取得エンドポイント
 		case r.URL.Path == "/users" && r.Method == "GET":
 			usersMutex.RLock()
 			userList := make([]User, 0, len(users))
@@ -107,6 +110,7 @@ func NewTestServer() *httptest.Server {
 				slog.Error("failed to encode response", "error", err)
 			}
 
+		// ユーザー作成エンドポイント
 		case r.URL.Path == "/users" && r.Method == "POST":
 			var user User
 			if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -126,6 +130,7 @@ func NewTestServer() *httptest.Server {
 				slog.Error("failed to encode response", "error", err)
 			}
 
+		// ユーザー取得エンドポイント（ID指定）
 		case strings.HasPrefix(r.URL.Path, "/users/") && r.Method == "GET":
 			// Extract user ID from path
 			path := strings.TrimPrefix(r.URL.Path, "/users/")
@@ -149,6 +154,7 @@ func NewTestServer() *httptest.Server {
 				slog.Error("failed to encode response", "error", err)
 			}
 
+		// ユーザー更新エンドポイント（ID指定）
 		case strings.HasPrefix(r.URL.Path, "/users/") && r.Method == "PUT":
 			// Extract user ID from path
 			path := strings.TrimPrefix(r.URL.Path, "/users/")
@@ -180,6 +186,7 @@ func NewTestServer() *httptest.Server {
 				http.Error(w, "User not found", http.StatusNotFound)
 			}
 
+		// 認証エンドポイント
 		case r.URL.Path == "/auth" && r.Method == "POST":
 			var authReq struct {
 				Username string `json:"username"`
@@ -204,6 +211,7 @@ func NewTestServer() *httptest.Server {
 				http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 			}
 
+		// ログインエンドポイント
 		case r.URL.Path == "/login" && r.Method == "POST":
 			var loginReq struct {
 				Email    string `json:"email"`
@@ -243,6 +251,7 @@ func NewTestServer() *httptest.Server {
 				http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 			}
 
+		// プロフィール取得エンドポイント
 		case r.URL.Path == "/profile" && r.Method == "GET":
 			// Check authorization header
 			authHeader := r.Header.Get("Authorization")
@@ -263,6 +272,7 @@ func NewTestServer() *httptest.Server {
 				http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			}
 
+		// 投稿作成エンドポイント
 		case strings.HasPrefix(r.URL.Path, "/posts") && r.Method == "POST":
 			var post Post
 			if err := json.NewDecoder(r.Body).Decode(&post); err != nil {
@@ -283,6 +293,7 @@ func NewTestServer() *httptest.Server {
 				slog.Error("failed to encode response", "error", err)
 			}
 
+		// 投稿取得エンドポイント（ID指定）
 		case strings.HasPrefix(r.URL.Path, "/posts/") && r.Method == "GET":
 			// Extract post ID from path
 			path := strings.TrimPrefix(r.URL.Path, "/posts/")
@@ -306,6 +317,7 @@ func NewTestServer() *httptest.Server {
 				slog.Error("failed to encode response", "error", err)
 			}
 
+		// 投稿更新エンドポイント（ID指定）
 		case strings.HasPrefix(r.URL.Path, "/posts/") && r.Method == "PUT":
 			// Extract post ID from path
 			path := strings.TrimPrefix(r.URL.Path, "/posts/")
@@ -338,6 +350,7 @@ func NewTestServer() *httptest.Server {
 				http.Error(w, "Post not found", http.StatusNotFound)
 			}
 
+		// 投稿削除エンドポイント（ID指定）
 		case strings.HasPrefix(r.URL.Path, "/posts/") && r.Method == "DELETE":
 			// Extract post ID from path
 			path := strings.TrimPrefix(r.URL.Path, "/posts/")
@@ -357,12 +370,14 @@ func NewTestServer() *httptest.Server {
 				http.Error(w, "Post not found", http.StatusNotFound)
 			}
 
+		// /api/posts配下の再帰的ハンドリング
 		case strings.HasPrefix(r.URL.Path, "/api/posts") && r.Method != "":
 			// Handle /api/posts/* paths by recursively calling this handler
 			r.URL.Path = strings.TrimPrefix(r.URL.Path, "/api")
 			handler.ServeHTTP(w, r)
 			return
 
+		// テスト用エンドポイント
 		case r.URL.Path == "/test" && r.Method == "GET":
 			// Simple test endpoint
 			w.Header().Set("Content-Type", "application/json")
@@ -373,6 +388,7 @@ func NewTestServer() *httptest.Server {
 				slog.Error("failed to encode response", "error", err)
 			}
 
+		// バージョン付きテスト用エンドポイント
 		case strings.Contains(r.URL.Path, "/test") && r.Method == "GET":
 			// Handle versioned test endpoints like /v1/test
 			w.Header().Set("Content-Type", "application/json")
@@ -384,6 +400,7 @@ func NewTestServer() *httptest.Server {
 				slog.Error("failed to encode response", "error", err)
 			}
 
+		// バージョン付きユーザー一覧取得エンドポイント
 		case strings.Contains(r.URL.Path, "/users") && strings.Contains(r.URL.Path, "/v"):
 			// Handle versioned user endpoints like /v1/users
 			usersMutex.RLock()
@@ -398,6 +415,7 @@ func NewTestServer() *httptest.Server {
 				slog.Error("failed to encode response", "error", err)
 			}
 
+		// その他（未定義パス）
 		default:
 			http.NotFound(w, r)
 		}

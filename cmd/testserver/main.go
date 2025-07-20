@@ -10,7 +10,7 @@ import (
 
 func main() {
 	// Create the same test server as used in tests
-	server := testutil.NewTestServer()
+	server := testutil.NewTestBlogServer()
 	defer server.Close()
 
 	// Extract the port from test server URL

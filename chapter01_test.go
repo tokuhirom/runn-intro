@@ -8,7 +8,7 @@ import (
 
 func TestChapter01(t *testing.T) {
 	// Start test server
-	server := testutil.NewTestServer()
+	server := testutil.NewTestBlogServer()
 	defer server.Close()
 
 	// Run all tests in chapter01
