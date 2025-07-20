@@ -1,0 +1,17 @@
+steps:
+  comparison_demo:
+    test: |
+      // 基本的な比較
+      10 > 5 &&
+      "apple" < "banana" &&
+      100 >= 100 &&
+      50 <= 100 &&
+      
+      // 等価性
+      "test" == "test" &&
+      100 != 99 &&
+      
+      // 包含チェック
+      "running" contains "run" &&
+      2 in [1, 2, 3] &&
+      "key" in {"key": "value"}

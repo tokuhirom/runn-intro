@@ -16,48 +16,13 @@
 ### 🎯 リテラルと演算子 - あらゆるデータ型を自在に操れ！
 
 ```yaml
-steps:
-  literals_demo:
-    test: |
-      # 数値
-      42 == 42 &&
-      3.14 < 4 &&
-      
-      # 文字列
-      "hello" + " world" == "hello world" &&
-      "runn" * 2 == "runnrunn" &&
-      
-      # ブール値
-      true && !false &&
-      
-      # 配列
-      [1, 2, 3][0] == 1 &&
-      len([1, 2, 3]) == 3 &&
-      
-      # マップ
-      {"name": "alice", "age": 30}.name == "alice"
+{{ includex("examples/chapter04/literals_demo.yml") }}
 ```
 
 ### ⚖️ 比較演算子 - 真偽を見極める審判の目！
 
 ```yaml
-steps:
-  comparison_demo:
-    test: |
-      # 基本的な比較
-      10 > 5 &&
-      "apple" < "banana" &&
-      100 >= 100 &&
-      50 <= 100 &&
-      
-      # 等価性
-      "test" == "test" &&
-      100 != 99 &&
-      
-      # 包含チェック
-      "run" in "running" &&
-      2 in [1, 2, 3] &&
-      "key" in {"key": "value"}
+{{ includex("examples/chapter04/comparison_operators.yml") }}
 ```
 
 ## 🔥 変数参照の詳細 - データの海を自由に泳げ！
