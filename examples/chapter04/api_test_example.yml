@@ -1,0 +1,26 @@
+desc: ユーザー登録APIのテスト
+steps:
+  create_test_user:
+    req:
+      /users:
+        post:
+          body:
+            application/json:
+              name: faker.name()
+              email: faker.email()
+              age: faker.randomInt(20, 60)
+              bio: faker.sentence()
+              avatar: faker.imageURL()
+    test: |
+      current.res.status == 201 &&
+      current.res.body.id != null
+    
+  verify_user:
+    req:
+      /users/{{ steps.create_test_user.res.body.id }}:
+        get:
+    test: |
+      current.res.status == 200 &&
+      # pickを使って比較対象を限定
+      pick(current.res.body, ["name", "email"]) == 
+      pick(steps.create_test_user.req.body, ["name", "email"])

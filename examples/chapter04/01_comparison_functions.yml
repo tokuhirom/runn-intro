@@ -1,0 +1,211 @@
+desc: 比較・差分関数の例
+vars:
+  # テスト用のデータセット
+  expected:
+    users:
+      - id: 1
+        name: "Alice Johnson"
+        email: "alice@example.com"
+        age: 30
+        roles: ["admin", "user"]
+        settings:
+          theme: "dark"
+          notifications: true
+      - id: 2
+        name: "Bob Smith"
+        email: "bob@example.com"
+        age: 25
+        roles: ["user"]
+        settings:
+          theme: "light"
+          notifications: true
+  
+  actual:
+    users:
+      - id: 1
+        name: "Alice Johnson"
+        email: "alice@example.com"
+        age: 31  # 変更: 30 -> 31
+        roles: ["admin", "user", "moderator"]  # 追加: moderator
+        settings:
+          theme: "dark"
+          notifications: false  # 変更: true -> false
+      - id: 2
+        name: "Robert Smith"  # 変更: Bob -> Robert
+        email: "bob@example.com"
+        age: 25
+        roles: ["user"]
+        settings:
+          theme: "light"
+          notifications: true
+          language: "en"  # 追加: language
+
+steps:
+  # compare関数の基本的な使用
+  compare_basic:
+    desc: 単純な値の比較
+    dump: |
+      {
+        "same_values": compare(10, 10),
+        "different_values": compare(10, 20),
+        "same_strings": compare("hello", "hello"),
+        "different_strings": compare("hello", "world"),
+        "same_arrays": compare([1, 2, 3], [1, 2, 3]),
+        "different_arrays": compare([1, 2, 3], [1, 2, 4])
+      }
+    test: |
+      current.same_values == null &&
+      current.different_values != null &&
+      current.same_strings == null &&
+      current.different_strings != null &&
+      current.same_arrays == null &&
+      current.different_arrays != null
+
+  # オブジェクトの詳細な比較
+  compare_objects:
+    desc: 複雑なオブジェクトの比較
+    dump: |
+      compare(vars.expected.users[0], vars.actual.users[0])
+    test: |
+      # 差分が検出されることを確認
+      current != null &&
+      # 特定のフィールドに差分があることを確認
+      current.age != null &&
+      current.roles != null &&
+      current.settings.notifications != null
+
+  # 配列全体の比較
+  compare_arrays:
+    desc: 配列の要素を含む比較
+    dump: |
+      {
+        "full_comparison": compare(vars.expected.users, vars.actual.users),
+        "has_differences": compare(vars.expected.users, vars.actual.users) != null
+      }
+    test: |
+      current.has_differences == true
+
+  # diff関数でテキスト差分
+  diff_text:
+    desc: テキストの差分表示
+    dump: |
+      {
+        "config_old": "server:\n  host: localhost\n  port: 8080\n  debug: false",
+        "config_new": "server:\n  host: 0.0.0.0\n  port: 8080\n  debug: true\n  timeout: 30"
+      }
+    dump_diff:
+      text_diff: diff(current.config_old, current.config_new)
+    test: |
+      # diff結果には変更行が含まれる
+      contains(current.text_diff, "localhost") &&
+      contains(current.text_diff, "0.0.0.0") &&
+      contains(current.text_diff, "debug") &&
+      contains(current.text_diff, "timeout")
+
+  # JSON形式での差分
+  diff_json:
+    desc: JSON構造の差分表示
+    dump: |
+      {
+        "before": vars.expected.users[0],
+        "after": vars.actual.users[0]
+      }
+    dump_diff:
+      json_diff: diff(current.before, current.after, "json")
+    test: |
+      # JSON差分が生成されることを確認
+      current.json_diff != null &&
+      type(current.json_diff) == "string"
+
+  # 実践的な使用例：APIレスポンスの検証
+  practical_comparison:
+    desc: APIレスポンスの期待値との比較
+    dump: |
+      # 実際のAPIレスポンスを想定
+      let response = {
+        "status": "success",
+        "data": vars.actual.users,
+        "metadata": {
+          "total": 2,
+          "page": 1
+        }
+      };
+      
+      # 期待するレスポンス構造
+      let expected = {
+        "status": "success",
+        "data": vars.expected.users,
+        "metadata": {
+          "total": 2,
+          "page": 1
+        }
+      };
+      
+      {
+        "response": response,
+        "expected": expected,
+        "differences": compare(expected, response),
+        "has_expected_structure": all([
+          "status" in response,
+          "data" in response,
+          "metadata" in response
+        ])
+      }
+    test: |
+      # 構造は正しいが、データに差分がある
+      current.has_expected_structure == true &&
+      current.differences != null &&
+      current.differences.data != null
+
+  # 部分的な比較
+  partial_comparison:
+    desc: 特定のフィールドのみを比較
+    dump: |
+      # 重要なフィールドのみを抽出して比較
+      let expected_essential = map(vars.expected.users, {
+        pick(., ["id", "email"])
+      });
+      let actual_essential = map(vars.actual.users, {
+        pick(., ["id", "email"])
+      });
+      
+      {
+        "essential_fields_match": compare(expected_essential, actual_essential) == null,
+        "full_comparison_matches": compare(vars.expected.users, vars.actual.users) == null
+      }
+    test: |
+      # 必須フィールドは一致するが、全体では差分がある
+      current.essential_fields_match == true &&
+      current.full_comparison_matches == false
+
+  # カスタム比較ロジック
+  custom_comparison:
+    desc: 独自の比較条件を実装
+    dump: |
+      # 年齢の差が1歳以内なら許容する比較
+      let age_tolerance_check = all(
+        range(0, len(vars.expected.users)),
+        {
+          abs(vars.expected.users[i].age - vars.actual.users[i].age) <= 1
+        }
+      );
+      
+      # 役割の包含関係をチェック（期待される役割がすべて含まれているか）
+      let roles_check = all(
+        range(0, len(vars.expected.users)),
+        {
+          all(vars.expected.users[i].roles, {
+            . in vars.actual.users[i].roles
+          })
+        }
+      );
+      
+      {
+        "age_within_tolerance": age_tolerance_check,
+        "expected_roles_present": roles_check,
+        "custom_validation_passed": age_tolerance_check && roles_check
+      }
+    test: |
+      current.age_within_tolerance == true &&
+      current.expected_roles_present == true &&
+      current.custom_validation_passed == true

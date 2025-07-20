@@ -1,0 +1,17 @@
+desc: unique関数の使用例
+steps:
+  unique_example:
+    dump: |
+      {
+        "numbers": unique([1, 2, 2, 3, 3, 3, 4]),
+        "strings": unique(["apple", "banana", "apple", "orange", "banana"]),
+        "objects": unique([
+          {"id": 1, "name": "A"},
+          {"id": 2, "name": "B"},
+          {"id": 1, "name": "A"}
+        ])
+      }
+    test: |
+      current.numbers == [1, 2, 3, 4] &&
+      current.strings == ["apple", "banana", "orange"] &&
+      len(current.objects) == 2

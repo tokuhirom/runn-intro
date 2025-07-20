@@ -1,0 +1,435 @@
+desc: ビルトイン関数を組み合わせた実践的な例
+vars:
+  # テスト環境の設定
+  config:
+    environment: "staging"
+    apiBaseUrl: "https://staging-api.example.com"
+    defaultTimeout: 30
+    retryAttempts: 3
+
+steps:
+  # 動的なテストデータ生成とAPI呼び出し
+  create_test_users:
+    desc: 複数のテストユーザーを生成してAPI登録
+    dump: |
+      # 5人のテストユーザーを生成
+      let users = map(range(1, 6), {
+        let firstName = faker.firstName();
+        let lastName = faker.lastName();
+        {
+          "username": lower(firstName) + "." + lower(lastName) + str(faker.randomInt(100, 999)),
+          "email": lower(firstName) + "." + lower(lastName) + "@test.example.com",
+          "password": faker.password(16, true, true, true),
+          "profile": {
+            "firstName": firstName,
+            "lastName": lastName,
+            "dateOfBirth": time.format(faker.dateTime().birthday(20, 40), "2006-01-02"),
+            "bio": faker.sentences(2),
+            "avatar": faker.avatarURL(),
+            "tags": unique(faker.words(faker.randomInt(3, 7)))
+          },
+          "settings": merge(
+            {
+              "theme": "light",
+              "language": "en",
+              "notifications": true
+            },
+            faker.randomBool() ? {"theme": "dark"} : {},
+            faker.randomBool() ? {"language": faker.randomChoice(["ja", "es", "fr"])} : {}
+          ),
+          "metadata": {
+            "source": "api_test",
+            "createdAt": time.format(time.now(), time.RFC3339),
+            "testId": faker.uuid()
+          }
+        }
+      });
+      
+      {
+        "users": users,
+        "summary": {
+          "total": len(users),
+          "unique_emails": len(unique(map(users, {.email}))) == len(users),
+          "avg_tag_count": sum(map(users, {len(.profile.tags)})) / len(users),
+          "dark_theme_users": len(filter(users, {.settings.theme == "dark"}))
+        }
+      }
+    test: |
+      # 生成されたデータの検証
+      len(current.users) == 5 &&
+      all(current.users, {
+        matches(.username, "^[a-z]+\\.[a-z]+[0-9]{3}$") &&
+        contains(.email, "@test.example.com") &&
+        len(.password) >= 16 &&
+        len(.profile.tags) >= 3
+      }) &&
+      current.summary.unique_emails == true
+
+  # ログデータの解析と集計
+  analyze_logs:
+    desc: ログデータを解析して統計情報を生成
+    dump: |
+      # サンプルログデータを生成
+      let logs = map(range(1, 101), {
+        let timestamp = faker.dateTime().recent(7);
+        let userId = faker.randomChoice(["user1", "user2", "user3", "user4", "user5"]);
+        let endpoint = faker.randomChoice([
+          "/api/users", "/api/products", "/api/orders", 
+          "/api/auth/login", "/api/auth/logout"
+        ]);
+        let method = contains(endpoint, "login") || contains(endpoint, "logout") ? 
+                     "POST" : faker.randomChoice(["GET", "POST", "PUT", "DELETE"]);
+        let status = faker.randomFloat(1, 0, 1) < 0.9 ? 
+                     faker.randomChoice([200, 201, 204]) : 
+                     faker.randomChoice([400, 401, 404, 500]);
+        {
+          "timestamp": timestamp,
+          "userId": userId,
+          "endpoint": endpoint,
+          "method": method,
+          "status": status,
+          "duration": faker.randomInt(10, 500),
+          "ip": faker.ipv4(),
+          "userAgent": faker.userAgent()
+        }
+      });
+      
+      # ログの解析
+      let analysis = {
+        "timeRange": {
+          "start": time.format(min(map(logs, {.timestamp})), "2006-01-02 15:04:05"),
+          "end": time.format(max(map(logs, {.timestamp})), "2006-01-02 15:04:05")
+        },
+        "requestsByEndpoint": map(
+          items(groupBy(logs, {.endpoint})),
+          {
+            "endpoint": .key,
+            "count": len(.value),
+            "avgDuration": sum(map(.value, {.duration})) / len(.value),
+            "errorRate": len(filter(.value, {.status >= 400})) / len(.value) * 100
+          }
+        ),
+        "userActivity": map(
+          items(groupBy(logs, {.userId})),
+          {
+            "userId": .key,
+            "requests": len(.value),
+            "uniqueEndpoints": len(unique(map(.value, {.endpoint}))),
+            "avgDuration": sum(map(.value, {.duration})) / len(.value),
+            "errors": len(filter(.value, {.status >= 400}))
+          }
+        ),
+        "statusCodeDistribution": map(
+          items(groupBy(logs, {str(.status)})),
+          {
+            "status": .key,
+            "count": len(.value),
+            "percentage": len(.value) / len(logs) * 100
+          }
+        ),
+        "performance": {
+          "avgDuration": sum(map(logs, {.duration})) / len(logs),
+          "p50": 0,  # 実装の簡略化
+          "p95": 0,  # 実装の簡略化
+          "p99": 0,  # 実装の簡略化
+          "slowestEndpoints": map(
+            items(groupBy(logs, {.endpoint})),
+            {
+              "endpoint": .key,
+              "avgDuration": sum(map(.value, {.duration})) / len(.value)
+            }
+          )
+        }
+      };
+      
+      analysis
+    test: |
+      # 解析結果の検証
+      len(current.requestsByEndpoint) > 0 &&
+      len(current.userActivity) == 5 &&
+      all(current.userActivity, {.requests > 0}) &&
+      sum(map(current.statusCodeDistribution, {.percentage})) > 99 &&
+      sum(map(current.statusCodeDistribution, {.percentage})) < 101
+
+  # データ変換パイプライン
+  data_transformation_pipeline:
+    desc: 複雑なデータ変換処理
+    dump: |
+      # 元データ（CSV形式を想定）
+      let rawData = [
+        {"date": "2024-01-15", "product": "Widget A", "quantity": "10", "price": "29.99", "customer": "ACME Corp"},
+        {"date": "2024-01-15", "product": "Widget B", "quantity": "5", "price": "49.99", "customer": "ACME Corp"},
+        {"date": "2024-01-16", "product": "Widget A", "quantity": "15", "price": "29.99", "customer": "XYZ Inc"},
+        {"date": "2024-01-16", "product": "Widget C", "quantity": "3", "price": "99.99", "customer": "XYZ Inc"},
+        {"date": "2024-01-17", "product": "Widget B", "quantity": "8", "price": "49.99", "customer": "ABC Ltd"}
+      ];
+      
+      # ステップ1: データ型の変換とクレンジング
+      let cleanedData = map(rawData, {
+        merge(., {
+          "date": time.parse(.date, "2006-01-02"),
+          "quantity": int(.quantity),
+          "price": float(.price),
+          "total": int(.quantity) * float(.price),
+          "productCategory": contains(.product, "A") ? "Basic" : 
+                           contains(.product, "B") ? "Standard" : "Premium"
+        })
+      });
+      
+      # ステップ2: 日付ごとの集計
+      let dailySummary = map(
+        items(groupBy(cleanedData, {time.format(.date, "2006-01-02")})),
+        {
+          "date": .key,
+          "totalRevenue": sum(map(.value, {.total})),
+          "totalQuantity": sum(map(.value, {.quantity})),
+          "orderCount": len(.value),
+          "uniqueCustomers": len(unique(map(.value, {.customer}))),
+          "avgOrderValue": sum(map(.value, {.total})) / len(.value)
+        }
+      );
+      
+      # ステップ3: 商品ごとの分析
+      let productAnalysis = map(
+        items(groupBy(cleanedData, {.product})),
+        {
+          "product": .key,
+          "category": .value[0].productCategory,
+          "totalSold": sum(map(.value, {.quantity})),
+          "revenue": sum(map(.value, {.total})),
+          "avgPrice": sum(map(.value, {.price})) / len(.value),
+          "customers": unique(map(.value, {.customer}))
+        }
+      );
+      
+      # ステップ4: 顧客ごとの購買分析
+      let customerAnalysis = map(
+        items(groupBy(cleanedData, {.customer})),
+        {
+          "customer": .key,
+          "totalSpent": sum(map(.value, {.total})),
+          "orderCount": len(.value),
+          "avgOrderValue": sum(map(.value, {.total})) / len(.value),
+          "products": unique(map(.value, {.product})),
+          "preferredCategory": let categories = map(.value, {.productCategory});
+                               let grouped = groupBy(categories, {.});
+                               let sorted = sort(items(grouped), {len(.value)});
+                               sorted[-1].key
+        }
+      );
+      
+      {
+        "summary": {
+          "totalRevenue": sum(map(cleanedData, {.total})),
+          "totalOrders": len(cleanedData),
+          "uniqueProducts": len(unique(map(cleanedData, {.product}))),
+          "uniqueCustomers": len(unique(map(cleanedData, {.customer}))),
+          "dateRange": {
+            "start": time.format(min(map(cleanedData, {.date})), "2006-01-02"),
+            "end": time.format(max(map(cleanedData, {.date})), "2006-01-02")
+          }
+        },
+        "daily": dailySummary,
+        "products": productAnalysis,
+        "customers": customerAnalysis
+      }
+    test: |
+      # 変換結果の検証
+      current.summary.totalOrders == 5 &&
+      current.summary.uniqueProducts == 3 &&
+      current.summary.uniqueCustomers == 3 &&
+      len(current.daily) == 3 &&
+      len(current.products) == 3 &&
+      all(current.products, {.totalSold > 0 && .revenue > 0}) &&
+      all(current.customers, {.totalSpent > 0})
+
+  # APIレスポンスの検証と比較
+  validate_api_response:
+    desc: 期待値との詳細な比較検証
+    dump: |
+      # モックAPIレスポンス
+      let apiResponse = {
+        "status": "success",
+        "data": {
+          "users": map(range(1, 4), {
+            {
+              "id": faker.uuid(),
+              "name": faker.name(),
+              "email": faker.email(),
+              "roles": faker.shuffle(["user", "admin", "moderator"])[0:faker.randomInt(1, 3)],
+              "active": faker.randomBool(),
+              "createdAt": faker.dateTime().past(1),
+              "metadata": omit({
+                "lastLogin": faker.dateTime().recent(30),
+                "loginCount": faker.randomInt(0, 100),
+                "preferences": {
+                  "theme": faker.randomChoice(["light", "dark"]),
+                  "language": faker.randomChoice(["en", "ja", "es"])
+                },
+                "internal": "should_be_removed"
+              }, ["internal"])
+            }
+          }),
+          "pagination": {
+            "page": 1,
+            "limit": 10,
+            "total": 3,
+            "hasNext": false
+          }
+        },
+        "timestamp": time.now()
+      };
+      
+      # レスポンスの検証
+      let validation = {
+        "structureValid": all([
+          "status" in apiResponse,
+          "data" in apiResponse,
+          "timestamp" in apiResponse,
+          "users" in apiResponse.data,
+          "pagination" in apiResponse.data
+        ]),
+        "userValidation": all(apiResponse.data.users, {
+          let user = .;
+          all([
+            matches(user.id, "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"),
+            contains(user.email, "@"),
+            len(user.roles) >= 1,
+            type(user.active) == "bool",
+            time.before(user.createdAt, time.now()),
+            !("internal" in user.metadata),
+            user.metadata.loginCount >= 0,
+            user.metadata.preferences.theme in ["light", "dark"]
+          ])
+        }),
+        "paginationValid": let p = apiResponse.data.pagination;
+          p.total == len(apiResponse.data.users) &&
+          p.page > 0 &&
+          p.limit > 0 &&
+          p.hasNext == (p.page * p.limit < p.total),
+        "performanceMetrics": {
+          "responseTime": faker.randomInt(50, 200),
+          "acceptable": true
+        }
+      };
+      
+      {
+        "response": pick(apiResponse, ["status", "timestamp"]),
+        "userCount": len(apiResponse.data.users),
+        "validation": validation,
+        "sample": pick(apiResponse.data.users[0], ["id", "name", "email", "active"])
+      }
+    test: |
+      # 総合的な検証
+      current.response.status == "success" &&
+      current.userCount == 3 &&
+      current.validation.structureValid == true &&
+      current.validation.userValidation == true &&
+      current.validation.paginationValid == true &&
+      current.validation.performanceMetrics.acceptable == true
+
+  # 高度なデータフィルタリングと変換
+  advanced_filtering:
+    desc: 複雑な条件でのデータフィルタリングと変換
+    dump: |
+      # テストデータの生成
+      let products = map(range(1, 21), {
+        let price = faker.randomFloat(2, 10, 500);
+        let category = faker.randomChoice(["Electronics", "Books", "Clothing", "Food"]);
+        {
+          "id": faker.uuid(),
+          "name": faker.productName(),
+          "category": category,
+          "price": price,
+          "discountPercentage": faker.randomChoice([0, 10, 20, 30]),
+          "stock": faker.randomInt(0, 100),
+          "rating": faker.randomFloat(1, 1, 5),
+          "reviews": faker.randomInt(0, 200),
+          "tags": unique(faker.words(faker.randomInt(2, 5))),
+          "createdAt": faker.dateTime().past(0.5),
+          "featured": faker.randomBool() && price > 100
+        }
+      });
+      
+      # 複雑なフィルタリング条件
+      let filters = {
+        "highRated": filter(products, {.rating >= 4.0}),
+        "inStock": filter(products, {.stock > 0}),
+        "onSale": filter(products, {.discountPercentage > 0}),
+        "popular": filter(products, {.reviews > 50 && .rating >= 4.0}),
+        "featured": filter(products, {.featured}),
+        "affordable": filter(products, {
+          let finalPrice = .price * (1 - .discountPercentage / 100);
+          finalPrice < 100
+        }),
+        "newArrivals": filter(products, {
+          time.sub(time.now(), .createdAt) < time.day * 30
+        })
+      };
+      
+      # カテゴリ別の統計
+      let categoryStats = map(
+        items(groupBy(products, {.category})),
+        {
+          let products = .value;
+          let prices = map(products, {.price});
+          let ratings = map(products, {.rating});
+          {
+            "category": .key,
+            "count": len(products),
+            "avgPrice": sum(prices) / len(prices),
+            "priceRange": {
+              "min": min(prices),
+              "max": max(prices)
+            },
+            "avgRating": sum(ratings) / len(ratings),
+            "totalStock": sum(map(products, {.stock})),
+            "featured": len(filter(products, {.featured}))
+          }
+        }
+      );
+      
+      # 推奨商品の選定
+      let recommendations = map(
+        filter(products, {
+          .rating >= 4.0 &&
+          .stock > 10 &&
+          .reviews > 20
+        }),
+        {
+          let finalPrice = .price * (1 - .discountPercentage / 100);
+          merge(
+            pick(., ["id", "name", "category", "rating"]),
+            {
+              "originalPrice": .price,
+              "finalPrice": finalPrice,
+              "savings": .price - finalPrice,
+              "score": .rating * 20 + .reviews * 0.1 - finalPrice * 0.01
+            }
+          )
+        }
+      );
+      
+      {
+        "totalProducts": len(products),
+        "filterResults": map(items(filters), {
+          {
+            "filter": .key,
+            "count": len(.value),
+            "percentage": len(.value) / len(products) * 100
+          }
+        }),
+        "categoryStats": categoryStats,
+        "topRecommendations": sort(recommendations, {.score})[0:3]
+      }
+    test: |
+      # フィルタリング結果の検証
+      current.totalProducts == 20 &&
+      all(current.filterResults, {.count >= 0 && .percentage >= 0}) &&
+      len(current.categoryStats) <= 4 &&
+      all(current.categoryStats, {
+        .count > 0 &&
+        .avgPrice > 0 &&
+        .priceRange.min <= .priceRange.max
+      }) &&
+      len(current.topRecommendations) <= 3

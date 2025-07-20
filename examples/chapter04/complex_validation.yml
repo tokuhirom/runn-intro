@@ -1,0 +1,26 @@
+desc: 複雑なデータ検証の例
+steps:
+  complex_validation:
+    req:
+      /products:
+        get:
+    test: |
+      # レスポンスの基本検証
+      current.res.status == 200 &&
+      
+      # 全商品の価格が正の数
+      all(current.res.body.products, {.price > 0}) &&
+      
+      # カテゴリごとに商品をグループ化して検証
+      let grouped = groupBy(current.res.body.products, {.category});
+      len(grouped.electronics) >= 5 &&
+      len(grouped.books) >= 3 &&
+      
+      # 価格の統計情報を計算
+      let prices = map(current.res.body.products, {.price});
+      min(prices) >= 10 &&
+      max(prices) <= 10000 &&
+      
+      # 在庫切れ商品の抽出
+      let outOfStock = filter(current.res.body.products, {.stock == 0});
+      len(outOfStock) < len(current.res.body.products) * 0.1  # 10%未満

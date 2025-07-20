@@ -1,0 +1,16 @@
+desc: diff関数の使用例
+steps:
+  diff_example:
+    dump: |
+      {
+        "old": "Hello\nWorld\nTest",
+        "new": "Hello\nPlanet\nTest"
+      }
+    dump_diff:
+      # テキストの差分
+      text_diff: diff(current.old, current.new)
+      # JSONの差分
+      json_diff: diff(
+        {"users": ["Alice", "Bob"]},
+        {"users": ["Alice", "Charlie"], "count": 2}
+      )

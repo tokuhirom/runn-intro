@@ -1,0 +1,25 @@
+desc: 基本的な文字列関数の使用例
+steps:
+  string_basics:
+    dump: |
+      {
+        "upper": upper("hello world"),
+        "lower": lower("HELLO WORLD"),
+        "trim": trim("  hello  "),
+        "trimPrefix": trimPrefix("Mr. Smith", "Mr. "),
+        "trimSuffix": trimSuffix("test.txt", ".txt"),
+        "split": split("a,b,c", ","),
+        "join": join(["a", "b", "c"], "-"),
+        "replace": replace("hello world", "world", "runn"),
+        "replaceAll": replaceAll("foo bar foo", "foo", "baz")
+      }
+    test: |
+      current.upper == "HELLO WORLD" &&
+      current.lower == "hello world" &&
+      current.trim == "hello" &&
+      current.trimPrefix == "Smith" &&
+      current.trimSuffix == "test" &&
+      current.split == ["a", "b", "c"] &&
+      current.join == "a-b-c" &&
+      current.replace == "hello runn" &&
+      current.replaceAll == "baz bar baz"
