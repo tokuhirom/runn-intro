@@ -1,16 +1,18 @@
 desc: diff関数の使用例
+
+vars:
+  # 差分を取るためのテキストデータ
+  old_text: "Hello\nWorld\nTest"
+  new_text: "Hello\nPlanet\nTest"
+
 steps:
-  diff_example:
+  string_diff_example:
+    # テキストの差分
+    dump: diff(vars.old_text, vars.new_text)
+  json_diff_example:
+    # データ構造の差分
     dump: |
-      {
-        "old": "Hello\nWorld\nTest",
-        "new": "Hello\nPlanet\nTest"
-      }
-    dump_diff:
-      # テキストの差分
-      text_diff: diff(current.old, current.new)
-      # JSONの差分
-      json_diff: diff(
+      diff(
         {"users": ["Alice", "Bob"]},
         {"users": ["Alice", "Charlie"], "count": 2}
       )

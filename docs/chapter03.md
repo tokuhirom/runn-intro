@@ -31,6 +31,8 @@ expr-lang/exprでは、さまざまなリテラルと演算子を使って、デ
 | **マップ**    | `{a: 1, b: 2, c: 3}`                   | 連想配列・オブジェクト     |
 | **nil**    | `nil`                                  | null値           |
 
+<!-- TODO: 演算子表を追加 -->
+
 ```yaml
 {{ includex("examples/chapter03/literals_demo.yml") }}
 ```
