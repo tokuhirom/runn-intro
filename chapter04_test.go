@@ -11,8 +11,8 @@ func TestChapter04(t *testing.T) {
 }
 
 // TODO: remove this, after fixing the test
-func TestCompareBasic(t *testing.T) {
+func TestSingle(t *testing.T) {
 	testutil.RunTestForFiles(t, []string{
-		"examples/chapter04/boolean_example.yml",
+		"examples/chapter04/omit_example.yml",
 	})
 }

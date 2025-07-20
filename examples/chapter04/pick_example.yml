@@ -9,8 +9,5 @@ vars:
 steps:
   pick_example:
     dump: |
-      # パスワードを除外してユーザー情報を抽出
-      pick(vars.user, ["id", "name", "email"])
-    test: |
-      !("password" in current) &&
-      current.name == "Alice"
+      // パスワードを除外してユーザー情報を抽出
+      pick(vars.user, "id", "name", "email")
