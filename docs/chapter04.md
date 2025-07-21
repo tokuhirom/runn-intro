@@ -64,10 +64,6 @@ APIレスポンスの文字列"true"や数値の1を真偽値として扱いた�
 {{ includex("examples/chapter04/boolean_example.yml") }}
 ```
 
-結果:
-```
-{{ includex("examples/chapter04/boolean_example.stdout") }}
-```
 
 ## 🔍 compare関数
 
