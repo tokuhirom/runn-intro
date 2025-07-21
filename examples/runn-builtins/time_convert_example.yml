@@ -21,7 +21,6 @@ steps:
     dump: |
       {
         "slash_date": time("2024/01/15"),
-        "jp_date": time("2024年1月15日"),
         "us_date": time("January 15, 2024"),
         "with_timezone": time("2024-01-15 10:30:00 +0900")
       }
