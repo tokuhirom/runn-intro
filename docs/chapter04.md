@@ -153,11 +153,24 @@ m := lo.OmitByKeys(map[string]int{"foo": 1, "bar": 2, "baz": 3}, []string{"foo",
 
 ### ∩ intersect関数 - 共通部分を見つけ出せ！
 
-複数の配列やオブジェクトの**共通部分だけを抽出**！集合演算の**積集合を一瞬で計算**！
+**2つの配列の共通要素だけを抽出**！集合演算の**積集合を一瞬で計算**！
+
+[juliangruber/go-intersect](https://github.com/juliangruber/go-intersect) を使って実装されているぞ！
 
 ```yaml
 {{ includex("examples/chapter04/intersect_example.yml") }}
 ```
+
+**出力例：**
+```
+{{ includex("examples/chapter04/intersect_example.stdout") }}
+```
+
+**使い方のポイント：**
+- 2つの配列に共通して含まれる要素を返す
+- 文字列、数値など様々な型の配列に対応
+- **注意：** 配列専用の関数（オブジェクトには使用不可）
+- **注意：** 引数は2つのみ（3つ以上の配列を比較したい場合は、ネストして使用）
 
 ### 📦 groupBy関数 - データを賢く分類！
 
