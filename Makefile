@@ -26,15 +26,3 @@ clean: ## Clean the build directory
 
 test: ## Test all runn examples
 	go test ./...
-
-test-basics: ## Test Chapter 01 examples
-	go test -v -run TestBasics
-
-test-scenario: ## Test Chapter 02 examples
-	go test -v -run TestChapter02
-
-test-expr-lang: ## Test Chapter 03 examples
-	go test -v -run TestChapter03
-
-test-runn-builtins: ## Test Chapter 04 examples
-	go test -v -run TestChapter04
