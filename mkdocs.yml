@@ -33,6 +33,7 @@ theme:
     code: Roboto Mono
 
 nav:
+  - トップページ: index.md
   - はじめに: intro.md
   - 第1章 基礎編: basics.md
   - 第2章 シナリオ記述編: scenario.md
