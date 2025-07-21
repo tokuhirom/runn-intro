@@ -119,8 +119,16 @@ m := lo.OmitByKeys(map[string]int{"foo": 1, "bar": 2, "baz": 3}, []string{"foo",
 
 複数のオブジェクトを**スマートに統合**！後のオブジェクトが優先されるから、**設定のオーバーライドに最適**！
 
+[lo.Assign](https://github.com/samber/lo?tab=readme-ov-file#assign) 関数を使って実装されているぞ！
+
 ```yaml
 {{ includex("examples/chapter04/merge_example.yml") }}
+```
+
+結果は以下のようになる：
+
+```
+{{ includex("examples/chapter04/merge_example.stdout") }}
 ```
 
 ### ∩ intersect関数 - 共通部分を見つけ出せ！
