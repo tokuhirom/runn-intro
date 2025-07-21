@@ -1,0 +1,7 @@
+desc: input関数の使用例
+steps:
+  -
+    bind:
+      id: input("Enter your ID", "default")
+  -
+    dump: id
