@@ -1,0 +1,11 @@
+desc: select関数を使った対話的な選択
+steps:
+  select_environment:
+    desc: 環境を選択
+    # 3つの引数：メッセージ、選択肢リスト、デフォルト値
+    dump: select("どの環境にデプロイしますか？ (development/staging/production)", ["development", "staging", "production"], "development")
+  
+  select_without_default:
+    desc: デフォルトなしの選択
+    # デフォルト値を空文字列にすると必須選択になる
+    dump: select("好きな色を選んでください (red/blue/green/yellow/purple):", ["red", "blue", "green", "yellow", "purple"], "")
