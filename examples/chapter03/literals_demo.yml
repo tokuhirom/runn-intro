@@ -6,7 +6,7 @@ steps:
       3.14 < 4 &&
       
       // 文字列
-      "hello" + " world" == "hello world" &&
+      "hello" + " world" == 'hello world' &&
       
       // ブール値
       true && !false &&

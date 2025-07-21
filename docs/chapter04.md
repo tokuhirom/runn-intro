@@ -1,53 +1,119 @@
 # 第4章：ビルトイン関数編 - 魔法の関数カタログ！
 
-**ようこそ、runnの関数パラダイスへ！** expr-lang/exprの基本機能だけでも十分強力だが、runnは**さらにその上をいく**！テストやAPIシナリオで**魔法のように使える豊富なビルトイン関数**を用意した。これらの関数を使いこなせば、**どんなに複雑なデータ操作もエレガントに決まる**！
+**ようこそ、runnの関数パラダイスへ！** expr-lang/exprの基本機能だけでも十分強力だが、runnは**さらにその上をいく**！テストやAPIシナリオで**魔法のように使える豊富なビルトイン関数**を用意している。
+これらの関数を使いこなせば、**どんなに複雑なデータ操作もエレガントに決まる**！
 
-## 🎆 6大関数カテゴリ - あなたの武器庫を充実させろ！
+実装が気になるスーパーハカーな君は [book.go](https://github.com/k1LoW/runn/blob/main/book.go) を見れば辿れるぞ！
 
-runnのビルトイン関数は**6つの強力なカテゴリ**に分かれている。それぞれが**特定の問題を解決するスペシャリスト**だ！
+## urlencode関数 - URLエンコードの達人！
 
-1. **🔍 比較・差分関数**: データの違いを**瞬時に見抜く**！
-2. **🎭 データ操作関数**: オブジェクトを**思いのままに変形**！
-3. **✏️ 文字列処理関数**: 文字列を**自在に操る**！
-4. **📁 ファイル操作関数**: 外部データと**シームレスに連携**！
-5. **⏰ 時間処理関数**: 時間を**完全に支配**！
-6. **🎲 テストデータ生成**: **リアルなダミーデータ**を一瞬で！
+urlencode関数は、**URLエンコードを一瞬で行う**魔法の関数だ。
 
-## 🔍 比較・差分関数 - 差異を見逃さない鷹の目！
+```yaml
+{{ includex("examples/chapter04/urlencode.yml") }}
+```
 
-### 🎯 compare関数 - 差分を瞬時に検出！
+結果は以下のように出力される。
+
+```
+{{ includex("examples/chapter04/urlencode.stdout") }}
+```
+
+## bool 関数 - 真偽値のマスター！
+
+bool　関数は、**真偽値を簡単に取得**できる便利な関数だ。文字列や数値を**真偽値に変換**する。
+[cast.ToBool](https://pkg.go.dev/github.com/spf13/cast#ToBool) を内部的に利用しているぞ。
+
+これをどんな時に使ったらいいかはよくわからない！
+
+```yaml
+{{ includex("examples/chapter04/boolean_example.yml") }}
+```
+
+出力結果は以下のようになる。
+
+```
+{{ includex("examples/chapter04/boolean_example.stdout") }}
+```
+
+## 🎯 compare関数 - 差分を瞬時に検出！
 
 **2つの値の違いを一瞬で見抜く**最強の比較関数！どんな小さな差分も**逃さない**！
 
 ```yaml
-{{ includex("examples/chapter04/compare_basic.yml") }}
+{{ includex("examples/chapter04/compare_basic.fail.yml") }}
 ```
 
-### 📋 diff関数 - 人間に優しい差分表示！
+出力結果はこんな感じだ。
 
-文字列やJSONの差分を**誰もが一目で理解できる形式**で出力！**デバッグの強い味方**だ！
+```
+{{ includex("examples/chapter04/compare_basic.fail.out") }}
+```
+
+<!-- TODO: compare の第３引数以後には jq の ignore list がかけるっぽいので
+     それを使った例も追加する -->
+
+## 📋 diff関数 - 人間に優しい差分表示！
+
+データ構造の差分を**誰もが一目で理解できる形式**で出力！**デバッグの強い味方**だ！
 
 ```yaml
 {{ includex("examples/chapter04/diff_example.yml") }}
 ```
 
-## 🎭 データ操作関数 - データを自在に変形する魔法！
+出力は以下のようになる。 
 
-### ✨ pick関数 - 必要なものだけを優雅に抽出！
+```
+{{ includex("examples/chapter04/diff_example.stdout") }}
+```
 
-オブジェクトから**必要なキーだけをピンポイントで抽出**！センシティブな情報を**スマートに除外**できる！
+文字列が Unified diff で出るのかと思いきやそうではないので注意が必要だ！ 
+
+## ✨ pick関数 - 必要なものだけを優雅に抽出！
+
+[lo.PickByKeys](https://github.com/samber/lo?tab=readme-ov-file#pickbykeys) 関数を使って、**オブジェクトから必要なキーだけをピックアップ**！
+
+golang でいうと以下のような感じだ。
+
+```go
+m := lo.PickByKeys(map[string]int{"foo": 1, "bar": 2, "baz": 3}, []string{"foo", "baz"})
+// map[string]int{"foo": 1, "baz": 3}
+```
+
+runn のシナリオでは以下のように書けばいいね！
 
 ```yaml
 {{ includex("examples/chapter04/pick_example.yml") }}
 ```
 
-### 🚫 omit関数 - 不要なものをバッサリ捨てろ！
+出力は以下のようになるね！
 
-オブジェクトから**不要なキーを一気に削除**！pickの逆バージョンで、**より柔軟なデータ整形**が可能！
+```
+{{ includex("examples/chapter04/pick_example.stdout") }}
+```
+
+## 🚫 omit関数 - 不要なものをバッサリ捨てろ！
+
+[lo.OmitByKeys](https://github.com/samber/lo?tab=readme-ov-file#omitbykeys) を使って、**オブジェクトから不要なキーを一気に削除**！pickの逆バージョンだ！
+
+golang でいうと以下のような感じだ。
+
+```go
+m := lo.OmitByKeys(map[string]int{"foo": 1, "bar": 2, "baz": 3}, []string{"foo", "baz"})
+// map[string]int{"bar": 2}
+```
 
 ```yaml
 {{ includex("examples/chapter04/omit_example.yml") }}
 ```
+
+結果はこーなるね！
+
+```
+{{ includex("examples/chapter04/omit_example.stdout") }}
+```
+
+<!-- TODO: 以後は見直し必要 -->
 
 ### 🤝 merge関数 - オブジェクトを融合させろ！
 

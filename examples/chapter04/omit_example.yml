@@ -9,9 +9,5 @@ vars:
 steps:
   omit_example:
     dump: |
-      # センシティブな情報を除外
-      omit(vars.user, ["password", "created_at"])
-    test: |
-      !("password" in current) &&
-      !("created_at" in current) &&
-      current.name == "Alice"
+      // パスワードを除外してユーザー情報を抽出
+      omit(vars.user, "id", "name", "email")

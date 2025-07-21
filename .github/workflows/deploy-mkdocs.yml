@@ -35,13 +35,8 @@ jobs:
         with:
           go-version: '1.21'
           
-      - name: Generate output files
-        run: make test-chapter01
-
-      - name: Generate output files
-        run: make test-chapter02
-
-      - run: make test-chapter03
+      - name: Run tests tot generate output files
+        run: make test
 
       - name: Build MkDocs site
         run: mkdocs build
