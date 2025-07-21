@@ -1,60 +1,88 @@
 desc: 様々なボディ形式のHTTPリクエスト
 runners:
-  api: https://api.example.com/v1
+  httpbin: http://localhost:8080
 steps:
   # JSON形式
   json_request:
-    req:
-      api:///data:
+    httpbin:
+      /post:
         post:
           body:
             application/json:
               key: "value"
               nested:
                 array: [1, 2, 3]
+    test: |
+      current.res.status == 200 &&
+      current.res.body.headers["Content-Type"][0] == "application/json" &&
+      current.res.body.json.key == "value" &&
+      current.res.body.json.nested.array[0] == 1 &&
+      current.res.body.json.nested.array[1] == 2 &&
+      current.res.body.json.nested.array[2] == 3
 
   # フォームデータ
   form_request:
-    req:
-      api:///form:
+    httpbin:
+      /post:
         post:
           body:
             application/x-www-form-urlencoded:
               username: alice
               password: secret123
+    test: |
+      current.res.status == 200 &&
+      current.res.body.headers["Content-Type"][0] == "application/x-www-form-urlencoded" &&
+      current.res.body.form.username[0] == "alice" &&
+      current.res.body.form.password[0] == "secret123"
 
-  # マルチパートフォーム
+  # マルチパートフォーム（テストデータ用の文字列フィールドのみ）
   multipart_request:
-    req:
-      api:///upload:
+    httpbin:
+      /post:
         post:
           body:
             multipart/form-data:
-              file: "@./testdata/sample.txt"
-              description: "Test file upload"
+              field1: "test value"
+              description: "Test multipart form"
+    test: |
+      current.res.status == 200 &&
+      current.res.body.headers["Content-Type"][0] contains "multipart/form-data" &&
+      current.res.body.form.field1[0] == "test value" &&
+      current.res.body.form.description[0] == "Test multipart form"
 
   # プレーンテキスト
   text_request:
-    req:
-      api:///webhook:
+    httpbin:
+      /post:
         post:
+          headers:
+            Content-Type: text/plain
           body:
             text/plain: |
               This is a plain text message
               with multiple lines
+    test: |
+      current.res.status == 200 &&
+      current.res.body.headers["Content-Type"][0] == "text/plain" &&
+      current.res.body.data contains "This is a plain text message" &&
+      current.res.body.data contains "with multiple lines"
 
-  # XML形式
-  xml_request:
-    req:
-      api:///soap:
-        post:
+  # カスタムヘッダーとJSONボディ
+  custom_headers_request:
+    httpbin:
+      /anything:
+        put:
+          headers:
+            X-Custom-Header: "custom-value"
+            Authorization: "Bearer token123"
           body:
-            application/xml: |
-              <?xml version="1.0" encoding="UTF-8"?>
-              <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-                <soap:Body>
-                  <GetUser>
-                    <UserId>123</UserId>
-                  </GetUser>
-                </soap:Body>
-              </soap:Envelope>
+            application/json:
+              action: "update"
+              id: 42
+    test: |
+      current.res.status == 200 &&
+      current.res.body.method == "PUT" &&
+      current.res.body.headers["X-Custom-Header"][0] == "custom-value" &&
+      current.res.body.headers["Authorization"][0] == "Bearer token123" &&
+      current.res.body.json.action == "update" &&
+      current.res.body.json.id == 42
