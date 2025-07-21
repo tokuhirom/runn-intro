@@ -7,43 +7,43 @@
 ### 📚 Runbookの基本構造 - すべての始まり！
 
 ```yaml
-{{ includex("examples/chapter09/runbook_structure.yml") }}
+{{ includex("examples/references/runbook_structure.yml") }}
 ```
 
 ### 🎯 Step（ステップ）の構造 - アクションの設計図！
 
 ```yaml
-{{ includex("examples/chapter09/step_structure.yml") }}
+{{ includex("examples/references/step_structure.yml") }}
 ```
 
 ### 🏃 Runner（ランナー）の定義 - プロトコルの司令塔！
 
 ```yaml
-{{ includex("examples/chapter09/runner_definition.yml") }}
+{{ includex("examples/references/runner_definition.yml") }}
 ```
 
 ### 🔁 Loop（ループ）の設定 - 繰り返しの魔法！
 
 ```yaml
-{{ includex("examples/chapter09/loop_settings.yml") }}
+{{ includex("examples/references/loop_settings.yml") }}
 ```
 
 ### 🌐 HTTPRequest（HTTPリクエスト）の構造 - Web APIの設計図！
 
 ```yaml
-{{ includex("examples/chapter09/http_request_structure.yml") }}
+{{ includex("examples/references/http_request_structure.yml") }}
 ```
 
 ### 🗄️ DBQuery（データベースクエリ）の構造 - SQLの秘伝書！
 
 ```yaml
-{{ includex("examples/chapter09/db_query_structure.yml") }}
+{{ includex("examples/references/db_query_structure.yml") }}
 ```
 
 ### 🎮 CDPAction（ブラウザ操作）の構造 - ブラウザ制御の極意！
 
 ```yaml
-{{ includex("examples/chapter09/cdp_action_structure.yml") }}
+{{ includex("examples/references/cdp_action_structure.yml") }}
 ```
 
 ## 🎆 全ビルトイン関数一覧 - 最強の武器庫！
