@@ -3,6 +3,7 @@ site_description: シナリオベースのE2Eテストツール「runn」の日�
 site_url: https://tokuhirom.github.io/runn-intro/
 repo_url: https://github.com/tokuhirom/runn-intro
 repo_name: tokuhirom/runn-intro
+strict: true
 
 theme:
   name: readthedocs
