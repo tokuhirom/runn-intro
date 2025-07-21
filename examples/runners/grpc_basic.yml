@@ -1,54 +1,39 @@
 desc: gRPCランナーの使用例
 runners:
   grpc: grpc://localhost:50051
-  # TLS接続の場合
-  secure_grpc: grpcs://api.example.com:443
-vars:
-  token: "dummy-token"
+
+grpcNoTLS: true  # TLSを無効にする
+
 steps:
-  # Unary RPC
-  unary_call:
-    greq:
-      grpc:///helloworld.Greeter/SayHello:
-        headers:
-          authorization: "Bearer {{ vars.token }}"
+  # Unary RPC（単一リクエスト・レスポンス）
+  say_hello:
+    desc: シンプルなgRPC呼び出し - HelloWorldの例
+    grpc:
+      /helloworld.Greeter/SayHello:
         message:
           name: "World"
     test: |
       current.res.status == 0 &&  # gRPCのOKステータス
       current.res.message.message == "Hello World"
 
-  # Server Streaming RPC
-  server_streaming:
-    greq:
-      grpc:///example.StreamService/GetStream:
+  # 異なる名前でのテスト
+  say_hello_alice:
+    desc: 別の名前でのテスト
+    grpc:
+      /helloworld.Greeter/SayHello:
         message:
-          count: 5
+          name: "Alice"
     test: |
       current.res.status == 0 &&
-      len(current.res.messages) == 5
+      current.res.message.message == "Hello Alice"
 
-  # Client Streaming RPC
-  client_streaming:
-    greq:
-      grpc:///example.StreamService/PutStream:
-        messages:
-          - data: "message1"
-          - data: "message2"
-          - data: "message3"
+  # 空の名前でのテスト
+  say_hello_empty:
+    desc: 空の名前でのテスト
+    grpc:
+      /helloworld.Greeter/SayHello:
+        message:
+          name: ""
     test: |
       current.res.status == 0 &&
-      current.res.message.count == 3
-
-  # Bidirectional Streaming RPC
-  bidirectional_streaming:
-    greq:
-      grpc:///example.ChatService/Chat:
-        messages:
-          - user: "Alice"
-            message: "Hello"
-          - user: "Alice"
-            message: "How are you?"
-    test: |
-      current.res.status == 0 &&
-      len(current.res.messages) >= 2
+      current.res.message.message == "Hello "

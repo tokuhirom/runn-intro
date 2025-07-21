@@ -16,6 +16,29 @@ func TestScenario(t *testing.T) {
 }
 
 func TestRunners(t *testing.T) {
+	testutil.RunTestForFiles(t, []string{
+		"examples/runners/http_basic_setup.yml",
+		"examples/runners/http_body_formats.yml",
+		"examples/runners/http_request_methods.yml",
+
+		//"examples/runners/grpc_basic.yml",
+
+		// 以下のテストはまだ動かない。
+		//"examples/runners/cdp_advanced.yml",
+		//"examples/runners/cdp_basic.yml",
+		//"examples/runners/cdp_spa_testing.yml",
+		//"examples/runners/db_basic_queries.yml",
+		//"examples/runners/db_complex_validation.yml",
+		//"examples/runners/db_connections.yml",
+		//"examples/runners/db_transactions.yml",
+		//"examples/runners/exec_basic.yml",
+		//"examples/runners/exec_file_operations.yml",
+		//"examples/runners/failure_test_scenario.yml",
+		//"examples/runners/multi_protocol_test.yml",
+		//"examples/runners/ssh_basic.yml",
+		//"examples/runners/ssh_health_check.yml",
+	})
+
 	t.Skip("Skip runners for now")
 	testutil.RunChapterTests(t, "examples/runners")
 }

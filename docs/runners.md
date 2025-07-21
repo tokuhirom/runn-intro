@@ -37,17 +37,7 @@ runnは**6つの強力なランナー**を搭載！それぞれが**特定のプ
 
 ## 🔗 gRPCランナー - マイクロサービスの強い味方！
 
-### ⚡ 基本的な設定 - 高速通信の世界へ！
-
-```yaml
-{{ includex("examples/runners/grpc_basic.yml") }}
-```
-
-### 📚 プロトコルバッファの動的読み込み - protoファイルを瞬時に理解！
-
-```yaml
-{{ includex("examples/runners/grpc_dynamic_proto.yml") }}
-```
+TODO: grpc の例を追加する
 
 ## 🗄️ データベースランナー - SQLの魔術師になれ！
 
