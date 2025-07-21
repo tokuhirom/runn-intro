@@ -1,76 +1,61 @@
 desc: 基本的なデータベースクエリ操作
 runners:
-  postgres: postgres://user:password@localhost:5432/testdb?sslmode=disable
+  mydb:
+    dsn: sqlite:///tmp/db_basic_queries.db
+    trace: true
+
 vars:
   test_email: "test@example.com"
-steps:
-  # SELECT クエリ
-  select_users:
-    db:
-      postgres:///
-        query: |
-          SELECT id, name, email, created_at
-          FROM users
-          WHERE active = true
-          ORDER BY created_at DESC
-          LIMIT 10
-    test: |
-      len(current.rows) <= 10 &&
-      all(current.rows, {.id > 0})
 
-  # パラメータ付きクエリ
-  select_user_by_email:
-    db:
-      postgres:///
-        query: |
-          SELECT id, name, email
-          FROM users
-          WHERE email = $1
-        params:
-          - "{{ vars.test_email }}"
-    test: |
-      len(current.rows) == 1 &&
-      current.rows[0].email == vars.test_email
+steps:
+  create_table:
+    mydb:
+      query: |
+        DROP TABLE IF EXISTS users;
+        CREATE TABLE users (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          email TEXT NOT NULL UNIQUE,
+          active BOOLEAN DEFAULT true,
+          password_hash TEXT NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
 
   # INSERT クエリ
   insert_user:
-    db:
-      postgres:///
-        query: |
-          INSERT INTO users (name, email, password_hash)
-          VALUES ($1, $2, $3)
-          RETURNING id, created_at
-        params:
-          - "{{ faker.name() }}"
-          - "{{ faker.email() }}"
-          - "{{ toBase64(faker.password(true, true, true, false, false, 12)) }}"
+    mydb:
+      query: |
+        INSERT INTO users (name, email, password_hash)
+        VALUES ('{{ faker.Username() }}', '{{ faker.Email() }}', '{{ toBase64(faker.Password(true, true, true, false, false, 12)) }}')
+    dump: current
     test: |
-      current.rows[0].id > 0 &&
-      current.rows[0].created_at != null
+      current.last_insert_id == 1
+
+  # SELECT クエリ
+  select_users:
+    mydb:
+      query: |
+        SELECT id, name, email, created_at
+        FROM users
+    test: |
+      len(current.rows) <= 10
 
   # UPDATE クエリ
   update_user:
-    db:
-      postgres:///
-        query: |
-          UPDATE users
-          SET name = $1, updated_at = NOW()
-          WHERE id = $2
-          RETURNING name, updated_at
-        params:
-          - "Updated Name"
-          - "{{ steps.insert_user.rows[0].id }}"
+    mydb:
+      query: |
+        UPDATE users
+        SET name = 'Updated name', updated_at = CURRENT_TIMESTAMP
+        WHERE id = {{ steps.insert_user.last_insert_id }}
+    dump: current
     test: |
-      current.rows[0].name == "Updated Name" &&
-      current.rows[0].updated_at != null
+      current.rows_affected == 1
 
   # DELETE クエリ
   delete_user:
-    db:
-      postgres:///
-        query: |
-          DELETE FROM users
-          WHERE id = $1
-        params:
-          - "{{ steps.insert_user.rows[0].id }}"
-    test: current.rowsAffected == 1
+    mydb:
+      query: |
+        DELETE FROM users
+        WHERE id = {{ steps.insert_user.last_insert_id }}
+    test: current.rows_affected == 1

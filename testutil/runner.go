@@ -2,6 +2,7 @@ package testutil
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/k1LoW/runn"
 	"github.com/mccutchen/go-httpbin/v2/httpbin"
 	"net/http/httptest"
@@ -77,7 +78,7 @@ func RunTestForFiles(t *testing.T, files []string) {
 			// go-httpbin runnerが必要な場合はここでURLをセット
 			keys, err := GetRunnerKeys(file)
 			if err != nil {
-				t.Fatal(err)
+				t.Fatal(fmt.Errorf("failed to get runner keys: %w", err))
 			}
 
 			for _, key := range keys {

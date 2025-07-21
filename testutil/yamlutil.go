@@ -6,7 +6,7 @@ import (
 )
 
 type RunnScenario struct {
-	Runners map[string]string `yaml:"runners"`
+	Runners map[string]interface{} `yaml:"runners"`
 }
 
 // GetRunnerKeys parses a runn scenario YAML file and returns the keys under 'runners'.
