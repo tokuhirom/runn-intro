@@ -49,20 +49,10 @@ TODO: grpc の例を追加する
 
 ### 📝 基本的なクエリ操作 - SQLを思いのままに！
 
+<!-- TODO: INSERT のあと RETRUNING 使えてない: https://github.com/k1LoW/runn/issues/1276 -->
+
 ```yaml
 {{ includex("examples/runners/db_basic_queries.yml") }}
-```
-
-### 🔄 トランザクション処理 - データ整合性を守り抜け！
-
-```yaml
-{{ includex("examples/runners/db_transactions.yml") }}
-```
-
-### 🧩 複雑なデータ検証 - どんなデータも完璧にテスト！
-
-```yaml
-{{ includex("examples/runners/db_complex_validation.yml") }}
 ```
 
 ## 🌐 CDPランナー（ブラウザ自動化） - ブラウザを完全支配！
