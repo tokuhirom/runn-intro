@@ -7,5 +7,5 @@ import (
 )
 
 func TestChapter03(t *testing.T) {
-	testutil.RunChapterTests(t, "examples/chapter03")
+	testutil.RunChapterTests(t, "examples/expr-lang")
 }

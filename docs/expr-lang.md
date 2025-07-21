@@ -34,13 +34,13 @@ expr-lang/exprでは、さまざまなリテラルと演算子を使って、デ
 <!-- TODO: 演算子表を追加 -->
 
 ```yaml
-{{ includex("examples/chapter03/literals_demo.yml") }}
+{{ includex("examples/expr-lang/literals_demo.yml") }}
 ```
 
 ### ⚖️ 比較演算子 - 真偽を見極める審判の目！
 
 ```yaml
-{{ includex("examples/chapter03/comparison_operators.yml") }}
+{{ includex("examples/expr-lang/comparison_operators.yml") }}
 ```
 
 ## 🔥 変数参照の詳細 - データの海を自由に泳げ！
@@ -60,7 +60,7 @@ expr-lang/exprでは、さまざまなリテラルと演算子を使って、デ
 ### 💡 変数アクセスの実践例 - これが本物のパワーだ！
 
 ```yaml
-{{ includex("examples/chapter03/variable_reference.yml") }}
+{{ includex("examples/expr-lang/variable_reference.yml") }}
 ```
 
 ## 🎨 高度な式パターン - プロフェッショナルへの道
@@ -68,19 +68,19 @@ expr-lang/exprでは、さまざまなリテラルと演算子を使って、デ
 ### 🔀 条件式（三項演算子） - スマートな分岐処理の極意！
 
 ```yaml
-{{ includex("examples/chapter03/conditional_expr.yml") }}
+{{ includex("examples/expr-lang/conditional_expr.yml") }}
 ```
 
 ### 🔍 フィルタリングとマッピング - データ操作の魔術師になれ！
 
 ```yaml
-{{ includex("examples/chapter03/filter_map_example.yml") }}
+{{ includex("examples/expr-lang/filter_map_example.yml") }}
 ```
 
 ### 📦 配列・マップ操作 - コレクションを思いのままに！
 
 ```yaml
-{{ includex("examples/chapter03/array_map_operations.yml") }}
+{{ includex("examples/expr-lang/array_map_operations.yml") }}
 ```
 
 ## 💼 実践的な式の例 - 現場で使える最強テクニック！
@@ -88,7 +88,7 @@ expr-lang/exprでは、さまざまなリテラルと演算子を使って、デ
 ### 🎯 APIレスポンスの検証 - 完璧な検証の極意
 
 ```yaml
-{{ includex("examples/chapter03/api_response_validation.yml") }}
+{{ includex("examples/expr-lang/api_response_validation.yml") }}
 ```
 
 ## 🔧 デバッグのテクニック - 問題解決のマスターになる！
