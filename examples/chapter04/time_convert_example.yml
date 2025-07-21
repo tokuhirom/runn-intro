@@ -1,0 +1,27 @@
+desc: time関数で文字列や数値を時刻に変換
+steps:
+  from_string_rfc3339:
+    desc: RFC3339形式の文字列を時刻に変換
+    dump: time("2024-01-15T10:30:00Z")
+  
+  from_string_datetime:
+    desc: 日時文字列を時刻に変換
+    dump: time("2024-01-15 10:30:00")
+  
+  from_string_date:
+    desc: 日付文字列を時刻に変換
+    dump: time("2024-01-15")
+  
+  from_unix_timestamp:
+    desc: Unixタイムスタンプ（秒）を時刻に変換
+    dump: time(1705320600)
+  
+  various_formats:
+    desc: 様々なフォーマットの変換
+    dump: |
+      {
+        "slash_date": time("2024/01/15"),
+        "jp_date": time("2024年1月15日"),
+        "us_date": time("January 15, 2024"),
+        "with_timezone": time("2024-01-15 10:30:00 +0900")
+      }
