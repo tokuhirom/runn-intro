@@ -153,7 +153,7 @@ runnはk1LoWによって開発されたシナリオベースのテスト・自�
 環境変数`TEST_FILE`を使用して特定のYAMLファイルをテスト：
 ```bash
 # 単一ファイルのテスト実行
-TEST_FILE=examples/chapter04/merge_example.yml go test -run TestSingleFile ./...
+TEST_FILE=examples/runn-builtins/merge_example.yml go test -run TestSingleFile ./...
 
 # 複数ファイルの場合は直接ファイルを編集
 # single_test.goを参照

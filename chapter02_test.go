@@ -6,6 +6,6 @@ import (
 	"github.com/tokuhirom/runn-intro/testutil"
 )
 
-func TestChapter02(t *testing.T) {
-	testutil.RunChapterTests(t, "examples/chapter02")
+func TestScenario(t *testing.T) {
+	testutil.RunChapterTests(t, "examples/scenario")
 }
