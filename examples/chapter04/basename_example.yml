@@ -1,0 +1,29 @@
+desc: basename関数でファイルパスからファイル名を取得
+steps:
+  simple_basename:
+    desc: 単純なファイルパスからファイル名を取得
+    dump: basename("/home/user/documents/report.pdf")
+  
+  unix_path:
+    desc: Unixパスからファイル名を取得
+    dump: basename("/var/log/nginx/access.log")
+  
+  windows_path:
+    desc: Windowsパスからファイル名を取得  
+    dump: basename("C:\\Users\\Documents\\data.xlsx")
+  
+  filename_only:
+    desc: ファイル名だけの場合
+    dump: basename("config.yml")
+  
+  trailing_slash:
+    desc: 末尾にスラッシュがある場合（最後のディレクトリ名を返す）
+    dump: basename("/path/to/directory/")
+  
+  empty_path:
+    desc: 空のパスの場合（ドットを返す）
+    dump: basename("")
+  
+  dot_file:
+    desc: ドットファイルの場合
+    dump: basename("/home/user/.bashrc")
