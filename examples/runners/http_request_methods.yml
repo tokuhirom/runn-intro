@@ -1,64 +1,81 @@
 desc: HTTPリクエストメソッドとパラメータの例
 runners:
-  api: https://api.example.com/v1
-vars:
-  token: "dummy-token"
+  httpbin: http://localhost:8080
 steps:
   # GET リクエスト
-  get_users:
-    req:
-      api:///users:  # runners.apiのベースURLを使用
+  get_request:
+    httpbin:
+      /get?page=1&limit=10&sort=created_at:
         get:
-          query:
-            page: 1
-            limit: 10
-            sort: created_at
           headers:
             Accept: application/json
             User-Agent: runn/test
-    test: current.res.status == 200
+    test: |
+      current.res.status == 200 &&
+      current.res.body.args.page[0] == "1" &&
+      current.res.body.args.limit[0] == "10" &&
+      current.res.body.args.sort[0] == "created_at"
 
   # POST リクエスト
-  create_user:
-    req:
-      api:///users:
+  post_request:
+    httpbin:
+      /post:
         post:
           headers:
             Content-Type: application/json
-            Authorization: "Bearer {{ vars.token }}"
           body:
             application/json:
               name: "Alice"
               email: "alice@example.com"
               role: "user"
     test: |
-      current.res.status == 201 &&
-      current.res.body.id != null
+      current.res.status == 200 &&
+      current.res.body.json.name == "Alice" &&
+      current.res.body.json.email == "alice@example.com" &&
+      current.res.body.json.role == "user"
 
-  # PUT リクエスト（更新）
-  update_user:
-    req:
-      api:///users/{{ steps.create_user.res.body.id }}:
+  # PUT リクエスト
+  put_request:
+    httpbin:
+      /put:
         put:
           body:
             application/json:
               name: "Alice Smith"
               email: "alice.smith@example.com"
-    test: current.res.status == 200
+              id: 123
+    test: |
+      current.res.status == 200 &&
+      current.res.body.json.name == "Alice Smith" &&
+      current.res.body.json.email == "alice.smith@example.com"
 
-  # PATCH リクエスト（部分更新）
-  patch_user:
-    req:
-      api:///users/{{ steps.create_user.res.body.id }}:
+  # PATCH リクエスト
+  patch_request:
+    httpbin:
+      /patch:
         patch:
           body:
             application/json:
               role: "admin"
-    test: current.res.status == 200
+    test: |
+      current.res.status == 200 &&
+      current.res.body.json.role == "admin"
 
   # DELETE リクエスト
-  delete_user:
-    req:
-      api:///users/{{ steps.create_user.res.body.id }}:
-        delete:
-    test: current.res.status == 204
+  delete_request:
+    httpbin:
+      /delete:
+        delete: {}
+    test: current.res.status == 200
+
+  # Bearer認証の例
+  auth_request:
+    httpbin:
+      /bearer:
+        get:
+          headers:
+            Authorization: "Bearer test-token-123"
+    test: |
+      current.res.status == 200 &&
+      current.res.body.authenticated == true &&
+      current.res.body.token == "test-token-123"
