@@ -8,7 +8,6 @@ require (
 	github.com/k1LoW/runn v0.133.0
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/mccutchen/go-httpbin/v2 v2.18.3
-	google.golang.org/grpc v1.73.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -164,6 +163,7 @@ require (
 	google.golang.org/genproto v0.0.0-20250303144028-a0af3efb3deb // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250528174236-200df99c418a // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250528174236-200df99c418a // indirect
+	google.golang.org/grpc v1.73.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	modernc.org/libc v1.65.10 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
