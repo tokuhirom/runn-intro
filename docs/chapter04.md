@@ -131,6 +131,26 @@ m := lo.OmitByKeys(map[string]int{"foo": 1, "bar": 2, "baz": 3}, []string{"foo",
 {{ includex("examples/chapter04/merge_example.stdout") }}
 ```
 
+### 💬 input関数 - 対話的な入力を可能に！
+
+**実行時にユーザーからの入力を受け付ける**魔法の関数！インタラクティブなシナリオや、**セキュアな情報の入力**に最適！
+
+[prompter.Prompt](https://pkg.go.dev/github.com/Songmu/prompter#Prompt) を使って実装されているぞ！
+
+```yaml
+{{ includex("examples/chapter04/input_example.concept.yml") }}
+```
+
+**使用例：**
+- パスワードやAPIキーなどの機密情報の入力
+- 実行時に動的に決定する値の入力
+- ユーザー確認が必要な処理での対話的操作
+
+**注意事項：**
+- CI/CD環境では使用できない（対話的入力が不可能なため）
+- 自動化されたテストには不向き
+- 開発時やローカル実行時の便利機能として活用しよう！
+
 ### ∩ intersect関数 - 共通部分を見つけ出せ！
 
 複数の配列やオブジェクトの**共通部分だけを抽出**！集合演算の**積集合を一瞬で計算**！
