@@ -102,7 +102,7 @@ func RunTestForFiles(t *testing.T, files []string) {
 
 			// Outの結果をバッファに書き出し、.outファイルに保存
 			var buf bytes.Buffer
-			err = result.Out(&buf, true)
+			err = result.Out(&buf)
 			if err != nil {
 				t.Fatal(err)
 			}
