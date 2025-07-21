@@ -58,16 +58,38 @@ URLエンコードを忘れると、日本語や特殊文字を含むパラメ�
 
 **「この値はtrueなの？falseなの？」**と迷ったことはありませんか？
 
-APIレスポンスの文字列"true"や数値の1を真偽値として扱いたい場合、`bool`関数が確実に変換してくれます：
+APIレスポンスの文字列"true"や数値の1を真偽値として扱いたい場合、`bool`関数が確実に変換してくれます。
 
 ```yaml
-{{ includex("examples/chapter04/boolean_example.yml") }}
+desc: bool関数の使用例
+vars:
+  string_true: "true"
+  string_false: "false"
+  number_one: 1
+  number_zero: 0
+  empty_string: ""
+steps:
+  bool_example:
+    desc: 様々な値を真偽値に変換
+    bind:
+      results:
+        string_true: bool(vars.string_true)     # true
+        string_false: bool(vars.string_false)   # false
+        number_one: bool(vars.number_one)       # true
+        number_zero: bool(vars.number_zero)     # false
+        empty_string: bool(vars.empty_string)   # false
+    test: |
+      current.results.string_true == true &&
+      current.results.string_false == false &&
+      current.results.number_one == true &&
+      current.results.number_zero == false &&
+      current.results.empty_string == false
 ```
 
-結果:
-```
-{{ includex("examples/chapter04/boolean_example.stdout") }}
-```
+**変換ルール：**
+- 文字列: `"true"` → `true`、`"false"` や空文字 → `false`
+- 数値: `1` → `true`、`0` → `false`
+- その他: 値が存在すれば `true`、null や空なら `false`
 
 ## 🔍 compare関数
 
