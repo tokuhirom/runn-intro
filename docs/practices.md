@@ -152,13 +152,13 @@ func setupTestEnvironment(t *testing.T) *TestEnvironment {
 #### 🔐 認証フローのテスト - セキュリティを完璧に検証！
 
 ```yaml
-{{ includex("examples/chapter08/auth/login.yml") }}
+{{ includex("examples/practices/auth/login.yml") }}
 ```
 
 #### 📦 商品管理のテスト - CRUD操作を完全網羅！
 
 ```yaml
-{{ includex("examples/chapter08/products/crud.yml") }}
+{{ includex("examples/practices/products/crud.yml") }}
 ```
 
 ### 2. 🌍 マイクロサービスの統合テスト - 複雑なシステムを完全支配！
@@ -194,7 +194,7 @@ func TestMicroservicesIntegration(t *testing.T) {
 ```
 
 ```yaml
-{{ includex("examples/chapter08/microservices/user_journey.yml") }}
+{{ includex("examples/practices/microservices/user_journey.yml") }}
 ```
 
 ## 🏆 ベストプラクティス - プロの流儀を伝授！
@@ -204,19 +204,19 @@ func TestMicroservicesIntegration(t *testing.T) {
 #### 🎲 固定データとランダムデータの使い分け - プロの技！
 
 ```yaml
-{{ includex("examples/chapter08/data_management.yml") }}
+{{ includex("examples/practices/data_management.yml") }}
 ```
 
 ### 2. 🛡️ エラーハンドリングとリトライ戦略 - 失敗を成功に変えろ！
 
 ```yaml
-{{ includex("examples/chapter08/error_handling.yml") }}
+{{ includex("examples/practices/error_handling.yml") }}
 ```
 
 ### 3. 🌍 環境別設定の管理 - どんな環境でも完璧に動く！
 
 ```yaml
-{{ includex("examples/chapter08/environment_config.yml") }}
+{{ includex("examples/practices/environment_config.yml") }}
 ```
 
 ## 🔍 デバッグ方法 - 問題を瞬時に特定する魔法！
@@ -224,7 +224,7 @@ func TestMicroservicesIntegration(t *testing.T) {
 ### 1. 📈 段階的なデバッグ - ステップ・バイ・ステップで確実に！
 
 ```yaml
-{{ includex("examples/chapter08/debugging.yml") }}
+{{ includex("examples/practices/debugging.yml") }}
 ```
 
 ## ⚡ パフォーマンスチューニング - 速度の限界を突破！
@@ -283,7 +283,7 @@ func TestAPIPerformance(t *testing.T) {
 ```
 
 ```yaml
-{{ includex("examples/chapter08/performance/load_test.yml") }}
+{{ includex("examples/practices/performance/load_test.yml") }}
 ```
 
 ## 🎆 まとめ - 実践テクニックのマスター誕生！
