@@ -1,7 +1,7 @@
 # runn入門書作成プロジェクト
 
 ## プロジェクト概要
-runn（https://github.com/k1LoW/runn）のe2eテストツールの入門書を作成する。作成した文書はGitHub Pagesで公開される。
+[runn](https://github.com/k1LoW/runn) のe2eテストツールの入門書を作成する。作成した文書はGitHub Pagesで公開される。
 
 ## 基本方針
 - **言語**: すべて日本語で記述
