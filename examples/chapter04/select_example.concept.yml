@@ -1,0 +1,39 @@
+desc: select関数を使った対話的な選択
+runners:
+  blog: "../testutil/server.go"
+steps:
+  select_environment:
+    desc: 環境を選択
+    dump:
+      # 3つの引数：メッセージ、選択肢リスト、デフォルト値
+      environment: select("どの環境にデプロイしますか？", ["development", "staging", "production"], "development")
+  
+  select_without_default:
+    desc: デフォルトなしの選択
+    dump:
+      # デフォルト値を空文字列にすると必須選択になる
+      choice: select("好きな色を選んでください", ["赤", "青", "緑", "黄", "紫"], "")
+  
+  dynamic_selection:
+    desc: 動的な選択肢を使った選択
+    bind:
+      users:
+        - name: "Alice"
+          id: "user001"
+        - name: "Bob"
+          id: "user002"
+        - name: "Charlie"
+          id: "user003"
+    dump:
+      # 動的に生成された選択肢から選択
+      selected_user: select("ユーザーを選択してください", users | map(.name), users[0].name)
+  
+  conditional_api_call:
+    desc: 選択結果に基づいたAPI呼び出し
+    bind:
+      action: select("実行するアクションを選択", ["ユーザー作成", "ユーザー更新", "ユーザー削除"], "")
+    if: action != ""
+    req:
+      blog: 
+        endpoint: '{{ action == "ユーザー作成" ? "/users" : action == "ユーザー更新" ? "/users/1" : "/users/1" }}'
+        method: '{{ action == "ユーザー作成" ? "POST" : action == "ユーザー更新" ? "PUT" : "DELETE" }}'
