@@ -11,7 +11,7 @@ steps:
           body:
             application/json:
               name: "Alice"
-              email: "alice@localhost"
+              email: "alice@example.com"
     test: steps.create_user.res.status == 201
   
   login_user:                         # 名前付きステップ

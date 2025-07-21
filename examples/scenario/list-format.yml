@@ -10,7 +10,7 @@ steps:
           body:
             application/json:
               name: "Alice"
-              email: "alice@localhost"
+              email: "alice@example.com"
     test: steps[0].res.status == 201
   
   - blog:                              # steps[1]
