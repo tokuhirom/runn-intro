@@ -6,6 +6,6 @@ import (
 	"github.com/tokuhirom/runn-intro/testutil"
 )
 
-func TestChapter04(t *testing.T) {
+func TestRunnBuiltins(t *testing.T) {
 	testutil.RunChapterTests(t, "examples/runn-builtins")
 }
