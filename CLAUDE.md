@@ -123,9 +123,8 @@ runnはk1LoWによって開発されたシナリオベースのテスト・自�
 
 ## ビルドとテストの実行
 - `make build` - ドキュメントのビルド
-- `make generate-outputs` - *.out ファイルの生成（YAMLファイルの実行結果を生成）
 - `make serve` - ローカルでドキュメントをプレビュー
-- `make test` - すべてのrunnサンプルをテスト
+- `make test` - すべてのrunnサンプルをテスト（*.out, *.stdout, *.stderrファイルも自動生成される）
 
 ## テストの仕様
 

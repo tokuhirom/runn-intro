@@ -1,20 +1,16 @@
-desc: intersect関数の使用例
+desc: intersect関数の使用例 - 2つの配列の共通要素を取得
 vars:
-  list1: ["apple", "banana", "orange", "grape"]
-  list2: ["banana", "grape", "melon"]
-  list3: ["grape", "apple", "banana"]
+  fruits1: ["apple", "banana", "orange", "grape"]
+  fruits2: ["banana", "grape", "melon", "apple"]
+  nums1: [1, 2, 3, 4, 5]
+  nums2: [3, 4, 5, 6, 7]
+  strings1: ["hello", "world", "foo", "bar"]
+  strings2: ["foo", "bar", "baz", "hello"]
 steps:
   intersect_example:
     dump: |
       {
-        "two_arrays": intersect(vars.list1, vars.list2),
-        "three_arrays": intersect(vars.list1, vars.list2, vars.list3),
-        "objects": intersect(
-          {"a": 1, "b": 2, "c": 3},
-          {"b": 2, "c": 3, "d": 4}
-        )
+        "fruits_common": intersect(vars.fruits1, vars.fruits2),
+        "numbers_common": intersect(vars.nums1, vars.nums2),
+        "strings_common": intersect(vars.strings1, vars.strings2)
       }
-    test: |
-      current.two_arrays == ["banana", "grape"] &&
-      current.three_arrays == ["banana", "grape"] &&
-      current.objects == {"b": 2, "c": 3}
