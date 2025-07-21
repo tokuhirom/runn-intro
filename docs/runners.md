@@ -35,24 +35,6 @@ runnは**6つの強力なランナー**を搭載！それぞれが**特定のプ
 {{ includex("examples/runners/http_body_formats.yml") }}
 ```
 
-### 🔐 認証の実装 - セキュリティを完璧にテスト！
-
-```yaml
-{{ includex("examples/runners/http_authentication.yml") }}
-```
-
-### 🔍 レスポンスの詳細な検証 - 一分の隙も見逃さない！
-
-```yaml
-{{ includex("examples/runners/http_response_validation.yml") }}
-```
-
-### 🚀 GraphQL API の操作 - 次世代APIも完全サポート！
-
-```yaml
-{{ includex("examples/runners/graphql_example.yml") }}
-```
-
 ## 🔗 gRPCランナー - マイクロサービスの強い味方！
 
 ### ⚡ 基本的な設定 - 高速通信の世界へ！
