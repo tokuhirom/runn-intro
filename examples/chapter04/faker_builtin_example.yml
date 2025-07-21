@@ -1,4 +1,4 @@
-desc: faker関数でテストデータを生成
+desc: faker関数でテストデータを生成 - 全メソッド網羅版
 steps:
   person_data:
     desc: 人物データの生成
@@ -16,18 +16,38 @@ steps:
     dump: |
       {
         "username": faker.Username(),
-        "password_simple": faker.Password(true, true, true, false, false, 8),
-        "password_complex": faker.Password(true, true, true, true, false, 16)
+        "password_all": faker.Password(true, true, true, true, true, 20),
+        "password_lower_only": faker.Password(true, false, false, false, false, 10),
+        "password_upper_only": faker.Password(false, true, false, false, false, 10),
+        "password_numeric_only": faker.Password(false, false, true, false, false, 10),
+        "password_special_only": faker.Password(false, false, false, true, false, 10),
+        "password_with_space": faker.Password(true, true, true, false, true, 15)
       }
   
-  uuid_data:
-    desc: UUID関連データの生成
+  misc_data:
+    desc: その他の基本データ
     dump: |
       {
-        "uuid": faker.UUID(),
+        "bool": faker.Bool(),
+        "uuid": faker.UUID()
+      }
+  
+  uuid_variants:
+    desc: UUID各バージョンとULID
+    dump: |
+      {
         "uuidv4": faker.UUIDv4(),
         "uuidv6": faker.UUIDv6(),
-        "uuidv7": faker.UUIDv7()
+        "uuidv7": faker.UUIDv7(),
+        "ulid": faker.ULID()
+      }
+  
+  color_data:
+    desc: 色関連データの生成
+    dump: |
+      {
+        "color": faker.Color(),
+        "hexColor": faker.HexColor()
       }
   
   internet_data:
@@ -40,7 +60,29 @@ steps:
         "ipv6": faker.IPv6(),
         "httpStatusCode": faker.HTTPStatusCode(),
         "httpMethod": faker.HTTPMethod(),
+        "httpVersion": faker.HTTPVersion(),
         "userAgent": faker.UserAgent()
+      }
+  
+  datetime_data:
+    desc: 日時関連データの生成
+    dump: |
+      {
+        "date": faker.Date(),
+        "nanoSecond": faker.NanoSecond(),
+        "second": faker.Second(),
+        "minute": faker.Minute(),
+        "hour": faker.Hour(),
+        "month": faker.Month(),
+        "day": faker.Day(),
+        "year": faker.Year()
+      }
+  
+  emoji_data:
+    desc: 絵文字の生成
+    dump: |
+      {
+        "emoji": faker.Emoji()
       }
   
   number_data:
@@ -48,8 +90,13 @@ steps:
     dump: |
       {
         "int": faker.Int(),
-        "intRange": faker.IntRange(1, 100),
-        "float": faker.Float()
+        "intRange_small": faker.IntRange(1, 10),
+        "intRange_medium": faker.IntRange(100, 1000),
+        "intRange_large": faker.IntRange(10000, 99999),
+        "float": faker.Float(),
+        "floatRange_small": faker.FloatRange(0.0, 1.0),
+        "floatRange_medium": faker.FloatRange(10.0, 100.0),
+        "floatRange_large": faker.FloatRange(1000.0, 10000.0)
       }
   
   string_data:
@@ -57,9 +104,27 @@ steps:
     dump: |
       {
         "digit": faker.Digit(),
-        "digitN": faker.DigitN(10),
+        "digitN_5": faker.DigitN(5),
+        "digitN_10": faker.DigitN(10),
+        "digitN_15": faker.DigitN(15),
         "letter": faker.Letter(),
-        "letterN": faker.LetterN(10),
-        "lexify": faker.Lexify("????-????"),
-        "numerify": faker.Numerify("###-###-####")
+        "letterN_5": faker.LetterN(5),
+        "letterN_10": faker.LetterN(10),
+        "letterN_15": faker.LetterN(15),
+        "lexify_simple": faker.Lexify("????"),
+        "lexify_complex": faker.Lexify("TEST-????-????"),
+        "numerify_phone": faker.Numerify("###-###-####"),
+        "numerify_code": faker.Numerify("CODE-########")
+      }
+  
+  edge_cases:
+    desc: エッジケースのテスト
+    dump: |
+      {
+        "digitN_0": faker.DigitN(0),
+        "digitN_negative": faker.DigitN(-1),
+        "letterN_0": faker.LetterN(0),
+        "letterN_negative": faker.LetterN(-1),
+        "intRange_same": faker.IntRange(42, 42),
+        "floatRange_same": faker.FloatRange(3.14, 3.14)
       }
