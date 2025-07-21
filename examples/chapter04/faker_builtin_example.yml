@@ -1,0 +1,65 @@
+desc: faker関数でテストデータを生成
+steps:
+  person_data:
+    desc: 人物データの生成
+    dump: |
+      {
+        "name": faker.Name(),
+        "firstName": faker.FirstName(),
+        "lastName": faker.LastName(),
+        "email": faker.Email(),
+        "username": faker.Username()
+      }
+  
+  auth_data:
+    desc: 認証関連データの生成
+    dump: |
+      {
+        "username": faker.Username(),
+        "password_simple": faker.Password(true, true, true, false, false, 8),
+        "password_complex": faker.Password(true, true, true, true, false, 16)
+      }
+  
+  uuid_data:
+    desc: UUID関連データの生成
+    dump: |
+      {
+        "uuid": faker.UUID(),
+        "uuidv4": faker.UUIDv4(),
+        "uuidv6": faker.UUIDv6(),
+        "uuidv7": faker.UUIDv7()
+      }
+  
+  internet_data:
+    desc: インターネット関連データの生成
+    dump: |
+      {
+        "url": faker.URL(),
+        "domain": faker.Domain(),
+        "ipv4": faker.IPv4(),
+        "ipv6": faker.IPv6(),
+        "httpStatusCode": faker.HTTPStatusCode(),
+        "httpMethod": faker.HTTPMethod(),
+        "userAgent": faker.UserAgent()
+      }
+  
+  number_data:
+    desc: 数値データの生成
+    dump: |
+      {
+        "int": faker.Int(),
+        "intRange": faker.IntRange(1, 100),
+        "float": faker.Float()
+      }
+  
+  string_data:
+    desc: 文字列データの生成
+    dump: |
+      {
+        "digit": faker.Digit(),
+        "digitN": faker.DigitN(10),
+        "letter": faker.Letter(),
+        "letterN": faker.LetterN(10),
+        "lexify": faker.Lexify("????-????"),
+        "numerify": faker.Numerify("###-###-####")
+      }
