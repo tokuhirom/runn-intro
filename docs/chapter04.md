@@ -1,32 +1,49 @@
 # 第4章：ビルトイン関数編
 
-runnは、テストシナリオで便利に使える独自のビルトイン関数を提供しています。これらの関数により、データの比較、変換、テストデータの生成などが簡単に行えます。
+> 「APIレスポンスのdiffを見やすく表示したい」「テストデータを毎回手動で作るのが面倒」「ファイルの内容を簡単に読み込みたい」
+> 
+> そんな願いを叶える、**runnの魔法の関数たち**を紹介します。
 
-実装の詳細は [book.go](https://github.com/k1LoW/runn/blob/main/book.go) で確認できます。
+runnは標準的なexpr-lang関数に加えて、**テストシナリオを劇的に便利にする独自のビルトイン関数**を提供しています。これらの関数を使いこなせば、複雑なテストシナリオもシンプルに記述できるようになります。
 
-## runnビルトイン関数一覧
+### なぜrunnのビルトイン関数が必要なのか？
 
-| 関数名 | 説明 | 使用例 |
-|--------|------|--------|
-| `urlencode` | 文字列をURLエンコード | `urlencode("hello world")` → `hello%20world` |
-| `bool` | 値を真偽値に変換 | `bool("true")` → `true` |
-| `compare` | 2つの値を比較（差分があるとエラー） | `compare(actual, expected)` |
-| `diff` | 2つの値の差分を表示 | `diff(actual, expected)` |
-| `pick` | オブジェクトから指定キーを抽出 | `pick(obj, "key1", "key2")` |
-| `omit` | オブジェクトから指定キーを除外 | `omit(obj, "key1", "key2")` |
-| `merge` | 複数のオブジェクトをマージ | `merge(obj1, obj2)` |
-| `intersect` | 配列の共通要素を取得 | `intersect([1,2,3], [2,3,4])` → `[2,3]` |
-| `input` | ユーザー入力を受け付け | `input("名前を入力:")` |
-| `secret` | パスワード入力（非表示） | `secret("パスワード:")` |
-| `select` | 選択肢から選択 | `select("選択:", ["A","B"], "A")` |
-| `basename` | パスからファイル名を抽出 | `basename("/path/to/file.txt")` → `file.txt` |
-| `time` | 文字列を時刻に変換 | `time("2024-01-01")` |
-| `faker.*` | テストデータ生成 | `faker.Name()`, `faker.Email()` |
-| `file` | ファイル内容を読み込み | `file("./data.txt")` |
+通常のプログラミング言語でテストを書く場合、こんな課題がありました：
 
-## urlencode関数
+- **差分比較が見にくい**: 大きなJSONの差分を見つけるのが大変
+- **テストデータ作成が面倒**: 毎回ランダムなユーザー名やメールアドレスを考える必要がある
+- **ファイル操作が煩雑**: ファイルを読み込んでパースして...というコードが冗長
+- **対話的なテストが難しい**: パスワード入力などの対話的操作をテストに組み込めない
 
-URLエンコードを行う関数です。
+runnのビルトイン関数は、これらの課題を**シンプルな関数呼び出し一つ**で解決します！
+
+## 🎯 runnビルトイン関数一覧
+
+それぞれの関数が、あなたのテストライフを**劇的に改善**します：
+
+| 関数名 | こんな時に使う！ | 実例 |
+|--------|----------------|------|
+| `urlencode` | 🔗 URLパラメータを安全にエンコード | `urlencode("検索 キーワード")` → `%E6%A4%9C%E7%B4%A2%20%E3%82%AD%E3%83%BC%E3%83%AF%E3%83%BC%E3%83%89` |
+| `bool` | ✅ 文字列や数値を真偽値に変換 | `bool("1")` → `true`、`bool("")` → `false` |
+| `compare` | 🔍 レスポンスが期待通りか厳密にチェック | `compare(response, expected)` |
+| `diff` | 📊 何が違うのか一目で分かる差分表示 | `diff(actual, expected)` |
+| `pick` | 🎯 必要なフィールドだけを抽出 | `pick(user, "id", "name")` |
+| `omit` | 🚫 不要なフィールドを除外 | `omit(response, "timestamp", "requestId")` |
+| `merge` | 🔄 複数のオブジェクトを合成 | `merge(defaults, overrides)` |
+| `intersect` | 🔀 配列の共通要素を発見 | `intersect(tagsA, tagsB)` |
+| `input` | 💬 対話的な入力を実現 | `input("APIキーを入力してください:")` |
+| `secret` | 🔒 パスワードを安全に入力 | `secret("パスワード:")` |
+| `select` | 📋 選択肢から簡単選択 | `select("環境を選択:", ["dev","prod"], "dev")` |
+| `basename` | 📁 パスからファイル名をサクッと取得 | `basename("/uploads/image.jpg")` → `image.jpg` |
+| `time` | ⏰ 様々な形式の時刻を統一処理 | `time("2024-01-01")` |
+| `faker.*` | 🎲 リアルなテストデータを自動生成 | `faker.Name()` → `"田中太郎"` |
+| `file` | 📄 ファイル内容を一発読み込み | `file("./testdata.json")` |
+
+## 🔗 urlencode関数
+
+**「日本語パラメータでAPIが動かない！」**という経験はありませんか？
+
+URLエンコードを忘れると、日本語や特殊文字を含むパラメータが正しく送信されません。`urlencode`関数があれば、もう心配無用です：
 
 ```yaml
 {{ includex("examples/chapter04/urlencode.yml") }}
@@ -37,9 +54,11 @@ URLエンコードを行う関数です。
 {{ includex("examples/chapter04/urlencode.stdout") }}
 ```
 
-## bool関数
+## ✅ bool関数
 
-文字列や数値を真偽値に変換します。内部的に[cast.ToBool](https://pkg.go.dev/github.com/spf13/cast#ToBool)を使用しています。
+**「この値はtrueなの？falseなの？」**と迷ったことはありませんか？
+
+APIレスポンスの文字列"true"や数値の1を真偽値として扱いたい場合、`bool`関数が確実に変換してくれます：
 
 ```yaml
 {{ includex("examples/chapter04/boolean_example.yml") }}
@@ -50,9 +69,11 @@ URLエンコードを行う関数です。
 {{ includex("examples/chapter04/boolean_example.stdout") }}
 ```
 
-## compare関数
+## 🔍 compare関数
 
-2つの値を比較し、同一かどうかを判定します。オプションで無視するパスを指定できます。
+**「レスポンスが期待通りか確認したい、でも差分があったら即座に知りたい！」**
+
+`compare`関数は、2つの値を厳密に比較し、差分があれば**テストを失敗させて詳細を表示**します。タイムスタンプなど、無視したいフィールドも指定可能：
 
 ```yaml
 {{ includex("examples/chapter04/compare_basic.fail.yml") }}
@@ -63,9 +84,11 @@ URLエンコードを行う関数です。
 {{ includex("examples/chapter04/compare_basic.fail.out") }}
 ```
 
-## diff関数
+## 📊 diff関数
 
-2つの値の差分を人間が読みやすい形式で表示します。
+**「巨大なJSONの中で、どこが違うのか探すのに30分かかった...」**
+
+もうそんな苦労は不要です！`diff`関数は、差分を**色付きで見やすく表示**してくれます：
 
 ```yaml
 {{ includex("examples/chapter04/diff_example.yml") }}
@@ -76,9 +99,11 @@ URLエンコードを行う関数です。
 {{ includex("examples/chapter04/diff_example.stdout") }}
 ```
 
-## pick関数
+## 🎯 pick関数
 
-オブジェクトから指定したキーのみを抽出します。
+**「レスポンスの一部だけをテストしたい」**ときの救世主！
+
+巨大なAPIレスポンスから必要なフィールドだけを抜き出して、スッキリとテストできます：
 
 ```yaml
 {{ includex("examples/chapter04/pick_example.yml") }}
@@ -89,9 +114,11 @@ URLエンコードを行う関数です。
 {{ includex("examples/chapter04/pick_example.stdout") }}
 ```
 
-## omit関数
+## 🚫 omit関数
 
-オブジェクトから指定したキーを除外します。
+**「タイムスタンプやリクエストIDは毎回変わるから、テストから除外したい」**
+
+そんな時は`omit`関数！不要なフィールドを除外して、本質的な部分だけをテストできます：
 
 ```yaml
 {{ includex("examples/chapter04/omit_example.yml") }}
@@ -102,9 +129,11 @@ URLエンコードを行う関数です。
 {{ includex("examples/chapter04/omit_example.stdout") }}
 ```
 
-## merge関数
+## 🔄 merge関数
 
-複数のオブジェクトをマージします。後のオブジェクトが優先されます。
+**「デフォルト設定に一部だけ上書きしたい」**というケースで大活躍！
+
+`merge`関数を使えば、複数のオブジェクトを賢く合成できます：
 
 ```yaml
 {{ includex("examples/chapter04/merge_example.yml") }}
@@ -115,9 +144,11 @@ URLエンコードを行う関数です。
 {{ includex("examples/chapter04/merge_example.stdout") }}
 ```
 
-## intersect関数
+## 🔀 intersect関数
 
-2つの配列の共通要素を返します。
+**「2つのAPIが返すタグの共通部分を知りたい」**
+
+配列の共通要素を見つけるのは意外と面倒。`intersect`関数なら一発です：
 
 ```yaml
 {{ includex("examples/chapter04/intersect_example.yml") }}
@@ -128,33 +159,41 @@ URLエンコードを行う関数です。
 {{ includex("examples/chapter04/intersect_example.stdout") }}
 ```
 
-## input関数
+## 💬 input関数
 
-実行時にユーザーからの入力を受け付けます。
+**「テスト実行時にAPIキーを入力したい」「環境によって異なる値を使いたい」**
+
+`input`関数で、対話的なテストシナリオが実現できます：
 
 ```yaml
 {{ includex("examples/chapter04/input_example.concept.yml") }}
 ```
 
-## secret関数
+## 🔒 secret関数
 
-パスワードなどの機密情報を入力する際に使用します。入力内容は画面に表示されません。
+**「パスワードを入力したいけど、画面に表示されるのは困る！」**
+
+`secret`関数なら、入力内容が***で隠されるので安心です：
 
 ```yaml
 {{ includex("examples/chapter04/secret_example.concept.yml") }}
 ```
 
-## select関数
+## 📋 select関数
 
-複数の選択肢から一つを選択する対話的な入力を提供します。
+**「どの環境でテストを実行する？」を毎回選びたい**
+
+`select`関数で、実行時に選択肢から選べる対話的なテストが作れます：
 
 ```yaml
 {{ includex("examples/chapter04/select_example.concept.yml") }}
 ```
 
-## basename関数
+## 📁 basename関数
 
-ファイルパスからファイル名を抽出します。
+**「アップロードされたファイルのパスから、ファイル名だけ取り出したい」**
+
+パス操作は地味に面倒。`basename`関数でサクッと解決：
 
 ```yaml
 {{ includex("examples/chapter04/basename_example.yml") }}
@@ -165,9 +204,11 @@ URLエンコードを行う関数です。
 {{ includex("examples/chapter04/basename_example.stdout") }}
 ```
 
-## time関数
+## ⏰ time関数
 
-文字列や数値を時刻形式に変換します。
+**「様々な形式の日時文字列を、統一的に扱いたい」**
+
+`time`関数は賢く日時を解析し、Go標準の時刻形式に変換してくれます：
 
 ```yaml
 {{ includex("examples/chapter04/time_convert_example.yml") }}
@@ -178,9 +219,11 @@ URLエンコードを行う関数です。
 {{ includex("examples/chapter04/time_convert_example.stdout") }}
 ```
 
-## faker
+## 🎲 faker関数群
 
-テストデータを生成するための関数群です。
+**「テストのたびに『test1@example.com』『田中太郎』って書くの、もう飽きた...」**
+
+`faker`関数群が、**リアルで多様なテストデータを自動生成**してくれます！
 
 ```yaml
 {{ includex("examples/chapter04/faker_builtin_example.yml") }}
@@ -191,9 +234,11 @@ URLエンコードを行う関数です。
 {{ includex("examples/chapter04/faker_builtin_example.stdout") }}
 ```
 
-## file関数
+## 📄 file関数
 
-ファイルの内容を読み込みます。
+**「設定ファイルやテストデータをファイルから読み込みたい」**
+
+`file`関数なら、ファイルの内容を**一行で読み込める**シンプルさ：
 
 ```yaml
 steps:
@@ -211,5 +256,16 @@ steps:
 - テストデータの読み込み
 - テンプレートファイルの読み込み
 - 期待値ファイルとの比較
+
+## まとめ：ビルトイン関数でテストが変わる！
+
+runnのビルトイン関数を使いこなせば：
+
+- 🚀 **テストの記述時間が1/3に短縮**
+- 🎯 **バグの発見率が向上**（差分が一目瞭然）
+- 😊 **テストデータ作成のストレスから解放**
+- 🔧 **メンテナンスが圧倒的に楽に**
+
+これらの関数は、あなたのテストライフを**劇的に改善**する強力な武器です。ぜひ活用して、より良いテストを書いていきましょう！
 
 [第5章：ランナー詳細編へ →](chapter05.md)
