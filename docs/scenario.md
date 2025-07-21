@@ -29,7 +29,7 @@ assert(response.status === 201);
 
 **runnのRunbook：**
 ```yaml
-{{ includex("examples/chapter02/basic-structure.yml") }}
+{{ includex("examples/scenario/basic-structure.yml") }}
 ```
 
 **見てください！** これだけ直感的に書けるんです。
@@ -62,7 +62,7 @@ runnは**2つの記述スタイル**を提供しています。プロジェク�
 **インデックスでステップを参照**する、最もシンプルな方法：
 
 ```yaml
-{{ includex("examples/chapter02/list-format.yml") }}
+{{ includex("examples/scenario/list-format.yml") }}
 ```
 
 **メリット：**
@@ -75,7 +75,7 @@ runnは**2つの記述スタイル**を提供しています。プロジェク�
 **名前付きステップ**で、まるで関数のように扱える：
 
 ```yaml
-{{ includex("examples/chapter02/map-format.yml") }}
+{{ includex("examples/scenario/map-format.yml") }}
 ```
 
 **メリット：**
@@ -92,7 +92,7 @@ runnは**2つの記述スタイル**を提供しています。プロジェク�
 runnの変数システムは**驚くほどパワフル**です：
 
 ```yaml
-{{ includex("examples/chapter02/variable-definition.yml") }}
+{{ includex("examples/scenario/variable-definition.yml") }}
 ```
 
 **注目ポイント：**
@@ -105,7 +105,7 @@ runnの変数システムは**驚くほどパワフル**です：
 定義した変数を**自在に活用**：
 
 ```yaml
-{{ includex("examples/chapter02/variable-reference.yml") }}
+{{ includex("examples/scenario/variable-reference.yml") }}
 ```
 
 **ワンポイント：** `{% raw %}{{ vars.変数名 }}{% endraw %}`の記法で、どこでも変数を展開できます！
@@ -117,13 +117,13 @@ runnの変数システムは**驚くほどパワフル**です：
 **これがrunnの真骨頂！** すべての機能を詰め込んだ例：
 
 ```yaml
-{{ includex("examples/chapter02/http-request-complete.yml") }}
+{{ includex("examples/scenario/http-request-complete.yml") }}
 ```
 
 標準出力には以下のように出る！
 
 ```
-{{ includex("examples/chapter02/http-request-complete.stdout") }}
+{{ includex("examples/scenario/http-request-complete.stdout") }}
 ```
 
 **驚きの機能群：**
@@ -137,7 +137,7 @@ runnの変数システムは**驚くほどパワフル**です：
 SQLクエリも**YAMLで自然に記述**：
 
 ```yaml
-{{ includex("examples/chapter02/database-query.concept.yml") }}
+{{ includex("examples/scenario/database-query.concept.yml") }}
 ```
 
 **ポイント：** HTTPもDBも、同じ`test`構文でアサーション！統一感が素晴らしい。
@@ -149,11 +149,11 @@ SQLクエリも**YAMLで自然に記述**：
 **実際のプロジェクトで使えるレベル**のシナリオ：
 
 ```yaml
-{{ includex("examples/chapter02/crud-operations.yml") }}
+{{ includex("examples/scenario/crud-operations.yml") }}
 ```
 
 ```
-{{ includex("examples/chapter02/crud-operations.out") }}
+{{ includex("examples/scenario/crud-operations.out") }}
 ```
 
 **学べること：**
@@ -168,7 +168,7 @@ SQLクエリも**YAMLで自然に記述**：
 長いテキストも**美しく記述**：
 
 ```yaml
-{{ includex("examples/chapter02/multiline-strings.yml") }}
+{{ includex("examples/scenario/multiline-strings.yml") }}
 ```
 
 ### テクニック2: アンカー＆エイリアス
@@ -176,7 +176,7 @@ SQLクエリも**YAMLで自然に記述**：
 **DRYの極み**を実現：
 
 ```yaml
-{{ includex("examples/chapter02/anchors-aliases.yml") }}
+{{ includex("examples/scenario/anchors-aliases.yml") }}
 ```
 
 **効果：** 共通設定を一箇所で管理！メンテナンスが劇的に楽に。
@@ -186,7 +186,7 @@ SQLクエリも**YAMLで自然に記述**：
 **開発・本番環境を賢く切り替え**：
 
 ```yaml
-{{ includex("examples/chapter02/environment-config.yml") }}
+{{ includex("examples/scenario/environment-config.yml") }}
 ```
 
 ## あなたは今、YAMLマスター！

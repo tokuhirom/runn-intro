@@ -30,7 +30,7 @@ test: ## Test all runn examples
 test-basics: ## Test Chapter 01 examples
 	go test -v -run TestBasics
 
-test-chapter02: ## Test Chapter 02 examples
+test-scenario: ## Test Chapter 02 examples
 	go test -v -run TestChapter02
 
 test-chapter03: ## Test Chapter 03 examples
