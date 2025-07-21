@@ -2,6 +2,7 @@ package testutil
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/k1LoW/runn"
 	"github.com/mccutchen/go-httpbin/v2/httpbin"
 	"net/http/httptest"
@@ -48,6 +49,14 @@ func RunTestForFiles(t *testing.T, files []string) {
 	defer blogServer.Close()
 	blogServerURL := blogServer.URL
 
+	// gRPCサーバーを起動（必要な場合に使うため）
+	grpcServer, grpcAddr, err := StartGRPCServer()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer grpcServer.Stop()
+	t.Logf("Started gRPC server at %s", grpcAddr)
+
 	t.Setenv("API_KEY", "MY_GREAT_API_KEY")
 
 	// Run each file
@@ -88,6 +97,10 @@ func RunTestForFiles(t *testing.T, files []string) {
 				if key == "blog" {
 					// keys に blog が含まれていたら blog を起動し、serverURL を指定
 					opts = append(opts, runn.Runner("blog", blogServerURL))
+				}
+				if key == "grpc" {
+					// keys に grpc が含まれていたら grpc を起動し、serverURL を指定
+					opts = append(opts, runn.Runner("grpc", fmt.Sprintf("grpc://%s", grpcAddr)))
 				}
 			}
 

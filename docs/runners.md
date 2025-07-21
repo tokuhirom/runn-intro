@@ -61,12 +61,6 @@ runnは**6つの強力なランナー**を搭載！それぞれが**特定のプ
 {{ includex("examples/runners/grpc_basic.yml") }}
 ```
 
-### 📚 プロトコルバッファの動的読み込み - protoファイルを瞬時に理解！
-
-```yaml
-{{ includex("examples/runners/grpc_dynamic_proto.yml") }}
-```
-
 ## 🗄️ データベースランナー - SQLの魔術師になれ！
 
 ### 🌍 対応データベース - あらゆるDBを制覇！
