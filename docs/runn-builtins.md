@@ -46,12 +46,12 @@ runnのビルトイン関数は、これらの課題を**シンプルな関数�
 URLエンコードを忘れると、日本語や特殊文字を含むパラメータが正しく送信されません。`urlencode`関数があれば、もう心配無用です：
 
 ```yaml
-{{ includex("examples/chapter04/urlencode.yml") }}
+{{ includex("examples/runn-builtins/urlencode.yml") }}
 ```
 
 結果:
 ```
-{{ includex("examples/chapter04/urlencode.stdout") }}
+{{ includex("examples/runn-builtins/urlencode.stdout") }}
 ```
 
 ## ✅ bool関数
@@ -98,12 +98,12 @@ steps:
 `compare`関数は、2つの値を厳密に比較し、差分があれば**テストを失敗させて詳細を表示**します。タイムスタンプなど、無視したいフィールドも指定可能：
 
 ```yaml
-{{ includex("examples/chapter04/compare_basic.fail.yml") }}
+{{ includex("examples/runn-builtins/compare_basic.fail.yml") }}
 ```
 
 結果:
 ```
-{{ includex("examples/chapter04/compare_basic.fail.out") }}
+{{ includex("examples/runn-builtins/compare_basic.fail.out") }}
 ```
 
 ## 📊 diff関数
@@ -113,12 +113,12 @@ steps:
 もうそんな苦労は不要です！`diff`関数は、差分を**色付きで見やすく表示**してくれます：
 
 ```yaml
-{{ includex("examples/chapter04/diff_example.yml") }}
+{{ includex("examples/runn-builtins/diff_example.yml") }}
 ```
 
 結果:
 ```
-{{ includex("examples/chapter04/diff_example.stdout") }}
+{{ includex("examples/runn-builtins/diff_example.stdout") }}
 ```
 
 ## 🎯 pick関数
@@ -128,12 +128,12 @@ steps:
 巨大なAPIレスポンスから必要なフィールドだけを抜き出して、スッキリとテストできます：
 
 ```yaml
-{{ includex("examples/chapter04/pick_example.yml") }}
+{{ includex("examples/runn-builtins/pick_example.yml") }}
 ```
 
 結果:
 ```
-{{ includex("examples/chapter04/pick_example.stdout") }}
+{{ includex("examples/runn-builtins/pick_example.stdout") }}
 ```
 
 ## 🚫 omit関数
@@ -143,12 +143,12 @@ steps:
 そんな時は`omit`関数！不要なフィールドを除外して、本質的な部分だけをテストできます：
 
 ```yaml
-{{ includex("examples/chapter04/omit_example.yml") }}
+{{ includex("examples/runn-builtins/omit_example.yml") }}
 ```
 
 結果:
 ```
-{{ includex("examples/chapter04/omit_example.stdout") }}
+{{ includex("examples/runn-builtins/omit_example.stdout") }}
 ```
 
 ## 🔄 merge関数
@@ -158,12 +158,12 @@ steps:
 `merge`関数を使えば、複数のオブジェクトを賢く合成できます：
 
 ```yaml
-{{ includex("examples/chapter04/merge_example.yml") }}
+{{ includex("examples/runn-builtins/merge_example.yml") }}
 ```
 
 結果:
 ```
-{{ includex("examples/chapter04/merge_example.stdout") }}
+{{ includex("examples/runn-builtins/merge_example.stdout") }}
 ```
 
 ## 🔀 intersect関数
@@ -173,12 +173,12 @@ steps:
 配列の共通要素を見つけるのは意外と面倒。`intersect`関数なら一発です：
 
 ```yaml
-{{ includex("examples/chapter04/intersect_example.yml") }}
+{{ includex("examples/runn-builtins/intersect_example.yml") }}
 ```
 
 結果:
 ```
-{{ includex("examples/chapter04/intersect_example.stdout") }}
+{{ includex("examples/runn-builtins/intersect_example.stdout") }}
 ```
 
 ## 💬 input関数
@@ -188,7 +188,7 @@ steps:
 `input`関数で、対話的なテストシナリオが実現できます：
 
 ```yaml
-{{ includex("examples/chapter04/input_example.concept.yml") }}
+{{ includex("examples/runn-builtins/input_example.concept.yml") }}
 ```
 
 ## 🔒 secret関数
@@ -198,7 +198,7 @@ steps:
 `secret`関数なら、入力内容が***で隠されるので安心です：
 
 ```yaml
-{{ includex("examples/chapter04/secret_example.concept.yml") }}
+{{ includex("examples/runn-builtins/secret_example.concept.yml") }}
 ```
 
 ## 📋 select関数
@@ -208,7 +208,7 @@ steps:
 `select`関数で、実行時に選択肢から選べる対話的なテストが作れます：
 
 ```yaml
-{{ includex("examples/chapter04/select_example.concept.yml") }}
+{{ includex("examples/runn-builtins/select_example.concept.yml") }}
 ```
 
 ## 📁 basename関数
@@ -218,12 +218,12 @@ steps:
 パス操作は地味に面倒。`basename`関数でサクッと解決：
 
 ```yaml
-{{ includex("examples/chapter04/basename_example.yml") }}
+{{ includex("examples/runn-builtins/basename_example.yml") }}
 ```
 
 結果:
 ```
-{{ includex("examples/chapter04/basename_example.stdout") }}
+{{ includex("examples/runn-builtins/basename_example.stdout") }}
 ```
 
 ## ⏰ time関数
@@ -233,12 +233,12 @@ steps:
 `time`関数は賢く日時を解析し、Go標準の時刻形式に変換してくれます：
 
 ```yaml
-{{ includex("examples/chapter04/time_convert_example.yml") }}
+{{ includex("examples/runn-builtins/time_convert_example.yml") }}
 ```
 
 結果:
 ```
-{{ includex("examples/chapter04/time_convert_example.stdout") }}
+{{ includex("examples/runn-builtins/time_convert_example.stdout") }}
 ```
 
 ## 🎲 faker関数群
@@ -248,12 +248,12 @@ steps:
 `faker`関数群が、**リアルで多様なテストデータを自動生成**してくれます！
 
 ```yaml
-{{ includex("examples/chapter04/faker_builtin_example.yml") }}
+{{ includex("examples/runn-builtins/faker_builtin_example.yml") }}
 ```
 
 結果:
 ```
-{{ includex("examples/chapter04/faker_builtin_example.stdout") }}
+{{ includex("examples/runn-builtins/faker_builtin_example.stdout") }}
 ```
 
 ## 📄 file関数

@@ -73,7 +73,7 @@ func TestUserAPI(t *testing.T) {
 ```
 
 ```yaml
-{{ includex("examples/chapter07/user_test.yml") }}
+{{ includex("examples/test-helper/user_test.yml") }}
 ```
 
 ## 🚀 基本的な統合方法 - runnとGoの幸せな結婚！
@@ -428,7 +428,7 @@ func TestAuthenticationFlow(t *testing.T) {
 ```
 
 ```yaml
-{{ includex("examples/chapter07/auth_flow.yml") }}
+{{ includex("examples/test-helper/auth_flow.yml") }}
 ```
 
 ### 🌐 E2Eワークフローテスト - システム全体を完全テスト！
@@ -495,7 +495,7 @@ func TestE2EWorkflow(t *testing.T) {
 ```
 
 ```yaml
-{{ includex("examples/chapter07/e2e_workflow.yml") }}
+{{ includex("examples/test-helper/e2e_workflow.yml") }}
 ```
 
 ## ⚡ パフォーマンステスト - 速度の限界に挑戦！
@@ -552,11 +552,11 @@ func TestAPIPerformance(t *testing.T) {
 ```
 
 ```yaml
-{{ includex("examples/chapter07/performance_test.yml") }}
+{{ includex("examples/test-helper/performance_test.yml") }}
 ```
 
 ```yaml
-{{ includex("examples/chapter07/performance/user_simulation.yml") }}
+{{ includex("examples/test-helper/performance/user_simulation.yml") }}
 ```
 
 ## 🔍 デバッグとトラブルシューティング - 問題を瞬時に解決！
@@ -640,7 +640,7 @@ func TestWithDetailedErrorInfo(t *testing.T) {
 ### 💙 GitHub Actionsでの実行 - クラウドで最強テスト！
 
 ```yaml
-{{ includex("examples/chapter07/github_actions.yml") }}
+{{ includex("examples/test-helper/github_actions.yml") }}
 ```
 
 ### 🐳 Dockerを使った統合テスト - コンテナで完璧なテスト環境！

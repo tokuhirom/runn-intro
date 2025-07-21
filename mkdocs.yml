@@ -33,16 +33,16 @@ theme:
     code: Roboto Mono
 
 nav:
-  - はじめに: index.md
-  - 第1章 基礎編: chapter01.md
-  - 第2章 シナリオ記述編: chapter02.md
-  - 第3章 Expression文法編: chapter03.md
-  - 第4章 ビルトイン関数編: chapter04.md
-  - 第5章 ランナー詳細編: chapter05.md
-  - 第6章 高度な機能編: chapter06.md
-  - 第7章 テストヘルパーとしての利用: chapter07.md
-  - 第8章 実践編: chapter08.md
-  - 第9章 リファレンス: chapter09.md
+  - はじめに: intro.md
+  - 第1章 基礎編: basics.md
+  - 第2章 シナリオ記述編: scenario.md
+  - 第3章 Expression文法編: expr-lang.md
+  - 第4章 ビルトイン関数編: runn-builtins.md
+  - 第5章 ランナー詳細編: runners.md
+  - 第6章 高度な機能編: advanced.md
+  - 第7章 テストヘルパーとしての利用: test-helper.md
+  - 第8章 実践編: practices.md
+  - 第9章 リファレンス: references.md
 
 markdown_extensions:
   - pymdownx.highlight:

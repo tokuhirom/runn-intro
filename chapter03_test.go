@@ -6,6 +6,6 @@ import (
 	"github.com/tokuhirom/runn-intro/testutil"
 )
 
-func TestChapter03(t *testing.T) {
-	testutil.RunChapterTests(t, "examples/chapter03")
+func TestExprLang(t *testing.T) {
+	testutil.RunChapterTests(t, "examples/expr-lang")
 }
