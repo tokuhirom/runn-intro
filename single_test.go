@@ -8,7 +8,7 @@ import (
 )
 
 // TestSingleFile runs a single YAML file specified by TEST_FILE environment variable
-// Usage: TEST_FILE=examples/chapter04/merge_example.yml go test -run TestSingleFile ./...
+// Usage: TEST_FILE=examples/runn-builtins/merge_example.yml go test -run TestSingleFile ./...
 func TestSingleFile(t *testing.T) {
 	testFile := os.Getenv("TEST_FILE")
 	if testFile == "" {

@@ -7,5 +7,5 @@ import (
 )
 
 func TestChapter04(t *testing.T) {
-	testutil.RunChapterTests(t, "examples/chapter04")
+	testutil.RunChapterTests(t, "examples/runn-builtins")
 }

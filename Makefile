@@ -36,5 +36,5 @@ test-scenario: ## Test Chapter 02 examples
 test-expr-lang: ## Test Chapter 03 examples
 	go test -v -run TestChapter03
 
-test-chapter04: ## Test Chapter 04 examples
+test-runn-builtins: ## Test Chapter 04 examples
 	go test -v -run TestChapter04
