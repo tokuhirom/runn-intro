@@ -20,7 +20,7 @@
 runnは、これらの課題を**YAMLベースの宣言的な記述**で解決します：
 
 ```yaml
-{{ includex("examples/chapter01/intro/intro-simple-api-test.yml") }}
+{{ includex("examples/basics/intro/intro-simple-api-test.yml") }}
 ```
 
 ### runnの3つの顔
@@ -42,7 +42,7 @@ CI/CDでの活用、定期実行タスク、運用自動化など、**テスト�
 HTTP、gRPC、データベース、ブラウザ操作、SSHまで、**すべて同じYAML形式**で記述できます。もう複数のツールを使い分ける必要はありません。
 
 ```yaml
-{{ includex("examples/chapter01/intro/intro-multi-protocol.concept.yml") }}
+{{ includex("examples/basics/intro/intro-multi-protocol.concept.yml") }}
 ```
 
 #### 📦 **シングルバイナリ**
@@ -52,7 +52,7 @@ HTTP、gRPC、データベース、ブラウザ操作、SSHまで、**すべて�
 前のステップの結果を次のステップで利用する**ステップ間連携**が自由自在。複雑なシナリオも直感的に記述できます。
 
 ```yaml
-{{ includex("examples/chapter01/intro/intro-step-chaining.yml") }}
+{{ includex("examples/basics/intro/intro-step-chaining.yml") }}
 ```
 
 #### 🚀 **Goテスト統合**
@@ -228,10 +228,10 @@ docker run -p 8080:8080 mccutchen/go-httpbin
 
 ### Scenario 1: Hello, runn! - 記念すべき第一歩
 
-`examples/chapter01/first-scenario.yml`として保存：
+`examples/basics/first-scenario.yml`として保存：
 
 ```yaml
-{{ includex("examples/chapter01/first-scenario.yml") }}
+{{ includex("examples/basics/first-scenario.yml") }}
 ```
 
 **たったこれだけ！** でも、これが立派なE2Eテストなんです。
@@ -241,13 +241,13 @@ docker run -p 8080:8080 mccutchen/go-httpbin
 ドキドキの瞬間：
 
 ```bash
-runn run examples/chapter01/first-scenario.yml --verbose
+runn run examples/basics/first-scenario.yml --verbose
 ```
 
 #### 実行結果
 
 ```
-{{ includex("examples/chapter01/first-scenario.out") }}
+{{ includex("examples/basics/first-scenario.out") }}
 ```
 
 **見ました？** `ok`の文字が！これがあなたの**初めてのテスト成功**です！
@@ -257,7 +257,7 @@ runn run examples/chapter01/first-scenario.yml --verbose
 APIテストの真骨頂、**レスポンスの中身まで検証**してみましょう：
 
 ```yaml
-{{ includex("examples/chapter01/json-validation.yml") }}
+{{ includex("examples/basics/json-validation.yml") }}
 ```
 
 **ポイント**: `current.res.body`で自由自在にJSONの中身をチェック！
@@ -267,7 +267,7 @@ APIテストの真骨頂、**レスポンスの中身まで検証**してみま�
 同じ値を何度も書くのは面倒？**変数を使ってスマートに**：
 
 ```yaml
-{{ includex("examples/chapter01/with-variables.yml") }}
+{{ includex("examples/basics/with-variables.yml") }}
 ```
 
 **魔法のような`{{ vars }}`記法**で、メンテナンスが劇的に楽に！
@@ -277,7 +277,7 @@ APIテストの真骨頂、**レスポンスの中身まで検証**してみま�
 これぞrunnの真骨頂！**前のステップの結果を次で使う**：
 
 ```yaml
-{{ includex("examples/chapter01/multi-step.yml") }}
+{{ includex("examples/basics/multi-step.yml") }}
 ```
 
 **驚きポイント**: `steps.login.res.body.json.username`で前のレスポンスを参照！
@@ -332,7 +332,7 @@ Goコードでデータを生成してから、runnでシナリオテスト。�
 **これが現場で使われている本物のコード**です：
 
 ```go
-{{ includex("examples/chapter01/go-test/main_test.go") }}
+{{ includex("examples/basics/go-test/main_test.go") }}
 ```
 
 #### テスト対象サーバーの実装
@@ -340,7 +340,7 @@ Goコードでデータを生成してから、runnでシナリオテスト。�
 まずは**実際に動くAPIサーバー**を見てみましょう：
 
 ```go
-{{ includex("examples/chapter01/go-test/main.go") }}
+{{ includex("examples/basics/go-test/main.go") }}
 ```
 
 **見どころ**: SQLiteのインメモリDBを使った本格的なREST API！
@@ -350,7 +350,7 @@ Goコードでデータを生成してから、runnでシナリオテスト。�
 そして、このサーバーをテストする**美しいシナリオ**：
 
 ```yaml
-{{ includex("examples/chapter01/user-api-test.yml") }}
+{{ includex("examples/basics/user-api-test.yml") }}
 ```
 
 **注目ポイント**:

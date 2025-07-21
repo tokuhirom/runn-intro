@@ -27,8 +27,8 @@ clean: ## Clean the build directory
 test: ## Test all runn examples
 	go test ./...
 
-test-chapter01: ## Test Chapter 01 examples
-	go test -v -run TestChapter01
+test-basics: ## Test Chapter 01 examples
+	go test -v -run TestBasics
 
 test-chapter02: ## Test Chapter 02 examples
 	go test -v -run TestChapter02
