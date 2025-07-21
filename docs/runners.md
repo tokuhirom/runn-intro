@@ -20,37 +20,37 @@ runnは**6つの強力なランナー**を搭載！それぞれが**特定のプ
 ### 🚀 基本的な設定 - まずはここから始めよう！
 
 ```yaml
-{{ includex("examples/chapter05/http_basic_setup.yml") }}
+{{ includex("examples/runners/http_basic_setup.yml") }}
 ```
 
 ### 🎨 リクエストメソッドとパラメータ - あらゆるHTTPメソッドを制覇！
 
 ```yaml
-{{ includex("examples/chapter05/http_request_methods.yml") }}
+{{ includex("examples/runners/http_request_methods.yml") }}
 ```
 
 ### 📦 様々なボディ形式 - どんなデータ形式もお手のもの！
 
 ```yaml
-{{ includex("examples/chapter05/http_body_formats.yml") }}
+{{ includex("examples/runners/http_body_formats.yml") }}
 ```
 
 ### 🔐 認証の実装 - セキュリティを完璧にテスト！
 
 ```yaml
-{{ includex("examples/chapter05/http_authentication.yml") }}
+{{ includex("examples/runners/http_authentication.yml") }}
 ```
 
 ### 🔍 レスポンスの詳細な検証 - 一分の隙も見逃さない！
 
 ```yaml
-{{ includex("examples/chapter05/http_response_validation.yml") }}
+{{ includex("examples/runners/http_response_validation.yml") }}
 ```
 
 ### 🚀 GraphQL API の操作 - 次世代APIも完全サポート！
 
 ```yaml
-{{ includex("examples/chapter05/graphql_example.yml") }}
+{{ includex("examples/runners/graphql_example.yml") }}
 ```
 
 ## 🔗 gRPCランナー - マイクロサービスの強い味方！
@@ -58,13 +58,13 @@ runnは**6つの強力なランナー**を搭載！それぞれが**特定のプ
 ### ⚡ 基本的な設定 - 高速通信の世界へ！
 
 ```yaml
-{{ includex("examples/chapter05/grpc_basic.yml") }}
+{{ includex("examples/runners/grpc_basic.yml") }}
 ```
 
 ### 📚 プロトコルバッファの動的読み込み - protoファイルを瞬時に理解！
 
 ```yaml
-{{ includex("examples/chapter05/grpc_dynamic_proto.yml") }}
+{{ includex("examples/runners/grpc_dynamic_proto.yml") }}
 ```
 
 ## 🗄️ データベースランナー - SQLの魔術師になれ！
@@ -72,25 +72,25 @@ runnは**6つの強力なランナー**を搭載！それぞれが**特定のプ
 ### 🌍 対応データベース - あらゆるDBを制覇！
 
 ```yaml
-{{ includex("examples/chapter05/db_connections.yml") }}
+{{ includex("examples/runners/db_connections.yml") }}
 ```
 
 ### 📝 基本的なクエリ操作 - SQLを思いのままに！
 
 ```yaml
-{{ includex("examples/chapter05/db_basic_queries.yml") }}
+{{ includex("examples/runners/db_basic_queries.yml") }}
 ```
 
 ### 🔄 トランザクション処理 - データ整合性を守り抜け！
 
 ```yaml
-{{ includex("examples/chapter05/db_transactions.yml") }}
+{{ includex("examples/runners/db_transactions.yml") }}
 ```
 
 ### 🧩 複雑なデータ検証 - どんなデータも完璧にテスト！
 
 ```yaml
-{{ includex("examples/chapter05/db_complex_validation.yml") }}
+{{ includex("examples/runners/db_complex_validation.yml") }}
 ```
 
 ## 🌐 CDPランナー（ブラウザ自動化） - ブラウザを完全支配！
@@ -98,19 +98,19 @@ runnは**6つの強力なランナー**を搭載！それぞれが**特定のプ
 ### 🎮 基本的な設定 - Chromeを思いのままに操ろう！
 
 ```yaml
-{{ includex("examples/chapter05/cdp_basic.yml") }}
+{{ includex("examples/runners/cdp_basic.yml") }}
 ```
 
 ### 🎪 高度なブラウザ操作 - プロ級のテクニック！
 
 ```yaml
-{{ includex("examples/chapter05/cdp_advanced.yml") }}
+{{ includex("examples/runners/cdp_advanced.yml") }}
 ```
 
 ### ✨ SPAアプリケーションのテスト - モダンWebアプリも余裕！
 
 ```yaml
-{{ includex("examples/chapter05/cdp_spa_testing.yml") }}
+{{ includex("examples/runners/cdp_spa_testing.yml") }}
 ```
 
 ## 💻 SSHランナー - リモートサーバーの絶対的支配者！
@@ -118,13 +118,13 @@ runnは**6つの強力なランナー**を搭載！それぞれが**特定のプ
 ### 🔑 基本的な設定 - サーバーへのセキュアアクセス！
 
 ```yaml
-{{ includex("examples/chapter05/ssh_basic.yml") }}
+{{ includex("examples/runners/ssh_basic.yml") }}
 ```
 
 ### 📏 サーバー監視とヘルスチェック - 24時間365日の番人！
 
 ```yaml
-{{ includex("examples/chapter05/ssh_health_check.yml") }}
+{{ includex("examples/runners/ssh_health_check.yml") }}
 ```
 
 ## ⚙️ Execランナー（ローカルコマンド実行） - シェルコマンドの魔術師！
@@ -132,13 +132,13 @@ runnは**6つの強力なランナー**を搭載！それぞれが**特定のプ
 ### 🚀 基本的な使用方法 - コマンドを瞬時に実行！
 
 ```yaml
-{{ includex("examples/chapter05/exec_basic.yml") }}
+{{ includex("examples/runners/exec_basic.yml") }}
 ```
 
 ### 📁 ファイル操作とテスト - ローカルファイルを完全管理！
 
 ```yaml
-{{ includex("examples/chapter05/exec_file_operations.yml") }}
+{{ includex("examples/runners/exec_file_operations.yml") }}
 ```
 
 ## 🎆 ランナーの組み合わせ - 最強のコンボ技！
@@ -146,13 +146,13 @@ runnは**6つの強力なランナー**を搭載！それぞれが**特定のプ
 ### 🌈 マルチプロトコルテスト - 複数プロトコルを華麗に連携！
 
 ```yaml
-{{ includex("examples/chapter05/multi_protocol_test.yml") }}
+{{ includex("examples/runners/multi_protocol_test.yml") }}
 ```
 
 ### 💥 障害テストシナリオ - カオスエンジニアリングの極意！
 
 ```yaml
-{{ includex("examples/chapter05/failure_test_scenario.yml") }}
+{{ includex("examples/runners/failure_test_scenario.yml") }}
 ```
 
 ## 🎆 まとめ - ランナーマスター誕生！
