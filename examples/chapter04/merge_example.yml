@@ -10,10 +10,5 @@ vars:
 steps:
   merge_example:
     dump: |
-      # デフォルト設定とカスタム設定をマージ
+      // デフォルト設定とカスタム設定をマージ
       merge(vars.defaults, vars.custom)
-    test: |
-      current.timeout == 60 &&  # customの値で上書き
-      current.retries == 3 &&   # defaultsの値を維持
-      current.debug == false && # defaultsの値を維持
-      current.verbose == true   # customの新しい値

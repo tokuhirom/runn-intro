@@ -127,6 +127,39 @@ runnはk1LoWによって開発されたシナリオベースのテスト・自�
 - `make serve` - ローカルでドキュメントをプレビュー
 - `make test` - すべてのrunnサンプルをテスト
 
+## テストの仕様
+
+### テストフレームワーク
+- `testutil`パッケージを使用してrunnのサンプルをテスト
+- 各章ごとに`chapterXX_test.go`ファイルを配置
+- `go test`コマンドでテストを実行（runnコマンドは使用しない）
+
+### 自動生成されるファイル
+テスト実行時に以下のファイルが自動生成される：
+- `.out` - テスト結果（runn.Result.Out()の出力）
+- `.stdout` - 標準出力（`dump`ステップの出力など）
+- `.stderr` - 標準エラー出力
+
+### YAMLファイルの記述ルール
+- YAMLのコメントは通常通り`#`を使用
+- expr-lang式内（test、dumpセクションなど）では`//`スタイルを使用（`#`は非推奨警告が出る）
+- `.concept.yml`で終わるファイルは概念説明用でテスト実行されない
+- `.fail.yml`で終わるファイルは失敗例として扱われる
+
+### テストサーバー
+- `httpbin`ランナー: go-httpbinを使用したモックサーバー
+- `blog`ランナー: カスタムテストサーバー（testutil/server.go）
+
+### 個別テストの実行
+環境変数`TEST_FILE`を使用して特定のYAMLファイルをテスト：
+```bash
+# 単一ファイルのテスト実行
+TEST_FILE=examples/chapter04/merge_example.yml go test -run TestSingleFile ./...
+
+# 複数ファイルの場合は直接ファイルを編集
+# single_test.goを参照
+```
+
 ## Git操作の重要なルール
 - **masterブランチへの直接コミットは禁止**
 - 必ず新しいブランチを作成してからコミットし、プルリクエストを送る
