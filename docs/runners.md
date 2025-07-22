@@ -103,20 +103,6 @@ TODO: grpc の例を追加する
 {{ includex("examples/runners/exec_file_operations.yml") }}
 ```
 
-## 🎆 ランナーの組み合わせ - 最強のコンボ技！
-
-### 🌈 マルチプロトコルテスト - 複数プロトコルを華麗に連携！
-
-```yaml
-{{ includex("examples/runners/multi_protocol_test.yml") }}
-```
-
-### 💥 障害テストシナリオ - カオスエンジニアリングの極意！
-
-```yaml
-{{ includex("examples/runners/failure_test_scenario.yml") }}
-```
-
 ## 🎆 まとめ - ランナーマスター誕生！
 
 **やったぞ！** あなたは今、**6大ランナーを完全にマスター**した！
