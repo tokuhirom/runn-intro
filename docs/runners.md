@@ -57,22 +57,42 @@ TODO: grpc の例を追加する
 
 ## 🌐 CDPランナー（ブラウザ自動化） - ブラウザを完全支配！
 
-### 🎮 基本的な設定 - Chromeを思いのままに操ろう！
+### 主なCDP actions一覧
+
+| アクション名      | 概要                                   |
+|------------------|----------------------------------------|
+| attributes       | 要素の属性取得                         |
+| click            | 要素をクリック                         |
+| doubleClick      | 要素をダブルクリック                   |
+| evaluate         | JS式の評価                             |
+| fullHTML         | ページ全体のHTML取得                   |
+| innerHTML        | 要素のinnerHTML取得                    |
+| localStorage     | localStorage取得                       |
+| location         | 現在のURL取得                          |
+| navigate         | 指定URLへ遷移                          |
+| outerHTML        | 要素のouterHTML取得                    |
+| screenshot       | スクリーンショット取得                 |
+| scroll           | 要素までスクロール                     |
+| sendKeys         | 要素にキー入力                         |
+| sessionStorage   | sessionStorage取得                     |
+| setUploadFile    | ファイルアップロード                   |
+| setUserAgent     | User-Agent設定                         |
+| submit           | フォーム送信                           |
+| tabTo            | タブ切り替え                           |
+| text             | 要素のテキスト取得                     |
+| textContent      | 要素のtextContent取得                  |
+| title            | ページタイトル取得                     |
+| value            | 要素のvalue取得                        |
+| wait             | 指定時間待機                           |
+| waitReady        | 要素の準備完了まで待機                 |
+| waitVisible      | 要素の表示まで待機                     |
+
+※詳細・最新情報は[公式README](https://github.com/k1LoW/runn?tab=readme-ov-file#functions-for-action-to-control-browser)をご参照ください。
+
+### 🎮 基本的な使い方
 
 ```yaml
 {{ includex("examples/runners/cdp_basic.yml") }}
-```
-
-### 🎪 高度なブラウザ操作 - プロ級のテクニック！
-
-```yaml
-{{ includex("examples/runners/cdp_advanced.yml") }}
-```
-
-### ✨ SPAアプリケーションのテスト - モダンWebアプリも余裕！
-
-```yaml
-{{ includex("examples/runners/cdp_spa_testing.yml") }}
 ```
 
 ## 💻 SSHランナー - リモートサーバーの絶対的支配者！

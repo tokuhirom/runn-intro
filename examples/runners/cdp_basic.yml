@@ -1,73 +1,16 @@
 desc: ブラウザ自動化テストの基本
 runners:
-  browser: chrome://new  # 新しいChromeインスタンスを起動
-  # 既存のブラウザに接続する場合
-  # browser: chrome://localhost:9222
+  cdp: chrome://new  # 新しいChromeインスタンスを起動
 
 steps:
   # ページナビゲーション
   navigate_to_page:
     cdp:
-      browser:///
-        actions:
-          - navigate: https://example.com
-          - waitVisible: 'h1'
-    test: current.url == "https://example.com/"
-
-  # 要素の操作
-  interact_with_elements:
-    cdp:
-      browser:///
-        actions:
-          # テキスト入力
-          - type:
-              selector: 'input[name="username"]'
-              text: "testuser"
-          
-          # クリック
-          - click: 'button[type="submit"]'
-          
-          # 要素が表示されるまで待機
-          - waitVisible: '.success-message'
-          
-          # スクリーンショット撮影
-          - screenshot: './screenshots/login-success.png'
+      actions:
+        - navigate: https://pkg.go.dev/time
+        - click: 'body > header > div.go-Header-inner > nav > div > ul > li:nth-child(2) > a'
+        - waitVisible: 'body > footer'
+        - text: 'h1'
+    dump: current
     test: |
-      current.screenshot != null &&
-      current.url contains "/dashboard"
-
-  # フォーム操作
-  form_interaction:
-    cdp:
-      browser:///
-        actions:
-          - navigate: https://example.com/form
-          
-          # 複数の入力フィールド
-          - type:
-              selector: '#name'
-              text: "{{ faker.name() }}"
-          - type:
-              selector: '#email'
-              text: "{{ faker.email() }}"
-          
-          # セレクトボックス
-          - select:
-              selector: '#country'
-              value: 'JP'
-          
-          # チェックボックス
-          - check: '#agree-terms'
-          
-          # ラジオボタン
-          - click: 'input[name="gender"][value="other"]'
-          
-          # フォーム送信
-          - click: 'button[type="submit"]'
-          
-          # 結果の確認
-          - waitVisible: '.form-success'
-          - text: '.form-success'
-    test: |
-      current.text contains "successfully" ||
-      current.text contains "thank you"
+      current.text == 'Install the latest version of Go'
