@@ -59,33 +59,33 @@ TODO: grpc の例を追加する
 
 ### 主なCDP actions一覧
 
-| アクション名      | 概要                                   | 記述例（YAML）           |
-|------------------|----------------------------------------|-------------------------|
-| attributes       | 要素の属性取得                         | actions: - attributes: "h1" |
-| click            | 要素をクリック                         | actions: - click: "nav > a" |
-| doubleClick      | 要素をダブルクリック                   | actions: - doubleClick: "nav > li" |
-| evaluate         | JS式の評価                             | actions: - evaluate: "document.querySelector('h1').textContent = 'hello'" |
-| fullHTML         | ページ全体のHTML取得                   | actions: - fullHTML     |
-| innerHTML        | 要素のinnerHTML取得                    | actions: - innerHTML: "h1" |
-| localStorage     | localStorage取得                       | actions: - localStorage: "https://github.com" |
-| location         | 現在のURL取得                          | actions: - location     |
-| navigate         | 指定URLへ遷移                          | actions: - navigate: "https://pkg.go.dev/time" |
-| outerHTML        | 要素のouterHTML取得                    | actions: - outerHTML: "h1" |
-| screenshot       | スクリーンショット取得                 | actions: - screenshot   |
-| scroll           | 要素までスクロール                     | actions: - scroll: "body > footer" |
-| sendKeys         | 要素にキー入力                         | actions: - sendKeys: {sel: "input[name=username]", value: "xxx"} |
-| sessionStorage   | sessionStorage取得                     | actions: - sessionStorage: "https://github.com" |
-| setUploadFile    | ファイルアップロード                   | actions: - setUploadFile: {sel: "input[name=avator]", path: "/path/to/image.png"} |
-| setUserAgent     | User-Agent設定                         | actions: - setUserAgent: "Mozilla/5.0 ..." |
-| submit           | フォーム送信                           | actions: - submit: "form.login" |
-| tabTo            | タブ切り替え                           | actions: - tabTo: "https://pkg.go.dev/time" |
-| text             | 要素のテキスト取得                     | actions: - text: "h1"   |
-| textContent      | 要素のtextContent取得                  | actions: - textContent: "h1" |
-| title            | ページタイトル取得                     | actions: - title        |
-| value            | 要素のvalue取得                        | actions: - value: "input[name=address]" |
-| wait             | 指定時間待機                           | actions: - wait: "10sec"|
-| waitReady        | 要素の準備完了まで待機                 | actions: - waitReady: "body > footer" |
-| waitVisible      | 要素の表示まで待機                     | actions: - waitVisible: "body > footer" |
+| アクション名      | 概要                                   |
+|------------------|----------------------------------------|
+| attributes       | 要素の属性取得                         |
+| click            | 要素をクリック                         |
+| doubleClick      | 要素をダブルクリック                   |
+| evaluate         | JS式の評価                             |
+| fullHTML         | ページ全体のHTML取得                   |
+| innerHTML        | 要素のinnerHTML取得                    |
+| localStorage     | localStorage取得                       |
+| location         | 現在のURL取得                          |
+| navigate         | 指定URLへ遷移                          |
+| outerHTML        | 要素のouterHTML取得                    |
+| screenshot       | スクリーンショット取得                 |
+| scroll           | 要素までスクロール                     |
+| sendKeys         | 要素にキー入力                         |
+| sessionStorage   | sessionStorage取得                     |
+| setUploadFile    | ファイルアップロード                   |
+| setUserAgent     | User-Agent設定                         |
+| submit           | フォーム送信                           |
+| tabTo            | タブ切り替え                           |
+| text             | 要素のテキスト取得                     |
+| textContent      | 要素のtextContent取得                  |
+| title            | ページタイトル取得                     |
+| value            | 要素のvalue取得                        |
+| wait             | 指定時間待機                           |
+| waitReady        | 要素の準備完了まで待機                 |
+| waitVisible      | 要素の表示まで待機                     |
 
 ※詳細・最新情報は[公式README](https://github.com/k1LoW/runn?tab=readme-ov-file#functions-for-action-to-control-browser)をご参照ください。
 
