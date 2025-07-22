@@ -95,6 +95,16 @@ TODO: grpc の例を追加する
 {{ includex("examples/runners/cdp_basic.yml") }}
 ```
 
+### Github ActionsでのCDPランナーの使用時の注意事項
+
+Ubuntu 23.10 以後、AppArmor がかかっていてそのままだと動きません。
+以下のようにしてAppArmorの設定を変更する必要があります。
+
+```yaml
+    - name: Disable apparmor_restrict_unprivileged_userns # ref: https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md
+      run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+```
+
 ## 💻 SSHランナー - リモートサーバーの絶対的支配者！
 
 ### 🔑 基本的な設定 - サーバーへのセキュアアクセス！
