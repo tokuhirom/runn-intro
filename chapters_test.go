@@ -33,8 +33,6 @@ func TestRunners(t *testing.T) {
 
 		//"examples/runners/exec_basic.yml",
 		//"examples/runners/exec_file_operations.yml",
-		//"examples/runners/failure_test_scenario.yml",
-		//"examples/runners/multi_protocol_test.yml",
 		//"examples/runners/ssh_basic.yml",
 		//"examples/runners/ssh_health_check.yml",
 	})

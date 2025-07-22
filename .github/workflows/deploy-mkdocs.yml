@@ -23,9 +23,10 @@ jobs:
         
       - name: Setup Python
         uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-          
+
+      - name: Disable apparmor_restrict_unprivileged_userns # ref: https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
