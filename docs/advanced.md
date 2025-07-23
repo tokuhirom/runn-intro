@@ -1,50 +1,50 @@
-# 第6章：高度な機能編 - runnの真の力を解放せよ！
+# 第6章：高度な機能編
 
-**ここからが本番だ！** 今まで学んできた機能はほんの**序の口**に過ぎない。この章では、runnの**本当にすごい機能**を伝授しよう！これらの機能をマスターすれば、**どんなに複雑なテストシナリオも余裕**だ！
+この章では、runnの高度な機能について説明します。これらの機能を使うことで、より複雑なテストシナリオを作成できます。
 
-## 🔁 ループ処理 - 繰り返しの魔法！
+## ループ処理
 
-### 🎯 基本的なループ - 単純な繰り返しを極めろ！
+### 基本的なループ
 
 ```yaml
 {{ includex("examples/advanced/loop_basic.yml") }}
 ```
 
-### 🔄 条件付きループ（リトライ機能） - 諸めないテストの極意！
+### 条件付きループ（リトライ機能）
 
 ```yaml
 {{ includex("examples/advanced/loop_retry.yml") }}
 ```
 
-### 🎮 動的なループ制御 - ループを思いのままに操れ！
+### 動的なループ制御
 
 ```yaml
 {{ includex("examples/advanced/loop_dynamic.yml") }}
 ```
 
-## 🔀 条件付き実行 - 賢いテストの秘訣！
+## 条件付き実行
 
-### 🎆 基本的な条件分岐 - if文でテストを制御！
+### 基本的な条件分岐
 
 ```yaml
 {{ includex("examples/advanced/conditional_basic.yml") }}
 ```
 
-### 🧠 複雑な条件式 - どんな条件も表現できる！
+### 複雑な条件式
 
 ```yaml
 {{ includex("examples/advanced/conditional_complex.yml") }}
 ```
 
-### 🛡️ エラーハンドリングと条件分岐 - 失敗を成功に変えろ！
+### エラーハンドリングと条件分岐
 
 ```yaml
 {{ includex("examples/advanced/conditional_error_handling.yml") }}
 ```
 
-## 📦 シナリオのインクルード - DRYの極意！
+## シナリオのインクルード
 
-### 🔗 基本的なインクルード - シナリオを再利用せよ！
+### 基本的なインクルード
 
 ```yaml
 {{ includex("examples/advanced/include_basic.yml") }}
@@ -54,13 +54,13 @@
 {{ includex("examples/advanced/common/auth.yml") }}
 ```
 
-### 🎭 動的なインクルード - 実行時にシナリオを選択！
+### 動的なインクルード
 
 ```yaml
 {{ includex("examples/advanced/include_dynamic.yml") }}
 ```
 
-### 🏢 ネストしたインクルード - 階層的なシナリオ構築！
+### ネストしたインクルード
 
 ```yaml
 {{ includex("examples/advanced/include_nested.yml") }}
@@ -70,99 +70,95 @@
 {{ includex("examples/advanced/level2.yml") }}
 ```
 
-## ⚡ 並行実行制御 - スピードの限界を突破！
+## 並行実行制御
 
-### 🚀 基本的な並行実行 - 複数テストを同時実行！
+### 基本的な並行実行
 
 ```yaml
 {{ includex("examples/advanced/concurrency_basic.yml") }}
 ```
 
-### 🔒 共有リソースの制御 - 競合を防ぐ鉄壁の守り！
+### 共有リソースの制御
 
 ```yaml
 {{ includex("examples/advanced/concurrency_shared_resource.yml") }}
 ```
 
-### 🎆 複雑な並行制御 - プロフェッショナルの技！
+### 複雑な並行制御
 
 ```yaml
 {{ includex("examples/advanced/concurrency_complex.yml") }}
 ```
 
-## 🌐 依存関係の定義 - テストの流れを完全制御！
+## 依存関係の定義
 
-### 🔗 基本的な依存関係 - 順番を守る賢いテスト！
+### 基本的な依存関係
 
 ```yaml
 {{ includex("examples/advanced/dependency_basic.yml") }}
 ```
 
-### 🕸️ 複雑な依存関係 - ネットワーク状の依存も余裕！
+### 複雑な依存関係
 
 ```yaml
 {{ includex("examples/advanced/dependency_complex.yml") }}
 ```
 
-## 🔧 カスタムランナーの作成 - 独自のランナーを生み出せ！
+## カスタムランナーの作成
 
-### 🔌 プラグインランナーの定義 - runnを拡張せよ！
+### プラグインランナーの定義
 
 ```yaml
 {{ includex("examples/advanced/custom_runner_plugin.yml") }}
 ```
 
-### 🌍 外部コマンドランナー - どんなツールも統合！
+### 外部コマンドランナー
 
 ```yaml
 {{ includex("examples/advanced/custom_runner_external.yml") }}
 ```
 
-## 🎭 高度なデータ処理 - データを魔法のように操れ！
+## 高度なデータ処理
 
-### 🎲 動的なテストデータ生成 - 無限のテストデータ！
+### 動的なテストデータ生成
 
 ```yaml
 {{ includex("examples/advanced/data_generation.yml") }}
 ```
 
-### 🌀 複雑なデータ変換 - データの形を自在に変えろ！
+### 複雑なデータ変換
 
 ```yaml
 {{ includex("examples/advanced/data_transformation.yml") }}
 ```
 
-## 🛡️ エラーハンドリングとデバッグ - トラブルシューティングの達人！
+## エラーハンドリングとデバッグ
 
-### 💜 包括的なエラーハンドリング - どんなエラーも恐れない！
+### 包括的なエラーハンドリング
 
 ```yaml
 {{ includex("examples/advanced/error_handling.yml") }}
 ```
 
-### 🔍 デバッグ情報の出力 - 問題を瞬時に特定！
+### デバッグ情報の出力
 
 ```yaml
 {{ includex("examples/advanced/debug_output.yml") }}
 ```
 
-## 🎆 まとめ - 高度な機能のマスター誕生！
+## まとめ
 
-**やったぞ！** あなたは今、**runnの真の力を解放**した！
+この章では、runnの高度な機能について学びました：
 
-### 🏆 この章で手に入れた8つの超能力：
+1. ループ処理: 繰り返し処理とリトライ機能
+2. 条件付き実行: if文を使った制御
+3. シナリオのインクルード: シナリオの再利用
+4. 並行実行制御: 複数テストの同時実行
+5. 依存関係の定義: テストの実行順序制御
+6. カスタムランナー: 独自ランナーの作成
+7. 高度なデータ処理: 動的データ生成と変換
+8. エラーハンドリング: エラー処理とデバッグ
 
-1. **🔁 ループ処理**: 繰り返しを**完全に支配**！リトライも思いのまま！
-2. **🔀 条件付き実行**: 賢いテストが**自分で判断**！
-3. **📦 シナリオのインクルード**: DRY原則を**極限まで追求**！
-4. **⚡ 並行実行制御**: スピードの**限界を突破**！
-5. **🌐 依存関係の定義**: 複雑なフローも**美しく制御**！
-6. **🔧 カスタムランナー**: あなただけの**特別なランナー**を作れ！
-7. **🎭 高度なデータ処理**: データを**魔法のように変形**！
-8. **🛡️ エラーハンドリング**: どんなエラーも**恐れない**！
-
-これらの機能を**絶妙に組み合わせれば**、あなたのテストは**芸術作品**に昇華する。もう、どんなに複雑なプロダクション環境も**完璧にテスト**できる！
-
-**次章では、runnの最終兵器、Goテストヘルパーとしての使い方を伝授しよう！** これであなたも**真のrunnマスター**だ！
+これらの機能を組み合わせることで、複雑なテストシナリオも効率的に作成できます。
 
 [第7章：Goテストヘルパー編へ →](test-helper.md)

@@ -10,7 +10,6 @@ runnでは、テストシナリオをRunbookと呼びます。何をどの順番
 
 従来のテストコード：
 ```javascript
-// 読むのも書くのも大変...
 const response = await fetch('/users', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
@@ -19,7 +18,7 @@ const response = await fetch('/users', {
 assert(response.status === 201);
 ```
 
-**runnのRunbook：**
+runnのRunbook：
 ```yaml
 {{ includex("examples/scenario/basic-structure.yml") }}
 ```
@@ -189,6 +188,6 @@ HTTPもデータベースも、同じ`test`構文でアサーションを記述�
 - リスト形式とマップ形式の使い分け
 - 変数を活用したシナリオ作成
 - 実践的なシナリオの作成方法
-- YAMLの便利なテクニック
+- YAMLのテクニック
 
 次章では、runnの式評価エンジンについて学びます。前のステップの結果を参照したり、条件分岐やフィルタリングを行う方法を説明します。
