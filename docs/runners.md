@@ -92,7 +92,7 @@ TODO: grpc の例を追加する
 ### 基本的な使い方
 
 ```yaml
-{{ includex("examples/runners/cdp_basic.yml") }}
+{{ includex("examples/runners/cdp_basic.concept.yml") }}
 ```
 
 ## SSHランナー
