@@ -43,8 +43,10 @@ func TestRunners(t *testing.T) {
 }
 
 func TestAdvanced(t *testing.T) {
-	t.Skip("Skip advanced for now")
-	testutil.RunChapterTests(t, "examples/advanced")
+	testutil.RunTestForFiles(t, []string{
+		"examples/advanced/loop_basic.yml",
+		// 他のテストは順次修正して追加
+	})
 }
 
 func TestTestHelpers(t *testing.T) {

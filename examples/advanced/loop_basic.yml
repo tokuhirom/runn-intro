@@ -1,6 +1,6 @@
 desc: 基本的なループ処理
 runners:
-  api: https://api.example.com
+  httpbin: http://localhost:8080
 
 vars:
   test_users:
@@ -13,24 +13,27 @@ vars:
 
 steps:
   # 単純な回数指定ループ
-  simple_loop:
+  - desc: 単純な回数指定ループ
     loop: 5
-    req:
-      api:///api/ping:
+    httpbin:
+      /status/200:
         get:
+          body:
     test: current.res.status == 200
-    dump:
-      iteration: i  # ループインデックス（0から開始）
+    dump: i  # ループインデックス（0から開始）
 
   # 配列の各要素に対するループ
-  array_loop:
+  - desc: 配列の各要素に対するループ
     loop:
       count: len(vars.test_users)
-    req:
-      api:///users:
+    httpbin:
+      /post:
         post:
           body:
             application/json:
               name: "{{ vars.test_users[i].name }}"
               email: "{{ vars.test_users[i].email }}"
-    test: current.res.status == 201
+    test: |
+      current.res.status == 200 &&
+      current.res.body.json.name == vars.test_users[i].name &&
+      current.res.body.json.email == vars.test_users[i].email
