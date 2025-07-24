@@ -36,8 +36,8 @@ func TestRunners(t *testing.T) {
 		//"examples/runners/ssh_health_check.yml",
 	})
 
-	t.Skip("Skip runners for now")
-	testutil.RunChapterTests(t, "examples/runners")
+	//t.Skip("Skip runners for now")
+	//testutil.RunChapterTests(t, "examples/runners")
 }
 
 func TestAdvanced(t *testing.T) {
