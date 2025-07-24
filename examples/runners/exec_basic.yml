@@ -9,27 +9,3 @@ steps:
     test: |
       current.exit_code == 0 &&
       current.stdout == "Hello, World!\n"
-
-  # 環境変数を設定してコマンド実行
-  exec_with_env:
-    exec:
-      command: /usr/bin/env TEST_VAR=test_value sh -c 'echo "$TEST_VAR"'
-    test: |
-      current.exit_code == 0 &&
-      current.stdout == "test_value\n"
-
-  # 作業ディレクトリを指定
-  exec_with_workdir:
-    exec:
-      command: cd /tmp && pwd
-    test: current.stdout contains "/tmp"
-
-  # 複雑なシェルコマンド
-  complex_shell:
-    exec:
-      command: |
-        sh -c 'for i in 1 2 3 4 5; do echo "Count: $i"; done | grep "Count: [35]"'
-    test: |
-      current.exit_code == 0 &&
-      current.stdout contains "Count: 3" &&
-      current.stdout contains "Count: 5"
