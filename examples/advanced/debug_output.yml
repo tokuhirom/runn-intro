@@ -1,9 +1,9 @@
 desc: デバッグ情報の出力
 runners:
-  api: https://api.example.com
+  httpbin: http://localhost:8080
 
 vars:
-  complex_data:
+  test_data:
     operation: "create"
     resource: "user"
     data:
@@ -11,35 +11,22 @@ vars:
       email: "test@example.com"
 
 steps:
-  debug_step:
-    req:
-      api:///api/complex-operation:
+  - desc: デバッグ情報の収集
+    httpbin:
+      /post:
         post:
+          headers:
+            X-Custom-Header: "test-value"
           body:
-            application/json: "{{ vars.complex_data }}"
+            application/json: "{{ vars.test_data }}"
+    test: current.res.status == 200
     
-    # 詳細なデバッグ情報
-    dump:
-      request_info:
-        url: current.req.url
-        method: current.req.method
-        headers: current.req.headers
-        body_size: len(toJSON(current.req.body))
-      
-      response_info:
-        status: current.res.status
-        headers: current.res.headers
-        body_size: len(toJSON(current.res.body))
-        response_time: current.res.response_time
-      
-      validation_details:
-        expected_fields: ["id", "name", "status"]
-        actual_fields: keys(current.res.body)
-        missing_fields: |
-          filter(["id", "name", "status"], {
-            !(. in keys(current.res.body))
-          })
-        extra_fields: |
-          filter(keys(current.res.body), {
-            !(. in ["id", "name", "status"])
-          })
+    # シンプルなデバッグ情報
+    dump: |
+      {
+        "request_method": "POST",
+        "request_url": "/post",
+        "response_status": current.res.status,
+        "response_data_received": current.res.body.json != null,
+        "posted_data": current.res.body.json
+      }

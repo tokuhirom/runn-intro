@@ -1,50 +1,49 @@
 desc: 条件付きループ（リトライ機能）
 runners:
-  api: https://api.example.com
+  httpbin: http://localhost:8080
 
 vars:
-  operation_id: "op123"
+  max_retries: 3
 
 steps:
-  # 成功するまでリトライ
-  retry_until_success:
+  # 成功するまでリトライ（HTTPBinの/status/200を使用）
+  - desc: 成功するまでリトライ
     loop:
-      count: 10  # 最大10回
-      until: current.res.status == 200  # 成功条件
-      minInterval: 1  # 最小間隔（秒）
-      maxInterval: 5  # 最大間隔（秒）
-    req:
-      api:///unstable-endpoint:
+      count: 3
+      until: current.res.status == 200
+      minInterval: 1s
+      maxInterval: 2s
+    httpbin:
+      /status/200:
         get:
+          body:
     test: current.res.status == 200
 
-  # 複雑な条件でのリトライ
-  complex_retry:
+  # ランダムなステータスコードでのリトライ
+  - desc: ランダムステータスでのリトライ
     loop:
       count: 5
+      until: current.res.status == 200
+      minInterval: 500ms
+      maxInterval: 1s
+    httpbin:
+      /status/200,400,500:  # 200, 400, 500のいずれかを返す
+        get:
+          body:
+    test: |
+      current.res.status == 200 || i == 4  # 成功するか最後の試行
+
+  # JSONレスポンスの条件でリトライ
+  - desc: JSONレスポンス条件でのリトライ
+    loop:
+      count: 3
       until: |
         current.res.status == 200 &&
-        current.res.body.status == "ready" &&
-        len(current.res.body.items) > 0
-      minInterval: 2
-      maxInterval: 10
-    req:
-      api:///async-operation/{{ vars.operation_id }}/status:
+        current.res.body.json != null
+    httpbin:
+      /json:
         get:
-    test: |
-      current.res.body.status == "ready"
-
-  # エラー条件でのループ終了
-  stop_on_error:
-    loop:
-      count: 100
-      until: current.res.status >= 400  # エラーが発生したら停止
-    req:
-      api:///batch-process:
-        post:
           body:
-            application/json:
-              batch_id: "{{ i }}"
     test: |
-      current.res.status < 400 ||  # 成功
-      (current.res.status >= 400 && i > 0)  # エラーだが少なくとも1回は成功
+      current.res.status == 200 &&
+      current.res.body.slideshow != null

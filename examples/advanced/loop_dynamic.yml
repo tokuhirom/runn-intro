@@ -1,48 +1,51 @@
 desc: 動的なループ制御
 runners:
-  api: https://api.example.com
+  httpbin: http://localhost:8080
 
 vars:
-  page_size: 10
-  max_pages: 100
   items_to_process:
     - id: 1
       name: "Item 1"
-      needs_processing: true
+      active: true
     - id: 2
       name: "Item 2"
-      needs_processing: false
+      active: false
     - id: 3
       name: "Item 3"
-      needs_processing: true
+      active: true
 
 steps:
-  # ページネーションを使った全データ取得
-  paginated_fetch:
+  # HTTPBinのanythingエンドポイントでページネーションをシミュレート
+  - desc: ページネーションのシミュレーション
     loop:
-      count: vars.max_pages
-      until: len(current.res.body.data) < vars.page_size  # 最後のページに到達
-    req:
-      api:///users:
+      count: 3
+      until: i >= 2  # 3回目で終了
+    httpbin:
+      /anything:
         get:
           query:
             page: "{{ i + 1 }}"
-            limit: "{{ vars.page_size }}"
+            limit: "10"
+          body:
     test: current.res.status == 200
-    dump:
-      page_number: i + 1
-      items_count: len(current.res.body.data)
-      total_fetched: |
-        sum(map(steps.paginated_fetch, {len(.res.body.data)}))
+    dump: |
+      {
+        "page": i + 1,
+        "has_more": i < 2
+      }
 
   # 条件に基づく動的ループ
-  conditional_processing:
+  - desc: アクティブなアイテムのみ処理
     loop:
       count: len(vars.items_to_process)
-    if: vars.items_to_process[i].needs_processing
-    req:
-      api:///process:
+    if: vars.items_to_process[i].active
+    httpbin:
+      /post:
         post:
           body:
-            application/json: "{{ vars.items_to_process[i] }}"
-    test: current.res.status == 200
+            application/json:
+              item_id: "{{ vars.items_to_process[i].id }}"
+              item_name: "{{ vars.items_to_process[i].name }}"
+    test: |
+      current.res.status == 200 &&
+      current.res.body.json.item_id == vars.items_to_process[i].id

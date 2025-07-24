@@ -1,31 +1,29 @@
 desc: 包括的なエラーハンドリング
 runners:
-  api: https://api.example.com
+  httpbin: http://localhost:8080
 
 vars:
-  resource_id: "res123"
+  max_retries: 3
 
 steps:
-  robust_api_call:
+  # HTTPステータスコードによるリトライ処理
+  - desc: エラーをリトライで処理
     loop:
       count: 3
       until: |
         current.res.status == 200 ||
-        current.res.status == 404  # 404は正常な結果として扱う
-      minInterval: 1
-      maxInterval: 5
-    req:
-      api:///api/resource/{{ vars.resource_id }}:
+        current.res.status == 404  // 404は正常な結果として扱う
+      minInterval: 1s
+      maxInterval: 2s
+    httpbin:
+      /status/200,500,503:  # ランダムにステータスを返す
         get:
+          body:
     test: |
-      current.res.status in [200, 404]
-    
-    dump:
-      # エラー情報の詳細記録
-      error_info: |
-        current.res.status >= 400 ? {
-          "status": current.res.status,
-          "error": current.res.body.error ?? "Unknown error",
-          "timestamp": time.now(),
-          "attempt": i + 1
-        } : null
+      current.res.status in [200, 404, 500, 503]
+    dump: |
+      {
+        "attempt": i + 1,
+        "status": current.res.status,
+        "is_success": current.res.status in [200, 404]
+      }
