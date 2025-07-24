@@ -1,43 +1,50 @@
 desc: 基本的な条件分岐
 runners:
-  api: https://api.example.com
+  httpbin: http://localhost:8080
 
 vars:
-  enable_new_feature: true
+  enable_test: true
+  test_value: 42
 
 steps:
-  # 環境による条件分岐
-  environment_specific:
-    if: env.ENVIRONMENT == "production"
-    req:
-      api:///production-only-endpoint:
-        get:
-    test: current.res.status == 200
-
   # 変数による条件分岐
-  feature_flag_check:
-    if: vars.enable_new_feature
-    req:
-      api:///new-feature:
+  - desc: 機能フラグのチェック
+    if: vars.enable_test
+    httpbin:
+      /status/200:
         get:
+          body:
     test: current.res.status == 200
 
-  # ユーザー作成ステップ（常に実行）
-  user_creation:
-    req:
-      api:///users:
+  # 条件が偽の場合（スキップされる）
+  - desc: スキップされるステップ
+    if: vars.enable_test == false
+    httpbin:
+      /status/500:
+        get:
+          body:
+    test: current.res.status == 500
+
+  # 常に実行されるステップ
+  - desc: データの投稿
+    httpbin:
+      /post:
         post:
           body:
             application/json:
-              name: "Test User"
-              email: "test@example.com"
+              value: "{{ vars.test_value }}"
+              enabled: "{{ vars.enable_test }}"
     test: |
-      current.res.status == 201 || current.res.status == 409
+      current.res.status == 200 &&
+      current.res.body.json.value == vars.test_value
 
   # 前のステップの結果による条件分岐
-  conditional_on_previous:
-    if: steps.user_creation.res.status == 201
-    req:
-      api:///users/{{ steps.user_creation.res.body.id }}/activate:
-        post:
+  - desc: 前のステップが成功した場合のみ実行
+    if: steps[2].res.status == 200
+    httpbin:
+      /anything:
+        get:
+          query:
+            previous_value: "{{ steps[2].res.body.json.value }}"
+          body:
     test: current.res.status == 200

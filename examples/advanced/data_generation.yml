@@ -1,42 +1,46 @@
 desc: 動的なテストデータ生成
 runners:
-  api: https://api.example.com
+  httpbin: http://localhost:8080
 
 vars:
-  # 動的なテストデータ生成
-  test_users: |
-    map(range(1, 11), {
-      "id": .,
-      "name": faker.name(),
-      "email": faker.email(),
-      "age": faker.randomInt(18, 65),
-      "department": faker.randomChoice(["IT", "Sales", "Marketing", "HR"]),
-      "salary": faker.randomInt(30000, 100000),
-      "active": faker.randomBool()
-    })
+  num_users: 3
+  departments:
+    - "IT"
+    - "Sales"
+    - "Marketing"
+    - "HR"
 
 steps:
-  bulk_user_creation:
+  # Faker関数を使ったデータ生成とPOST
+  - desc: ユーザーデータの生成と送信
     loop:
-      count: len(vars.test_users)
-    req:
-      api:///users:
+      count: 3
+    httpbin:
+      /post:
         post:
           body:
-            application/json: "{{ vars.test_users[i] }}"
-    test: current.res.status == 201
+            application/json:
+              id: "{{ i + 1 }}"
+              name: "{{ faker.Name() }}"
+              email: "{{ faker.Email() }}"
+              phone: "{{ faker.Numerify('###-###-####') }}"
+              department: "{{ vars.departments[i % len(vars.departments)] }}"
+              timestamp: "{{ i + 1000 }}"
+    test: |
+      current.res.status == 200 &&
+      current.res.body.json.id == i + 1
 
-  # 生成されたデータの統計分析
-  data_analysis:
-    dump:
-      total_users: len(vars.test_users)
-      active_users: len(filter(vars.test_users, {.active}))
-      avg_age: |
-        sum(map(vars.test_users, {.age})) / len(vars.test_users)
-      departments: |
-        groupBy(vars.test_users, {.department})
-      salary_stats:
-        min: min(map(vars.test_users, {.salary}))
-        max: max(map(vars.test_users, {.salary}))
-        avg: |
-          sum(map(vars.test_users, {.salary})) / len(vars.test_users)
+  # 生成されたデータの検証
+  - desc: データ生成の確認
+    httpbin:
+      /anything:
+        get:
+          query:
+            total_created: "{{ vars.num_users }}"
+          body:
+    test: current.res.status == 200
+    dump: |
+      {
+        "total_users": vars.num_users,
+        "departments_used": vars.departments
+      }

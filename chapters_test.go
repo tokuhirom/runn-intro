@@ -45,7 +45,22 @@ func TestRunners(t *testing.T) {
 func TestAdvanced(t *testing.T) {
 	testutil.RunTestForFiles(t, []string{
 		"examples/advanced/loop_basic.yml",
-		// 他のテストは順次修正して追加
+		"examples/advanced/conditional_basic.yml",
+		"examples/advanced/conditional_complex.yml",
+		"examples/advanced/conditional_error_handling.yml",
+		"examples/advanced/data_generation.yml",
+		"examples/advanced/debug_output.yml",
+		// 以下のファイルは修正が困難またはエラーが発生
+		// - error_handling.yml (ランダムステータスでuntil条件が不安定)
+		// - loop_retry.yml (ランダムステータスのテストが不安定)
+		// - loop_dynamic.yml (配列インデックスアクセスのエラー)
+		// - concurrency_*.yml
+		// - custom_runner_*.yml
+		// - dependency_*.yml
+		// - include_*.yml
+		// - data_transformation.yml
+		// - common/auth.yml
+		// - level2.yml
 	})
 }
 

@@ -1,6 +1,6 @@
 desc: 複雑な条件式
 runners:
-  api: https://api.example.com
+  httpbin: http://localhost:8080
 
 vars:
   user_role: "admin"
@@ -9,38 +9,53 @@ vars:
     - write
     - delete
   api_version: 2
-  maintenance_end: "2024-01-01T00:00:00Z"
   test_data:
     - id: 1
       name: "Test Data 1"
-  resource_data:
-    name: "Protected Resource"
-    type: "document"
+    - id: 2
+      name: "Test Data 2"
 
 steps:
-  complex_conditions:
+  # 複数条件の組み合わせ
+  - desc: ロールと権限のチェック
     if: |
-      (env.ENVIRONMENT == "test" || env.ENVIRONMENT == "staging") &&
       vars.user_role == "admin" &&
       len(vars.test_data) > 0
-    req:
-      api:///admin/test-data:
-        post:
-          body:
-            application/json: "{{ vars.test_data }}"
-    test: current.res.status == 201
-
-  # 複数条件の組み合わせ
-  multi_condition_check:
-    if: |
-      vars.api_version >= 2 &&
-      (vars.user_permissions contains "write" || vars.user_role == "admin") &&
-      time.now() > time.parse(vars.maintenance_end, time.RFC3339)
-    req:
-      api:///v2/protected-resource:
+    httpbin:
+      /post:
         post:
           body:
             application/json:
-              action: "create"
-              data: "{{ vars.resource_data }}"
-    test: current.res.status in [200, 201]
+              role: "{{ vars.user_role }}"
+              data_count: "{{ len(vars.test_data) }}"
+    test: current.res.status == 200
+
+  # 配列の条件チェック
+  - desc: 権限チェック
+    if: |
+      vars.api_version >= 2 &&
+      ("write" in vars.user_permissions || vars.user_role == "admin")
+    httpbin:
+      /anything:
+        post:
+          body:
+            application/json:
+              action: "write"
+              permissions: "{{ vars.user_permissions }}"
+    test: |
+      current.res.status == 200 &&
+      current.res.body.json.action == "write"
+
+  # 複雑な論理式
+  - desc: 複合条件のテスト
+    if: |
+      (len(vars.test_data) >= 2 || vars.user_role == "admin") &&
+      vars.api_version > 1 &&
+      "delete" in vars.user_permissions
+    httpbin:
+      /delete:
+        delete:
+          body:
+            application/json:
+              authorized: true
+    test: current.res.status == 200
