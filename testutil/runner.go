@@ -92,6 +92,11 @@ func RunTestForFiles(t *testing.T, files []string) {
 				}
 			}
 
+			// execランナーを使用するファイルにはスコープを追加
+			if strings.Contains(file, "exec_") {
+				opts = append(opts, runn.Scopes("run:exec"))
+			}
+
 			o, err := runn.Load(file, opts...)
 			if err != nil {
 				t.Fatal(err)
