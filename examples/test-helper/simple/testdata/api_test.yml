@@ -4,7 +4,7 @@ steps:
   - desc: ヘルスチェックエンドポイントの確認
     api:
       /health:
-        get:
+        get: {}
     test: |
       current.res.status == 200 &&
       current.res.body.status == "ok"
@@ -13,7 +13,7 @@ steps:
   - desc: 初期状態のユーザー一覧を確認
     api:
       /users:
-        get:
+        get: {}
     test: |
       current.res.status == 200 &&
       len(current.res.body) == 0
@@ -37,7 +37,7 @@ steps:
   - desc: 作成したユーザーを取得
     api:
       /users/1:
-        get:
+        get: {}
     test: |
       current.res.status == 200 &&
       current.res.body.id == 1 &&
@@ -47,7 +47,7 @@ steps:
   - desc: ユーザー作成後の一覧を確認
     api:
       /users:
-        get:
+        get: {}
     test: |
       current.res.status == 200 &&
       len(current.res.body) == 1 &&
@@ -57,19 +57,19 @@ steps:
   - desc: 存在しないユーザーを取得（エラーケース）
     api:
       /users/999:
-        get:
+        get: {}
     test: current.res.status == 404
 
   # ユーザー削除
   - desc: ユーザーを削除
     api:
       /users/1:
-        delete:
+        delete: {}
     test: current.res.status == 204
 
   # 削除後の確認
   - desc: 削除したユーザーが存在しないことを確認
     api:
       /users/1:
-        get:
+        get: {}
     test: current.res.status == 404
