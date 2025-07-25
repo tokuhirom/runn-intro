@@ -1,0 +1,75 @@
+desc: ユーザーAPIのテスト
+steps:
+  # ヘルスチェック
+  - desc: ヘルスチェックエンドポイントの確認
+    api:
+      /health:
+        get:
+    test: |
+      current.res.status == 200 &&
+      current.res.body.status == "ok"
+
+  # ユーザー一覧（初期状態）
+  - desc: 初期状態のユーザー一覧を確認
+    api:
+      /users:
+        get:
+    test: |
+      current.res.status == 200 &&
+      len(current.res.body) == 0
+
+  # ユーザー作成
+  - desc: 新規ユーザーを作成
+    api:
+      /users:
+        post:
+          body:
+            application/json:
+              name: "Alice"
+              email: "alice@example.com"
+    test: |
+      current.res.status == 201 &&
+      current.res.body.id == 1 &&
+      current.res.body.name == "Alice" &&
+      current.res.body.email == "alice@example.com"
+
+  # 作成したユーザーの取得
+  - desc: 作成したユーザーを取得
+    api:
+      /users/1:
+        get:
+    test: |
+      current.res.status == 200 &&
+      current.res.body.id == 1 &&
+      current.res.body.name == "Alice"
+
+  # ユーザー一覧（作成後）
+  - desc: ユーザー作成後の一覧を確認
+    api:
+      /users:
+        get:
+    test: |
+      current.res.status == 200 &&
+      len(current.res.body) == 1 &&
+      current.res.body[0].name == "Alice"
+
+  # 存在しないユーザーの取得
+  - desc: 存在しないユーザーを取得（エラーケース）
+    api:
+      /users/999:
+        get:
+    test: current.res.status == 404
+
+  # ユーザー削除
+  - desc: ユーザーを削除
+    api:
+      /users/1:
+        delete:
+    test: current.res.status == 204
+
+  # 削除後の確認
+  - desc: 削除したユーザーが存在しないことを確認
+    api:
+      /users/1:
+        get:
+    test: current.res.status == 404
