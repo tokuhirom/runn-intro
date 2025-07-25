@@ -60,34 +60,16 @@ runn --version
 
 ## 基本的な使い方
 
-### 主要コマンド
+### シナリオ実行
 
-#### `runn run` - シナリオ実行
 ```bash
 runn run scenario.yml
+```
+
+複数ファイルの実行:
+```bash
 runn run scenarios/**/*.yml
 ```
-
-#### `runn list` - シナリオ一覧
-```bash
-runn list scenarios/
-```
-
-#### `runn new` - シナリオ生成
-```bash
-# curlコマンドから生成
-runn new --and-run --out first.yml -- curl https://httpbin.org/get
-
-# アクセスログから生成
-cat access.log | runn new --out generated.yml
-```
-
-### 便利なオプション
-
-- `--verbose` - 詳細ログ表示
-- `--label` - ラベルでフィルタリング
-- `--concurrent` - 並列実行数指定
-- `--fail-fast` - 最初のエラーで停止
 
 ## はじめてのシナリオ作成
 

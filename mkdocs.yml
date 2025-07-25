@@ -43,6 +43,7 @@ nav:
   - 第6章 Expression文法編: expr-lang.md
   - 第7章 runn ビルトイン関数編: runn-builtins.md
   - 第8章 実践編: practices.md
+  - 第9章 CLIオプション: cli-options.md
 
 markdown_extensions:
   - pymdownx.highlight:
