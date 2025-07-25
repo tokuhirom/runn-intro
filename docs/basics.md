@@ -82,13 +82,6 @@ runn new --and-run --out first.yml -- curl https://httpbin.org/get
 cat access.log | runn new --out generated.yml
 ```
 
-### 便利なオプション
-
-- `--verbose` - 詳細ログ表示
-- `--label` - ラベルでフィルタリング
-- `--concurrent` - 並列実行数指定
-- `--fail-fast` - 最初のエラーで停止
-
 ## はじめてのシナリオ作成
 
 ### テスト環境準備
