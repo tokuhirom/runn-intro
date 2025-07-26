@@ -90,20 +90,6 @@
 {{ includex("examples/advanced/concurrency_complex.yml") }}
 ```
 
-## 高度なデータ処理
-
-### 動的なテストデータ生成
-
-```yaml
-{{ includex("examples/advanced/data_generation.yml") }}
-```
-
-### 複雑なデータ変換
-
-```yaml
-{{ includex("examples/advanced/data_transformation.yml") }}
-```
-
 ## エラーハンドリングとデバッグ
 
 ### 包括的なエラーハンドリング
