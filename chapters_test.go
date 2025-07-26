@@ -57,12 +57,3 @@ func TestRunnBuiltins(t *testing.T) {
 	testutil.RunChapterTests(t, "examples/runn-builtins")
 }
 
-func TestPractices(t *testing.T) {
-	t.Skip("Skip practices for now")
-	testutil.RunChapterTests(t, "examples/practices")
-}
-
-func TestReferences(t *testing.T) {
-	t.Skip("Skip references for now")
-	testutil.RunChapterTests(t, "examples/references")
-}
