@@ -18,22 +18,10 @@
 
 ## 条件付き実行
 
-### 基本的な条件分岐
+`if`フィールドを使用すると、特定の条件が満たされた場合にのみステップを実行できます。
 
 ```yaml
 {{ includex("examples/advanced/conditional_basic.yml") }}
-```
-
-### 複雑な条件式
-
-```yaml
-{{ includex("examples/advanced/conditional_complex.yml") }}
-```
-
-### エラーハンドリングと条件分岐
-
-```yaml
-{{ includex("examples/advanced/conditional_error_handling.yml") }}
 ```
 
 ## シナリオのインクルード
