@@ -28,8 +28,6 @@
 
 他のYAMLファイルをインクルードすることで、共通処理を再利用できます。
 
-### 基本的なインクルード
-
 ```yaml
 {{ includex("examples/advanced/include_basic.yml") }}
 ```
