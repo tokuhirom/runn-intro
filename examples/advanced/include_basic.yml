@@ -8,7 +8,7 @@ steps:
 
   - desc: 共通処理をインクルード
     include:
-      path: ./common/auth.yml
+      path: ./common/auth.include.yml
     
   - desc: メインファイルに戻りました
     dump: '"=== メインファイル (include_basic.yml) に戻りました ==="'

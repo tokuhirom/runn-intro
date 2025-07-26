@@ -53,10 +53,16 @@ func RunTestForFiles(t *testing.T, files []string) {
 
 	// Run each file
 	for _, file := range files {
-		// Skip conceptual example files and database examples
+		// Skip conceptual example files and include-only files
 		baseName := filepath.Base(file)
 		if strings.HasSuffix(baseName, ".concept.yml") {
 			t.Logf("Skip %s, due to conceptual example files can't run.", baseName)
+			continue
+		}
+		
+		// Skip include-only files (these are meant to be included by other files)
+		if strings.HasSuffix(baseName, ".include.yml") {
+			t.Logf("Skip %s, due to include-only file.", baseName)
 			continue
 		}
 

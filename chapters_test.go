@@ -41,13 +41,7 @@ func TestRunners(t *testing.T) {
 }
 
 func TestAdvanced(t *testing.T) {
-	testutil.RunTestForFiles(t, []string{
-		"examples/advanced/loop_basic.yml",
-		"examples/advanced/loop_retry.yml",
-		"examples/advanced/conditional_basic.yml",
-		"examples/advanced/include_basic.yml",
-		// common/auth.yml はinclude_basic.ymlからインクルードされるため単体テストは不要
-	})
+	testutil.RunChapterTests(t, "examples/advanced")
 }
 
 func TestTestHelpers(t *testing.T) {

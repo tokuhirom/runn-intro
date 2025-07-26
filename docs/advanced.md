@@ -33,7 +33,7 @@
 ```
 
 ```yaml
-{{ includex("examples/advanced/common/auth.yml") }}
+{{ includex("examples/advanced/common/auth.include.yml") }}
 ```
 
 実行結果:
