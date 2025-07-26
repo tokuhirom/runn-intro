@@ -44,10 +44,6 @@ func TestAdvanced(t *testing.T) {
 	testutil.RunChapterTests(t, "examples/advanced")
 }
 
-func TestTestHelpers(t *testing.T) {
-	t.Skip("Skip test-helpers for now")
-	testutil.RunChapterTests(t, "examples/test-helpers")
-}
 
 func TestExprLang(t *testing.T) {
 	testutil.RunChapterTests(t, "examples/expr-lang")
