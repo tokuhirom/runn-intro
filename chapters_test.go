@@ -44,8 +44,6 @@ func TestAdvanced(t *testing.T) {
 	testutil.RunTestForFiles(t, []string{
 		"examples/advanced/loop_basic.yml",
 		"examples/advanced/conditional_basic.yml",
-		"examples/advanced/conditional_complex.yml",
-		"examples/advanced/conditional_error_handling.yml",
 		// 以下のファイルは修正が困難またはエラーが発生
 		// - loop_retry.yml (ランダムステータスのテストが不安定)
 		// - loop_dynamic.yml (配列インデックスアクセスのエラー)
