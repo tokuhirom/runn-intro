@@ -24,3 +24,9 @@ jobs:
 
     - name: Run Go tests
       run: make test
+    
+    - name: Test test-helper example
+      run: |
+        cd examples/test-helper/simple
+        go mod download
+        go test -v
