@@ -90,20 +90,6 @@
 {{ includex("examples/advanced/concurrency_complex.yml") }}
 ```
 
-## カスタムランナーの作成
-
-### プラグインランナーの定義
-
-```yaml
-{{ includex("examples/advanced/custom_runner_plugin.yml") }}
-```
-
-### 外部コマンドランナー
-
-```yaml
-{{ includex("examples/advanced/custom_runner_external.yml") }}
-```
-
 ## 高度なデータ処理
 
 ### 動的なテストデータ生成
