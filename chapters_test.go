@@ -46,9 +46,7 @@ func TestAdvanced(t *testing.T) {
 		"examples/advanced/loop_retry.yml",
 		"examples/advanced/conditional_basic.yml",
 		"examples/advanced/include_basic.yml",
-		// 以下のファイルは修正が困難またはエラーが発生
-		// - loop_dynamic.yml (配列インデックスアクセスのエラー)
-		// - common/auth.yml (単体実行用)
+		// common/auth.yml はinclude_basic.ymlからインクルードされるため単体テストは不要
 	})
 }
 
