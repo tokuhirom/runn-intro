@@ -3,9 +3,15 @@ runners:
   httpbin: http://localhost:8080
 
 steps:
+  - desc: メインファイルから実行開始
+    dump: '"=== メインファイル (include_basic.yml) から実行開始 ==="'
+
   - desc: 共通処理をインクルード
     include:
       path: ./common/auth.yml
+    
+  - desc: メインファイルに戻りました
+    dump: '"=== メインファイル (include_basic.yml) に戻りました ==="'
     
   - desc: インクルード後のテスト
     httpbin:

@@ -2,10 +2,15 @@
 desc: 共通の前処理
 
 steps:
-  - desc: インクルードされたステップ
+  - desc: インクルードされたステップの開始
+    dump: '"    >>> インクルードファイル (auth.yml) の実行開始 <<<"'
+    
+  - desc: 認証処理（例）
     httpbin:
       /status/200:
         get:
           body:
     test: current.res.status == 200
-    dump: '"このステップはauth.ymlから実行されました"'
+    
+  - desc: インクルードされたステップの終了
+    dump: '"    >>> インクルードファイル (auth.yml) の実行終了 <<<"'

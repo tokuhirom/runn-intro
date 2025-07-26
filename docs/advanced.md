@@ -26,6 +26,8 @@
 
 ## シナリオのインクルード
 
+他のYAMLファイルをインクルードすることで、共通処理を再利用できます。
+
 ### 基本的なインクルード
 
 ```yaml
@@ -34,6 +36,11 @@
 
 ```yaml
 {{ includex("examples/advanced/common/auth.yml") }}
+```
+
+実行結果:
+```
+{{ includex("examples/advanced/include_basic.stdout") }}
 ```
 
 ### 動的なインクルード
