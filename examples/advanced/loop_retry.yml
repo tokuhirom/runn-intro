@@ -6,8 +6,8 @@ vars:
   max_retries: 3
 
 steps:
-  # 成功するまでリトライ（HTTPBinの/status/200を使用）
-  - desc: 成功するまでリトライ
+  # 成功するまでリトライ
+  - desc: 成功するまでリトライ（基本例）
     loop:
       count: 3
       until: current.res.status == 200
@@ -19,31 +19,31 @@ steps:
           body:
     test: current.res.status == 200
 
-  # ランダムなステータスコードでのリトライ
-  - desc: ランダムステータスでのリトライ
-    loop:
-      count: 5
-      until: current.res.status == 200
-      minInterval: 500ms
-      maxInterval: 1s
-    httpbin:
-      /status/200,400,500:  # 200, 400, 500のいずれかを返す
-        get:
-          body:
-    test: |
-      current.res.status == 200 || i == 4  # 成功するか最後の試行
-
-  # JSONレスポンスの条件でリトライ
-  - desc: JSONレスポンス条件でのリトライ
+  # ヘッダーの条件でリトライ
+  - desc: ヘッダーの条件でリトライ
     loop:
       count: 3
       until: |
         current.res.status == 200 &&
-        current.res.body.json != null
+        current.res.headers["Content-Type"][0] == "application/json"
     httpbin:
-      /json:
+      /response-headers?Content-Type=application/json:
         get:
           body:
     test: |
       current.res.status == 200 &&
-      current.res.body.slideshow != null
+      current.res.headers["Content-Type"][0] == "application/json"
+      
+  # タイムアウトを伴うリトライ  
+  - desc: タイムアウトを考慮したリトライ
+    loop:
+      count: 5
+      until: current.res.status == 200
+      minInterval: 500ms
+      maxInterval: 2s
+    httpbin:
+      /delay/1:
+        get:
+          timeout: 3s
+          body:
+    test: current.res.status == 200
