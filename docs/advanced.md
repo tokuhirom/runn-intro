@@ -16,12 +16,6 @@
 {{ includex("examples/advanced/loop_retry.yml") }}
 ```
 
-### 動的なループ制御
-
-```yaml
-{{ includex("examples/advanced/loop_dynamic.yml") }}
-```
-
 ## 条件付き実行
 
 ### 基本的な条件分岐
