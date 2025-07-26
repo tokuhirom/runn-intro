@@ -36,22 +36,6 @@
 {{ includex("examples/advanced/common/auth.yml") }}
 ```
 
-### 動的なインクルード
-
-```yaml
-{{ includex("examples/advanced/include_dynamic.yml") }}
-```
-
-### ネストしたインクルード
-
-```yaml
-{{ includex("examples/advanced/include_nested.yml") }}
-```
-
-```yaml
-{{ includex("examples/advanced/level2.yml") }}
-```
-
 ## 並行実行制御
 
 ### 基本的な並行実行
