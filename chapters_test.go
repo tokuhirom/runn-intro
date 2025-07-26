@@ -46,7 +46,6 @@ func TestAdvanced(t *testing.T) {
 		"examples/advanced/conditional_basic.yml",
 		"examples/advanced/conditional_complex.yml",
 		"examples/advanced/conditional_error_handling.yml",
-		"examples/advanced/data_generation.yml",
 		"examples/advanced/debug_output.yml",
 		// 以下のファイルは修正が困難またはエラーが発生
 		// - error_handling.yml (ランダムステータスでuntil条件が不安定)
@@ -56,7 +55,8 @@ func TestAdvanced(t *testing.T) {
 		// - custom_runner_*.yml
 		// - dependency_*.yml
 		// - include_*.yml
-		// - data_transformation.yml
+		// - data_generation.yml (削除済み)
+		// - data_transformation.yml (削除済み)
 		// - common/auth.yml
 		// - level2.yml
 	})
