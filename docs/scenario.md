@@ -184,6 +184,3 @@ HTTPもデータベースも、同じ`test`構文でアサーションを記述�
 ```yaml
 {{ includex("examples/scenario/environment-config.yml") }}
 ```
-
-
-次章では、runnの式評価エンジンについて学びます。前のステップの結果を参照したり、条件分岐やフィルタリングを行う方法を説明します。

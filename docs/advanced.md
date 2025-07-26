@@ -40,4 +40,3 @@
 ```
 {{ includex("examples/advanced/include_basic.stdout") }}
 ```
-[第7章：Goテストヘルパー編へ →](test-helper.md)
