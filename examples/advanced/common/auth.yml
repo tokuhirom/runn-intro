@@ -1,14 +1,16 @@
-# common/auth.yml
-desc: 認証処理
+# インクルードされるファイル
+desc: 共通の前処理
+
 steps:
-  login:
-    req:
-      "{{ parent.vars.base_url }}/auth/login":
-        post:
+  - desc: インクルードされたステップの開始
+    dump: '"    >>> インクルードファイル (auth.yml) の実行開始 <<<"'
+    
+  - desc: 認証処理（例）
+    httpbin:
+      /status/200:
+        get:
           body:
-            application/json:
-              username: "{{ vars.username }}"
-              password: "{{ vars.password }}"
     test: current.res.status == 200
-    dump:
-      auth_token: current.res.body.token
+    
+  - desc: インクルードされたステップの終了
+    dump: '"    >>> インクルードファイル (auth.yml) の実行終了 <<<"'

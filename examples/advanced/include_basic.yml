@@ -1,26 +1,22 @@
-# main.yml
-desc: メインシナリオ
-vars:
-  base_url: https://api.example.com
-  user_id: 123
-  test_username: "testuser"
-  test_password: "testpass123"
+desc: 基本的なインクルード
+runners:
+  httpbin: http://localhost:8080
 
 steps:
-  # 共通の認証処理をインクルード
-  - include:
+  - desc: メインファイルから実行開始
+    dump: '"=== メインファイル (include_basic.yml) から実行開始 ==="'
+
+  - desc: 共通処理をインクルード
+    include:
       path: ./common/auth.yml
-      vars:
-        username: "{{ vars.test_username }}"
-        password: "{{ vars.test_password }}"
-
-  # ユーザー操作をインクルード
-  - include:
-      path: ./user/user_operations.yml
-      vars:
-        user_id: "{{ vars.user_id }}"
-        auth_token: "{{ steps[0].auth_token }}"
-
-  # クリーンアップ処理をインクルード
-  - include:
-      path: ./common/cleanup.yml
+    
+  - desc: メインファイルに戻りました
+    dump: '"=== メインファイル (include_basic.yml) に戻りました ==="'
+    
+  - desc: インクルード後のテスト
+    httpbin:
+      /get:
+        get:
+          query:
+            included: "true"
+    test: current.res.status == 200
