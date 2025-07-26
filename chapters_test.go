@@ -52,11 +52,7 @@ func TestAdvanced(t *testing.T) {
 		// - loop_retry.yml (ランダムステータスのテストが不安定)
 		// - loop_dynamic.yml (配列インデックスアクセスのエラー)
 		// - concurrency_*.yml
-		// - custom_runner_*.yml
-		// - dependency_*.yml
 		// - include_*.yml
-		// - data_generation.yml (削除済み)
-		// - data_transformation.yml (削除済み)
 		// - common/auth.yml
 		// - level2.yml
 	})
