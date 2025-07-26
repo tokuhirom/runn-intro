@@ -90,19 +90,4 @@
 {{ includex("examples/advanced/concurrency_complex.yml") }}
 ```
 
-## エラーハンドリングとデバッグ
-
-### 包括的なエラーハンドリング
-
-```yaml
-{{ includex("examples/advanced/error_handling.yml") }}
-```
-
-### デバッグ情報の出力
-
-```yaml
-{{ includex("examples/advanced/debug_output.yml") }}
-```
-
-
 [第7章：Goテストヘルパー編へ →](test-helper.md)

@@ -46,9 +46,7 @@ func TestAdvanced(t *testing.T) {
 		"examples/advanced/conditional_basic.yml",
 		"examples/advanced/conditional_complex.yml",
 		"examples/advanced/conditional_error_handling.yml",
-		"examples/advanced/debug_output.yml",
 		// 以下のファイルは修正が困難またはエラーが発生
-		// - error_handling.yml (ランダムステータスでuntil条件が不安定)
 		// - loop_retry.yml (ランダムステータスのテストが不安定)
 		// - loop_dynamic.yml (配列インデックスアクセスのエラー)
 		// - concurrency_*.yml
