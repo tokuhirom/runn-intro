@@ -40,24 +40,4 @@
 ```
 {{ includex("examples/advanced/include_basic.stdout") }}
 ```
-## 並行実行制御
-
-### 基本的な並行実行
-
-```yaml
-{{ includex("examples/advanced/concurrency_basic.yml") }}
-```
-
-### 共有リソースの制御
-
-```yaml
-{{ includex("examples/advanced/concurrency_shared_resource.yml") }}
-```
-
-### 複雑な並行制御
-
-```yaml
-{{ includex("examples/advanced/concurrency_complex.yml") }}
-```
-
 [第7章：Goテストヘルパー編へ →](test-helper.md)
