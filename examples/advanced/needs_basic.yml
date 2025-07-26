@@ -1,0 +1,9 @@
+desc: 他のRunbookへの依存関係（needs）
+
+# 他のRunbookの実行結果を必要とする
+needs:
+  setup: ./common/setup.include.yml
+
+steps:
+  - desc: needsで依存関係のRunbookを実行
+    dump: "メインRunbookを実行しました"
