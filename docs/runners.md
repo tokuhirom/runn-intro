@@ -105,15 +105,8 @@ TODO: grpc の例を追加する
 
 ## Execランナー（ローカルコマンド実行）
 
-### 基本的な使用方法
+exec ランナーは、コマンドを実行します。
 
 ```yaml
 {{ includex("examples/runners/exec_basic.yml") }}
 ```
-
-### ファイル操作とテスト
-
-```yaml
-{{ includex("examples/runners/exec_file_operations.yml") }}
-```
-
