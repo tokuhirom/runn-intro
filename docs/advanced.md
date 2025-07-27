@@ -43,7 +43,7 @@
 
 ## Runbook間の依存関係（needs）
 
-`needs`フィールドを使用すると、他のRunbookの実行結果を現在のRunbookで利用できます。
+`needs`フィールドを使用すると、他の Runbook を事前実行できます。
 
 ```yaml
 {{ includex("examples/advanced/needs_basic.yml") }}
