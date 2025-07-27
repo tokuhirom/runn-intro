@@ -229,15 +229,17 @@ steps:
 
 ファイルの内容を読み込む関数です。
 
+パスはシナリオファイル（.ymlファイル）がある場所からの相対パスで記述する必要があります。
+
+シナリオファイルがあるディレクトリの外部にあるファイルにアクセスする場合は、`read:parent`スコープが必要です。
+
 ```yaml
-steps:
-  file_example:
-    desc: ファイルの内容を読み込む
-    bind:
-      content: file("./data.txt")
-    test: |
-      // ファイルの内容を検証
-      content != null && len(content) > 0
+{{ includex("examples/runn-builtins/file_example.yml") }}
+```
+
+結果:
+```
+{{ includex("examples/runn-builtins/file_example.stdout") }}
 ```
 
 使用例：
