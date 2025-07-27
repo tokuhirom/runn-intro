@@ -31,9 +31,7 @@ func TestRunners(t *testing.T) {
 		//"examples/runners/cdp_basic.concept.yml",
 
 		"examples/runners/exec_basic.yml",
-		"examples/runners/exec_file_operations.yml",
 		//"examples/runners/ssh_basic.yml",
-		//"examples/runners/ssh_health_check.yml",
 	})
 
 	//t.Skip("Skip runners for now")

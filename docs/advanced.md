@@ -40,3 +40,20 @@
 ```
 {{ includex("examples/advanced/include_basic.stdout") }}
 ```
+
+## Runbook間の依存関係（needs）
+
+`needs`フィールドを使用すると、他の Runbook を事前実行できます。
+
+```yaml
+{{ includex("examples/advanced/needs_basic.yml") }}
+```
+
+```yaml
+{{ includex("examples/advanced/common/setup.include.yml") }}
+```
+
+実行結果:
+```
+{{ includex("examples/advanced/needs_basic.stdout") }}
+```
