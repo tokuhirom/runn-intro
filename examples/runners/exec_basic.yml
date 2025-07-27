@@ -1,6 +1,5 @@
 desc: ローカルコマンドの実行
-env:
-  PATH: "${PATH}"
+
 steps:
   # 基本的なコマンド実行
   basic_exec:
