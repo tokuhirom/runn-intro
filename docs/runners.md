@@ -103,12 +103,6 @@ TODO: grpc の例を追加する
 {{ includex("examples/runners/ssh_basic.yml") }}
 ```
 
-### サーバー監視とヘルスチェック
-
-```yaml
-{{ includex("examples/runners/ssh_health_check.yml") }}
-```
-
 ## Execランナー（ローカルコマンド実行）
 
 ### 基本的な使用方法
