@@ -148,13 +148,10 @@ runnはk1LoWによって開発されたシナリオベースのテスト・自�
 - `blog`ランナー: カスタムテストサーバー（testutil/server.go）
 
 ### 個別テストの実行
-環境変数`TEST_FILE`を使用して特定のYAMLファイルをテスト：
+特定のYAMLファイルをテストする場合は、該当するテスト関数を直接実行：
 ```bash
-# 単一ファイルのテスト実行
-TEST_FILE=examples/runn-builtins/merge_example.yml go test -run TestSingleFile ./...
-
-# 複数ファイルの場合は直接ファイルを編集
-# single_test.goを参照
+# 例: runn-builtinsの章のテストを実行
+go test -run TestRunnBuiltins ./...
 ```
 
 ## Git操作の重要なルール
