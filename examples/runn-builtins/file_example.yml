@@ -1,10 +1,5 @@
 desc: file関数の使用例
 steps:
   - desc: file関数の基本的な使い方を説明
-    bind:
-      # 実際の使用例（パスは環境に応じて調整が必要）
-      example1: '"設定ファイルを読み込む: content = file(\"/path/to/config.json\")"'
-      example2: '"テストデータを読み込む: testData = file(\"./testdata/users.csv\")"'
-      example3: '"JSON解析と組み合わせる: config = json(file(\"settings.json\"))"'
-    dump: |
-      example1 + "\n" + example2 + "\n" + example3
+    test:
+      file("examples/runn-builtins/hello.txt") == "hello"
