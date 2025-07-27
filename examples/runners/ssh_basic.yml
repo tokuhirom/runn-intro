@@ -1,55 +1,11 @@
 desc: SSH経由でのリモート操作
 runners:
   server: ssh://user@example.com:22
-  # 秘密鍵を使用する場合
-  secure_server:
-    type: ssh
-    addr: user@secure.example.com:22
-    key: /path/to/private_key
-    passphrase: "{{ env.SSH_PASSPHRASE }}"
-env:
-  SSH_PASSPHRASE: "${SSH_PASSPHRASE:-dummy-passphrase}"
 steps:
-  # 基本的なコマンド実行
-  basic_command:
+  # ホスト名を表示
+  show_hostname:
     ssh:
       server:///
-        command: ls -la /home/user
-    test: |
-      current.exit_code == 0 &&
-      current.stdout contains "total"
-
-  # 複数コマンドの実行
-  multiple_commands:
-    ssh:
-      server:///
-        command: |
-          cd /var/log
-          ls -la *.log | head -5
-          df -h
+        command: hostname
     test: current.exit_code == 0
-
-  # ファイル操作
-  file_operations:
-    ssh:
-      server:///
-        command: |
-          echo "Test content" > /tmp/test.txt
-          cat /tmp/test.txt
-          rm /tmp/test.txt
-    test: |
-      current.exit_code == 0 &&
-      current.stdout contains "Test content"
-
-  # システム情報の取得
-  system_info:
-    ssh:
-      server:///
-        command: |
-          uname -a
-          uptime
-          free -m
-          ps aux | head -10
-    test: current.exit_code == 0
-    dump:
-      system_output: current.stdout
+    dump: current.stdout
