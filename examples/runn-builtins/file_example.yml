@@ -2,4 +2,4 @@ desc: file関数の使用例
 steps:
   - desc: file関数の基本的な使い方を説明
     test:
-      file("examples/runn-builtins/hello.txt") == "hello"
+      file("hello.txt") == "hello"
