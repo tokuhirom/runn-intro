@@ -1,0 +1,21 @@
+desc: "expr-lang: 数値リテラルの使用例"
+steps:
+  number_example:
+    desc: "様々な数値表現"
+    bind:
+      decimal: 42
+      hex: 0x2A       # 16進数（42）
+      octal: 0o52     # 8進数（42）
+      binary: 0b101010 # 2進数（42）
+      float: 3.14
+      float_short: .5
+    test: |
+      // すべて同じ値（42）
+      current.decimal == 42 &&
+      current.hex == 42 &&
+      current.octal == 42 &&
+      current.binary == 42 &&
+      
+      // 浮動小数点数
+      current.float == 3.14 &&
+      current.float_short == 0.5

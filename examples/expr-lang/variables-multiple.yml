@@ -1,0 +1,20 @@
+desc: "expr-lang: 複数変数の宣言"
+steps:
+  multiple_variables_example:
+    desc: "セミコロンで区切った複数変数"
+    bind:
+      calculation: |
+        let x = 42; 
+        let y = 2; 
+        x * y
+      user_greeting: |
+        let first_name = "山田";
+        let last_name = "太郎";
+        let age = 25;
+        last_name + first_name + "さん（" + string(age) + "歳）"
+    test: |
+      // 複数変数を使った計算
+      current.calculation == 84 &&
+      
+      // 複数変数を使った文字列生成
+      current.user_greeting == "山田太郎さん（25歳）"

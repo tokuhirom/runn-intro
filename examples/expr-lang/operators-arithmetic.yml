@@ -1,0 +1,24 @@
+desc: "expr-lang: 算術演算子"
+steps:
+  arithmetic_example:
+    desc: "基本的な算術演算"
+    bind:
+      a: 10
+      b: 3
+      results:
+        addition: 10 + 3
+        subtraction: 10 - 3
+        multiplication: 10 * 3
+        division: 10 / 3
+        modulus: 10 % 3
+        exponent1: 2 ^ 3    # 累乗（方法1）
+        exponent2: 2 ** 3   # 累乗（方法2）
+    test: |
+      // 算術演算の結果確認
+      current.results.addition == 13 &&
+      current.results.subtraction == 7 &&
+      current.results.multiplication == 30 &&
+      current.results.division == 3 &&
+      current.results.modulus == 1 &&
+      current.results.exponent1 == 8 &&
+      current.results.exponent2 == 8

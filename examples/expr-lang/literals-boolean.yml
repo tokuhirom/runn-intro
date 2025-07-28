@@ -1,0 +1,14 @@
+desc: "expr-lang: ブール値リテラルの使用例"
+steps:
+  boolean_example:
+    desc: "ブール値の評価"
+    bind:
+      is_active: true
+      is_disabled: false
+    test: |
+      // ブール値の直接比較
+      current.is_active == true &&
+      current.is_disabled == false &&
+      
+      // ブール値の論理演算
+      current.is_active && !current.is_disabled
