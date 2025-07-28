@@ -164,6 +164,31 @@ func TestExprLang(t *testing.T) {
 5. `chapters_test.go`にテスト関数追加
 6. 全体のテスト実行確認
 
+## YAMLファイル作成の詳細手順
+
+**重要**: 一度に大量のYAMLファイルを作成せず、以下の手順で進める：
+
+1. **1つのYAMLファイルを作成**
+2. **個別にテストを実行**
+   ```bash
+   go test -run TestExprLang/ファイル名.yml ./...
+   ```
+3. **テストが成功したらコミット**
+   ```bash
+   git add examples/expr-lang/ファイル名.yml
+   git commit -m "feat: Add [関数名] example"
+   ```
+4. **プッシュ**
+   ```bash
+   git push
+   ```
+5. **次のYAMLファイルに進む**
+
+この方法により：
+- エラーの早期発見と修正が可能
+- 進捗が明確に追跡できる
+- 問題が発生した場合の影響範囲を最小限に抑える
+
 ## 注意事項
 
 - expr-lang式内のコメントは`//`スタイルを使用（`#`は非推奨）
