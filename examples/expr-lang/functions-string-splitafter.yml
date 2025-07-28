@@ -1,0 +1,23 @@
+desc: "expr-lang: splitAfter関数"
+steps:
+  splitafter_example:
+    desc: "区切り文字の後で文字列を分割（区切り文字を含む）"
+    bind:
+      csv: "apple,orange,grape"
+      sentence: "Hello. World. How are you?"
+      result1: splitAfter("apple,orange,grape", ",")
+      result2: splitAfter("apple,orange,grape", ",", 2)
+      result3: splitAfter("Hello. World. How are you?", ". ")
+      result4: splitAfter("no-delimiter", ",")
+    test: |
+      // 区切り文字を含んだ分割
+      current.result1 == ["apple,", "orange,", "grape"] &&
+      
+      // 最大分割数の指定
+      current.result2 == ["apple,", "orange,grape"] &&
+      
+      // 文の分割（ピリオドとスペース）
+      current.result3 == ["Hello. ", "World. ", "How are you?"] &&
+      
+      // 区切り文字が存在しない場合
+      current.result4 == ["no-delimiter"]

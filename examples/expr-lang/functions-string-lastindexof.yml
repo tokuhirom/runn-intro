@@ -1,0 +1,25 @@
+desc: "expr-lang: lastIndexOf関数"
+steps:
+  lastindexof_example:
+    desc: "部分文字列の最後の出現位置を検索"
+    bind:
+      result1: lastIndexOf("apple pie apple", "apple")
+      result2: lastIndexOf("Hello World", "o")
+      result3: lastIndexOf("/home/user/documents/file.txt", "/")
+      result4: lastIndexOf("test", "not found")
+      result5: lastIndexOf("AAA", "A")
+    test: |
+      // 最後の"apple"の位置
+      current.result1 == 10 &&
+      
+      // 最後の"o"の位置
+      current.result2 == 7 &&
+      
+      // パスの最後のスラッシュ
+      current.result3 == 20 &&
+      
+      // 見つからない場合
+      current.result4 == -1 &&
+      
+      // 複数の同じ文字
+      current.result5 == 2

@@ -1,0 +1,27 @@
+desc: "expr-lang: split関数"
+steps:
+  split_example:
+    desc: "文字列を区切り文字で分割"
+    bind:
+      csv: "apple,orange,grape"
+      path: "/usr/local/bin"
+      result1: split("apple,orange,grape", ",")
+      result2: split("/usr/local/bin", "/")
+      result3: split("apple,orange,grape", ",", 2)  # 最大分割数を指定
+      result4: split("Hello World", " ")
+      result5: split("no-delimiter-here", ",")
+    test: |
+      // カンマ区切り
+      current.result1 == ["apple", "orange", "grape"] &&
+      
+      // スラッシュ区切り（最初の空文字列に注意）
+      current.result2 == ["", "usr", "local", "bin"] &&
+      
+      // 最大分割数の指定
+      current.result3 == ["apple", "orange,grape"] &&
+      
+      // スペース区切り
+      current.result4 == ["Hello", "World"] &&
+      
+      // 区切り文字が存在しない場合
+      current.result5 == ["no-delimiter-here"]
