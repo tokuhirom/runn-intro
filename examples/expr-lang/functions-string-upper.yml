@@ -2,23 +2,15 @@ desc: "expr-lang: upper関数"
 steps:
   upper_example:
     desc: "文字列を大文字に変換"
-    bind:
-      text1: "hello world"
-      text2: "Hello World"
-      text3: "こんにちは"
-      result1: upper("hello world")
-      result2: upper("Hello World")
-      result3: upper("test123!@#")
-      result4: upper("こんにちは")
     test: |
       // 小文字を大文字に変換
-      current.result1 == "HELLO WORLD" &&
+      upper("hello world") == "HELLO WORLD" &&
       
       // 混在した文字も全て大文字に
-      current.result2 == "HELLO WORLD" &&
+      upper("Hello World") == "HELLO WORLD" &&
       
       // 数字や記号は変化しない
-      current.result3 == "TEST123!@#" &&
+      upper("test123!@#") == "TEST123!@#" &&
       
       // 日本語は変化しない
-      current.result4 == "こんにちは"
+      upper("こんにちは") == "こんにちは"
