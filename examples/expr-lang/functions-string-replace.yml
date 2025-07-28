@@ -1,0 +1,24 @@
+desc: "expr-lang: replace関数"
+steps:
+  replace_example:
+    desc: "文字列内の置換"
+    bind:
+      text: "Hello World"
+      template: "Hello {name}, welcome to {place}"
+      result1: replace("Hello World", "World", "Universe")
+      result2: replace("Hello Hello Hello", "Hello", "Hi")
+      result3: replace("test@example.com", "@", "[at]")
+      result4: |
+        replace(replace("Hello {name}, welcome to {place}", "{name}", "Alice"), "{place}", "Wonderland")
+    test: |
+      // 単純な置換
+      current.result1 == "Hello Universe" &&
+      
+      // 全ての出現を置換
+      current.result2 == "Hi Hi Hi" &&
+      
+      // 特殊文字の置換
+      current.result3 == "test[at]example.com" &&
+      
+      // 連続した置換
+      current.result4 == "Hello Alice, welcome to Wonderland"

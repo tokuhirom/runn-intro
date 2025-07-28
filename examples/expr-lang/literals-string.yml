@@ -1,0 +1,21 @@
+desc: "expr-lang: 文字列リテラルとエスケープシーケンス"
+steps:
+  string_example:
+    desc: "文字列の様々な表現"
+    bind:
+      single_quote: 'Hello'
+      double_quote: "World"
+      with_newline: "Line1\nLine2"
+      with_tab: "Column1\tColumn2"
+      unicode: "\u3053\u3093\u306B\u3061\u306F"  # こんにちは
+    test: |
+      // シングルクォートとダブルクォート
+      current.single_quote == "Hello" &&
+      current.double_quote == "World" &&
+      
+      // エスケープシーケンス
+      current.with_newline contains "\n" &&
+      current.with_tab contains "\t" &&
+      
+      // Unicode
+      current.unicode == "こんにちは"

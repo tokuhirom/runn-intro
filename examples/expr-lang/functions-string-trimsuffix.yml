@@ -1,0 +1,21 @@
+desc: "expr-lang: trimSuffix関数"
+steps:
+  trimsuffix_example:
+    desc: "文字列の末尾から指定サフィックスを削除"
+    bind:
+      filename: "document.pdf"
+      logfile: "app.log.bak"
+      result1: trimSuffix("document.pdf", ".pdf")
+      result2: trimSuffix("app.log.bak", ".bak")
+      result3: trimSuffix("HelloWorld", "Universe")  # マッチしない場合
+      result4: trimSuffix("TestTest", "Test")        # 最後の一つだけ削除
+    test: |
+      // サフィックスの削除
+      current.result1 == "document" &&
+      current.result2 == "app.log" &&
+      
+      // マッチしない場合は元の文字列
+      current.result3 == "HelloWorld" &&
+      
+      // 最後の出現のみ削除
+      current.result4 == "Test"

@@ -1,0 +1,17 @@
+desc: "expr-lang: let変数の宣言"
+steps:
+  let_example:
+    desc: "変数の宣言と使用"
+    bind:
+      result1: 'let x = 42; x * 2'
+      result2: 'let name = "Alice"; "Hello, " + name'
+      result3: 'let pi = 3.14159; let radius = 5; pi * radius * radius'
+    test: |
+      // 単純な変数宣言
+      current.result1 == 84 &&
+      
+      // 文字列変数
+      current.result2 == "Hello, Alice" &&
+      
+      // 複数の変数を使った計算
+      current.result3 > 78.5 && current.result3 < 78.6

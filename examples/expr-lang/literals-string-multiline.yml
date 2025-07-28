@@ -1,0 +1,17 @@
+desc: "expr-lang: 複数行文字列（バッククォート）"
+steps:
+  multiline_example:
+    desc: "バッククォートによる複数行文字列"
+    bind:
+      poem: |
+        `春はあけぼの
+        やうやう白くなりゆく山ぎは
+        すこしあかりて`
+      with_quotes: '`これは"引用符"を含む文字列です`'
+    test: |
+      // 複数行文字列には改行が含まれる
+      current.poem contains "春はあけぼの" &&
+      current.poem contains "\n" &&
+      
+      // バッククォート内では引用符をエスケープ不要
+      current.with_quotes contains '"引用符"'

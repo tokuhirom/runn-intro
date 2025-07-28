@@ -1,0 +1,21 @@
+desc: "expr-lang: 比較演算子"
+steps:
+  comparison_example:
+    desc: "値の比較"
+    bind:
+      x: 10
+      y: 20
+      str1: "apple"
+      str2: "banana"
+    test: |
+      // 数値の比較
+      current.x < current.y &&
+      current.y > current.x &&
+      current.x <= 10 &&
+      current.y >= 20 &&
+      current.x != current.y &&
+      current.x == 10 &&
+      
+      // 文字列の比較（辞書順）
+      current.str1 < current.str2 &&
+      current.str1 != current.str2

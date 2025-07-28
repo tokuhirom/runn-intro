@@ -1,0 +1,25 @@
+desc: "expr-lang: 文字列演算子"
+steps:
+  string_operators_example:
+    desc: "文字列の操作"
+    bind:
+      first: "Hello"
+      second: "World"
+      text: "Hello, World!"
+      filename: "document.pdf"
+    test: |
+      // 文字列連結
+      current.first + " " + current.second == "Hello World" &&
+      
+      // contains演算子
+      current.text contains "World" &&
+      !(current.text contains "world") &&  // 大文字小文字を区別
+      
+      // startsWith演算子
+      current.text startsWith "Hello" &&
+      !(current.text startsWith "hello") &&
+      
+      // endsWith演算子
+      current.filename endsWith ".pdf" &&
+      current.text endsWith "!" &&
+      !(current.filename endsWith ".txt")

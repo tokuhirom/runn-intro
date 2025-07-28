@@ -1,0 +1,34 @@
+desc: "expr-lang: 配列とマップリテラル"
+steps:
+  collection_example:
+    desc: "配列とマップの作成"
+    bind:
+      numbers: [1, 2, 3, 4, 5]
+      mixed_array: ["text", 123, true, nil]
+      user_map: 
+        name: "田中"
+        age: 30
+        active: true
+      nested: 
+        users: 
+          - {id: 1, name: "Alice"}
+          - {id: 2, name: "Bob"}
+    test: |
+      // 配列の操作
+      len(current.numbers) == 5 &&
+      current.numbers[0] == 1 &&
+      current.numbers[-1] == 5 &&
+      
+      // 混合型配列
+      current.mixed_array[0] == "text" &&
+      current.mixed_array[1] == 123 &&
+      current.mixed_array[2] == true &&
+      current.mixed_array[3] == nil &&
+      
+      // マップの操作
+      current.user_map.name == "田中" &&
+      current.user_map["age"] == 30 &&
+      
+      // ネストした構造
+      len(current.nested.users) == 2 &&
+      current.nested.users[0].name == "Alice"

@@ -1,0 +1,26 @@
+desc: "expr-lang: 波括弧の省略"
+steps:
+  predicate_no_braces_example:
+    desc: "述語での波括弧省略"
+    bind:
+      numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      users:
+        - name: "Alice"
+          age: 25
+        - name: "Bob"
+          age: 30
+        - name: "Charlie"
+          age: 20
+      # 波括弧ありの書き方
+      even_with_braces: filter(numbers, {# % 2 == 0})
+      # 波括弧なしの書き方（同じ結果）
+      even_without_braces: filter(numbers, # % 2 == 0)
+      # 構造体でも波括弧省略可能
+      adults: filter(users, .age >= 20)
+    test: |
+      // 波括弧の有無に関わらず同じ結果
+      current.even_with_braces == current.even_without_braces &&
+      current.even_with_braces == [2, 4, 6, 8, 10] &&
+      
+      // 構造体での波括弧省略
+      len(current.adults) == 3

@@ -1,0 +1,29 @@
+desc: "expr-lang: hasPrefix関数"
+steps:
+  hasprefix_example:
+    desc: "文字列が特定のプレフィックスで始まるかチェック"
+    bind:
+      result1: hasPrefix("HelloWorld", "Hello")
+      result2: hasPrefix("HelloWorld", "hello")  # 大文字小文字を区別
+      result3: hasPrefix("https://example.com", "https://")
+      result4: hasPrefix("test_data.csv", "test_")
+      result5: hasPrefix("", "prefix")  # 空文字列
+      result6: hasPrefix("text", "")     # 空のプレフィックス
+    test: |
+      // プレフィックスのチェック
+      current.result1 == true &&
+      
+      // 大文字小文字は区別される
+      current.result2 == false &&
+      
+      // URLのプロトコルチェック
+      current.result3 == true &&
+      
+      // ファイル名のプレフィックス
+      current.result4 == true &&
+      
+      // 空文字列
+      current.result5 == false &&
+      
+      // 空のプレフィックスは常にtrue
+      current.result6 == true

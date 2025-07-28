@@ -1,0 +1,23 @@
+desc: "expr-lang: $env変数の使用"
+vars:
+  username: "alice"
+  score: 85
+  items:
+    - "apple"
+    - "banana"
+steps:
+  env_example:
+    desc: "$envを使った変数アクセス"
+    bind:
+      user_via_env: $env["username"]
+      user_via_vars: vars.username
+      all_vars: $env
+    test: |
+      // $envと直接アクセスは同等
+      current.user_via_env == current.user_via_vars &&
+      current.user_via_env == "alice" &&
+      
+      // $envには全ての変数が含まれる
+      $env.username == "alice" &&
+      $env.score == 85 &&
+      len($env.items) == 2
