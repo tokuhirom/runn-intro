@@ -6,7 +6,7 @@ toolchain go1.24.5
 
 require (
 	github.com/k1LoW/runn v0.133.0
-	github.com/mattn/go-sqlite3 v1.14.29
+	github.com/mattn/go-sqlite3 v1.14.30
 	github.com/mccutchen/go-httpbin/v2 v2.18.3
 	gopkg.in/yaml.v3 v3.0.1
 )
