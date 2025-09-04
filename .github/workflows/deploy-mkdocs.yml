@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
 
       - name: Disable apparmor_restrict_unprivileged_userns # ref: https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
