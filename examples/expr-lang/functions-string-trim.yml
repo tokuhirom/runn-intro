@@ -1,0 +1,14 @@
+desc: "expr-lang: trim関数"
+steps:
+  trim_example:
+    desc: "文字列の両端から空白や指定文字を削除"
+    test: |
+      // デフォルト（空白文字の削除）
+      trim("  Hello World  ") == "Hello World" &&
+      
+      // 指定文字の削除
+      trim("__Hello__", "_") == "Hello" &&
+      trim("###Test###", "#") == "Test" &&
+      
+      // タブや改行も削除
+      trim("\t\nText\n\t") == "Text"

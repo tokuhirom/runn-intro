@@ -1,0 +1,23 @@
+desc: "expr-lang: 範囲演算子"
+steps:
+  range_example:
+    desc: "整数範囲の生成"
+    bind:
+      range1: 1..5
+      range2: 0..3
+      range3: 10..10
+    test: |
+      // 基本的な範囲
+      current.range1 == [1, 2, 3, 4, 5] &&
+      
+      // 0から始まる範囲
+      current.range2 == [0, 1, 2, 3] &&
+      
+      // 単一要素の範囲
+      current.range3 == [10] &&
+      
+      // 範囲を使った繰り返し処理
+      len(1..100) == 100 &&
+      
+      // 範囲とfilterの組み合わせ
+      filter(1..10, # % 2 == 0) == [2, 4, 6, 8, 10]

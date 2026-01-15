@@ -1,0 +1,24 @@
+desc: "expr-lang: in演算子"
+steps:
+  in_operator_example:
+    desc: "配列とマップでのin演算子"
+    bind:
+      names: ["John", "Jane", "Bob"]
+      person:
+        name: "John"
+        age: 30
+        city: "Tokyo"
+      empty_array: []
+    test: |
+      // 配列内の存在確認
+      "John" in current.names &&
+      "Jane" in current.names &&
+      !("Alice" in current.names) &&
+      
+      // マップのキー存在確認
+      "name" in current.person &&
+      "age" in current.person &&
+      !("email" in current.person) &&
+      
+      // 空配列
+      !("anything" in current.empty_array)

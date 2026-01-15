@@ -1,0 +1,23 @@
+desc: "expr-lang: nil合体演算子（??）"
+steps:
+  nil_coalescing_example:
+    desc: "nilの場合のデフォルト値"
+    bind:
+      user1:
+        name: "田中"
+      user2:
+        name: nil
+      user3: nil
+      default_name: "匿名"
+    test: |
+      // 値が存在する場合
+      (current.user1.name ?? current.default_name) == "田中" &&
+      
+      // nilの場合のデフォルト値
+      (current.user2.name ?? current.default_name) == "匿名" &&
+      
+      // オプショナルチェイニングとの組み合わせ
+      (current.user3?.name ?? current.default_name) == "匿名" &&
+      
+      // 連鎖的な使用
+      (nil ?? nil ?? "最終デフォルト") == "最終デフォルト"

@@ -1,0 +1,25 @@
+desc: "expr-lang: スライス演算子"
+steps:
+  slice_example:
+    desc: "配列のスライス操作"
+    bind:
+      array: [1, 2, 3, 4, 5]
+      text: "Hello, World!"
+    test: |
+      // 基本的なスライス
+      current.array[1:4] == [2, 3, 4] &&
+      
+      // 負のインデックスを使用
+      current.array[1:-1] == [2, 3, 4] &&
+      
+      // 開始位置を省略（最初から）
+      current.array[:3] == [1, 2, 3] &&
+      
+      // 終了位置を省略（最後まで）
+      current.array[3:] == [4, 5] &&
+      
+      // 全体のコピー
+      current.array[:] == current.array &&
+      
+      // 文字列のスライス
+      current.text[0:5] == "Hello"

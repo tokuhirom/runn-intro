@@ -1,0 +1,18 @@
+desc: "expr-lang: 論理演算子"
+steps:
+  logical_example:
+    desc: "論理演算の使用例"
+    bind:
+      is_adult: true
+      has_license: false
+      age: 25
+    test: |
+      // 英語キーワード形式
+      current.is_adult and (current.age >= 20) &&
+      not current.has_license &&
+      current.is_adult or current.has_license &&
+      
+      // 記号形式
+      current.is_adult && (current.age >= 20) &&
+      !current.has_license &&
+      current.is_adult || current.has_license

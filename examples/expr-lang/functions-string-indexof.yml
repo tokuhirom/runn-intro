@@ -1,0 +1,25 @@
+desc: "expr-lang: indexOf関数"
+steps:
+  indexof_example:
+    desc: "部分文字列の最初の出現位置を検索"
+    bind:
+      result1: indexOf("apple pie", "pie")
+      result2: indexOf("apple pie apple", "apple")
+      result3: indexOf("Hello World", "o")
+      result4: indexOf("test string", "not found")
+      result5: indexOf("", "test")  # 空文字列での検索
+    test: |
+      // "pie"の位置（0ベース）
+      current.result1 == 6 &&
+      
+      // 最初の"apple"の位置
+      current.result2 == 0 &&
+      
+      // 最初の"o"の位置
+      current.result3 == 4 &&
+      
+      // 見つからない場合
+      current.result4 == -1 &&
+      
+      // 空文字列での検索
+      current.result5 == -1

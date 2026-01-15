@@ -1,0 +1,24 @@
+desc: "expr-lang: 述語での#シンボル省略"
+steps:
+  predicate_omit_example:
+    desc: "構造体配列での#省略"
+    bind:
+      tweets:
+        - content: "短いツイート"
+          author: "user1"
+        - content: "これは240文字を超える非常に長いツイートです。これは240文字を超える非常に長いツイートです。これは240文字を超える非常に長いツイートです。これは240文字を超える非常に長いツイートです。これは240文字を超える非常に長いツイートです。これは240文字を超える非常に長いツイートです。"
+          author: "user2"
+        - content: "普通の長さのツイート"
+          author: "user3"
+      # #を省略してフィールドアクセス
+      long_tweets: filter(tweets, {len(.content) > 240})
+      # 特定の著者でフィルタ
+      user1_tweets: filter(tweets, {.author == "user1"})
+    test: |
+      // 長いツイートのフィルタ結果
+      len(current.long_tweets) == 1 &&
+      current.long_tweets[0].author == "user2" &&
+      
+      // 特定著者のツイート
+      len(current.user1_tweets) == 1 &&
+      current.user1_tweets[0].content == "短いツイート"

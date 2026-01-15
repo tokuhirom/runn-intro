@@ -1,0 +1,18 @@
+desc: "expr-lang: 条件演算子"
+steps:
+  conditional_example:
+    desc: "三項演算子とnil合体演算子"
+    bind:
+      score: 85
+      name: nil
+      default_name: "ゲスト"
+      age: 20
+    test: |
+      // 三項演算子
+      (current.score >= 80 ? "合格" : "不合格") == "合格" &&
+      
+      // nil合体演算子
+      (current.name ?? current.default_name) == "ゲスト" &&
+      
+      // 複数行のif-else（bindセクションでの例）
+      current.age >= 18

@@ -1,0 +1,29 @@
+desc: "expr-lang: repeat関数"
+steps:
+  repeat_example:
+    desc: "文字列の繰り返し"
+    bind:
+      result1: repeat("Hi", 3)
+      result2: repeat("*", 10)
+      result3: repeat("Go! ", 3)
+      result4: repeat("-", 20)
+      result5: repeat("", 5)      # 空文字列
+      result6: repeat("Test", 0)  # 0回繰り返し
+    test: |
+      // 単純な繰り返し
+      current.result1 == "HiHiHi" &&
+      
+      // 記号の繰り返し（区切り線など）
+      current.result2 == "**********" &&
+      
+      // スペースを含む繰り返し
+      current.result3 == "Go! Go! Go! " &&
+      
+      // 区切り線の生成
+      len(current.result4) == 20 &&
+      
+      // 空文字列の繰り返し
+      current.result5 == "" &&
+      
+      // 0回繰り返し
+      current.result6 == ""

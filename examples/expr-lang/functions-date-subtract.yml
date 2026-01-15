@@ -1,0 +1,10 @@
+desc: "expr-lang: 日付の減算"
+steps:
+  date_subtract_example:
+    desc: "2つの日付の差を計算"
+    test: |
+      // 現在時刻と1時間前の差
+      (now() - (now() - duration("1h"))).Hours() == 1.0 &&
+      
+      // 現在時刻と24時間前の差
+      (now() - (now() - duration("24h"))).Hours() == 24.0

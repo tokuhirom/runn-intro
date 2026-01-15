@@ -1,0 +1,16 @@
+desc: "expr-lang: lower関数"
+steps:
+  lower_example:
+    desc: "文字列を小文字に変換"
+    test: |
+      // 大文字を小文字に変換
+      lower("HELLO WORLD") == "hello world" &&
+      
+      // 混在した文字も全て小文字に
+      lower("Hello World") == "hello world" &&
+      
+      // 数字や記号は変化しない
+      lower("TEST123!@#") == "test123!@#" &&
+      
+      // メールアドレスの正規化
+      lower("USER@EXAMPLE.COM") == "user@example.com"

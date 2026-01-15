@@ -1,0 +1,16 @@
+desc: "expr-lang: パイプ演算子"
+steps:
+  pipe_example:
+    desc: "パイプ演算子による関数チェーン"
+    bind:
+      name: "  HELLO WORLD  "
+      numbers: [3, 1, 4, 1, 5, 9, 2, 6]
+    test: |
+      // 文字列処理のチェーン
+      (current.name | trim() | lower() | split(" ")) == ["hello", "world"] &&
+      
+      // 上記は以下と同等
+      split(lower(trim(current.name)), " ") == ["hello", "world"] &&
+      
+      // 配列処理のチェーン
+      (current.numbers | uniq() | sort()) == [1, 2, 3, 4, 5, 6, 9]

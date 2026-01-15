@@ -1,0 +1,16 @@
+desc: "expr-lang: upper関数"
+steps:
+  upper_example:
+    desc: "文字列を大文字に変換"
+    test: |
+      // 小文字を大文字に変換
+      upper("hello world") == "HELLO WORLD" &&
+      
+      // 混在した文字も全て大文字に
+      upper("Hello World") == "HELLO WORLD" &&
+      
+      // 数字や記号は変化しない
+      upper("test123!@#") == "TEST123!@#" &&
+      
+      // 日本語は変化しない
+      upper("こんにちは") == "こんにちは"

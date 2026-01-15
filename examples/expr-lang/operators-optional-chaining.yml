@@ -1,0 +1,24 @@
+desc: "expr-lang: オプショナルチェイニング（?.）"
+steps:
+  optional_chaining_example:
+    desc: "安全なプロパティアクセス"
+    bind:
+      author1:
+        user:
+          name: "山田太郎"
+          profile:
+            bio: "作家"
+      author2:
+        user: nil
+      author3: nil
+    test: |
+      // 通常のアクセス
+      current.author1.user.name == "山田太郎" &&
+      
+      // nilの場合の安全なアクセス
+      current.author2.user?.name == nil &&
+      current.author3?.user?.name == nil &&
+      
+      // ネストした安全なアクセス
+      current.author1.user?.profile?.bio == "作家" &&
+      current.author2.user?.profile?.bio == nil

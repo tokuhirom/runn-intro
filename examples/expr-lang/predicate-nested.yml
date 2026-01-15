@@ -1,0 +1,32 @@
+desc: "expr-lang: ネストした述語"
+steps:
+  predicate_nested_example:
+    desc: "外側の変数にアクセスする述語"
+    bind:
+      posts:
+        - id: 1
+          author: "Alice"
+          comments:
+            - author: "Bob"
+              text: "いいね！"
+            - author: "Alice"
+              text: "ありがとう"
+        - id: 2
+          author: "Bob"
+          comments:
+            - author: "Charlie"
+              text: "素晴らしい"
+        - id: 3
+          author: "Charlie"
+          comments: []
+      # 自分のコメントがある投稿を抽出
+      self_commented_posts: |
+        filter(posts, {
+          let post = #;
+          any(.comments, .author == post.author)
+        })
+    test: |
+      // 自分でコメントした投稿の確認
+      len(current.self_commented_posts) == 1 &&
+      current.self_commented_posts[0].id == 1 &&
+      current.self_commented_posts[0].author == "Alice"

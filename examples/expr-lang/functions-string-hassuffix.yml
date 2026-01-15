@@ -1,0 +1,20 @@
+desc: "expr-lang: hasSuffix関数"
+steps:
+  hassuffix_example:
+    desc: "文字列が特定のサフィックスで終わるかチェック"
+    test: |
+      // サフィックスのチェック
+      hasSuffix("HelloWorld", "World") == true &&
+      
+      // 大文字小文字は区別される
+      hasSuffix("HelloWorld", "world") == false &&
+      
+      // ファイル拡張子のチェック
+      hasSuffix("document.pdf", ".pdf") == true &&
+      hasSuffix("image.jpg", ".png") == false &&
+      
+      // 空文字列
+      hasSuffix("", "suffix") == false &&
+      
+      // 空のサフィックスは常にtrue
+      hasSuffix("text", "") == true

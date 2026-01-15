@@ -1,0 +1,20 @@
+desc: "expr-lang: 基本的な述語"
+steps:
+  predicate_basic_example:
+    desc: "filterと述語の基本"
+    bind:
+      # 0から9までの配列から偶数を抽出
+      even_numbers: filter(0..9, {# % 2 == 0})
+      # 3の倍数を抽出
+      multiples_of_3: filter(0..9, {# % 3 == 0})
+      # 5より大きい数を抽出
+      greater_than_5: filter(0..9, {# > 5})
+    test: |
+      // 偶数のフィルタ結果
+      current.even_numbers == [0, 2, 4, 6, 8] &&
+      
+      // 3の倍数のフィルタ結果
+      current.multiples_of_3 == [0, 3, 6, 9] &&
+      
+      // 5より大きい数のフィルタ結果
+      current.greater_than_5 == [6, 7, 8, 9]

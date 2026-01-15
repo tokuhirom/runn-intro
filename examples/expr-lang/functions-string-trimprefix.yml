@@ -1,0 +1,21 @@
+desc: "expr-lang: trimPrefix関数"
+steps:
+  trimprefix_example:
+    desc: "文字列の先頭から指定プレフィックスを削除"
+    bind:
+      url: "https://example.com"
+      filename: "IMG_001.jpg"
+      result1: trimPrefix("https://example.com", "https://")
+      result2: trimPrefix("IMG_001.jpg", "IMG_")
+      result3: trimPrefix("HelloWorld", "Goodbye")  # マッチしない場合
+      result4: trimPrefix("HelloHello", "Hello")    # 最初の一つだけ削除
+    test: |
+      // プレフィックスの削除
+      current.result1 == "example.com" &&
+      current.result2 == "001.jpg" &&
+      
+      // マッチしない場合は元の文字列
+      current.result3 == "HelloWorld" &&
+      
+      // 最初の出現のみ削除
+      current.result4 == "Hello"

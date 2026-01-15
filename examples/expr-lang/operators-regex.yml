@@ -1,0 +1,19 @@
+desc: "expr-lang: 正規表現演算子"
+steps:
+  regex_example:
+    desc: "正規表現によるパターンマッチング"
+    bind:
+      email: "user@example.com"
+      phone: "090-1234-5678"
+      version: "v1.2.3"
+      invalid_email: "not-an-email"
+    test: |
+      // メールアドレスのパターンマッチ
+      current.email matches "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$" &&
+      !(current.invalid_email matches "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") &&
+      
+      // 電話番号のパターンマッチ
+      current.phone matches "^\\d{3}-\\d{4}-\\d{4}$" &&
+      
+      // バージョン番号のパターンマッチ
+      current.version matches "^v\\d+\\.\\d+\\.\\d+$"

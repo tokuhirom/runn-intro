@@ -1,0 +1,19 @@
+desc: "expr-lang: メンバーシップ演算子（フィールドアクセス）"
+steps:
+  membership_example:
+    desc: "オブジェクトのフィールドアクセス"
+    bind:
+      user:
+        name: "山田太郎"
+        age: 30
+        address:
+          city: "東京"
+          zip: "100-0001"
+    test: |
+      // ドット記法とブラケット記法は同等
+      current.user.name == current.user["name"] &&
+      current.user.name == "山田太郎" &&
+      
+      // ネストしたアクセス
+      current.user.address.city == "東京" &&
+      current.user["address"]["zip"] == "100-0001"

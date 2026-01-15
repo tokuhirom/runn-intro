@@ -1,0 +1,15 @@
+desc: "expr-lang: パイプ演算子と変数"
+vars:
+  user:
+    name: "  TANAKA TARO  "
+    email: "TANAKA@EXAMPLE.COM"
+steps:
+  pipe_variable_example:
+    desc: "パイプ演算子を使った変数処理"
+    bind:
+      formatted_name: 'let name = vars.user.name | trim() | lower() | split(" "); name[1] + " " + name[0]'
+      formatted_email: 'let email = vars.user.email | lower(); email'
+    test: |
+      // パイプで処理した変数の使用
+      current.formatted_name == "taro tanaka" &&
+      current.formatted_email == "tanaka@example.com"

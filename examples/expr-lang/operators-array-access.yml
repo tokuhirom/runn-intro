@@ -1,0 +1,19 @@
+desc: "expr-lang: 配列アクセス演算子"
+steps:
+  array_access_example:
+    desc: "配列要素へのアクセス"
+    bind:
+      fruits: ["apple", "banana", "cherry", "date", "elderberry"]
+      numbers: [10, 20, 30, 40, 50]
+    test: |
+      // 正のインデックス
+      current.fruits[0] == "apple" &&
+      current.fruits[2] == "cherry" &&
+      
+      // 負のインデックス（末尾から）
+      current.fruits[-1] == "elderberry" &&
+      current.fruits[-2] == "date" &&
+      
+      // 数値配列でも同様
+      current.numbers[0] == 10 &&
+      current.numbers[-1] == 50

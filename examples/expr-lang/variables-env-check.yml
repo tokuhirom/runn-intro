@@ -1,0 +1,25 @@
+desc: "expr-lang: 変数の存在確認"
+vars:
+  defined_var: "I exist"
+  nullable_var: nil
+steps:
+  env_check_example:
+    desc: "$envで変数の存在を確認"
+    bind:
+      has_defined: 'defined_var' in $env
+      has_nullable: 'nullable_var' in $env
+      has_undefined: 'undefined_var' in $env
+      safe_access: |
+        'optional_var' in $env ? $env.optional_var : "default"
+    test: |
+      // 定義された変数
+      current.has_defined == true &&
+      
+      // nilでも定義されていれば存在する
+      current.has_nullable == true &&
+      
+      // 未定義の変数
+      current.has_undefined == false &&
+      
+      // 安全なアクセス
+      current.safe_access == "default"
