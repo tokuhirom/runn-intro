@@ -1,13 +1,11 @@
 module github.com/tokuhirom/runn-intro
 
-go 1.23.11
-
-toolchain go1.24.5
+go 1.25.0
 
 require (
 	github.com/k1LoW/runn v0.134.0
 	github.com/mattn/go-sqlite3 v1.14.30
-	github.com/mccutchen/go-httpbin/v2 v2.18.3
+	github.com/mccutchen/go-httpbin/v2 v2.21.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
