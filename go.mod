@@ -2,7 +2,7 @@ module github.com/tokuhirom/runn-intro
 
 go 1.23.11
 
-toolchain go1.24.5
+toolchain go1.26.1
 
 require (
 	github.com/k1LoW/runn v0.134.0
